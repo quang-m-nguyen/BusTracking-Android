@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Bus-Locator</string>
+
+    <!--Route string value-->
+    <string name="default_route_name">Unknown Route</string>
+    <string name="change_route_button_label">Change Route</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
