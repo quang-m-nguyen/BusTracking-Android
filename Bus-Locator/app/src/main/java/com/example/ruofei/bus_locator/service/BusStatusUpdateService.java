@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -13,6 +14,13 @@ import android.util.Log;
 
 import com.example.ruofei.bus_locator.R;
 import com.example.ruofei.bus_locator.RouteListActivity;
+import com.example.ruofei.bus_locator.api.BusLocatorApi;
+import com.example.ruofei.bus_locator.util.Constants;
+import com.example.ruofei.bus_locator.util.Server;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by ruofei on 5/31/2016.
@@ -64,6 +72,38 @@ public class BusStatusUpdateService extends Service {
 //        String response_str = null;
 //Toast.makeText(this, "Service Update:" ,
 //                Toast.LENGTH_SHORT).show();
+        Server server = Server.getInstance(this.getApplicationContext());
+        server.buildRetrofit(Constants.BUS_LOCATOR_URL);
+        server.setApi(BusLocatorApi.class);
+        BusLocatorApi service = (BusLocatorApi)server.getService();
+        Call<String> call = service.getBusLocationIndicator();
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response != null) {
+                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
+                    String defaultValue = getResources().getString(R.string.disired_bus_default);
+                    String desiredBusLocation = sharedPref.getString(getString(R.string.disired_bus_key), defaultValue);
+                    String updateLocation =  response.body();
+                    Log.e(TAG, "response " + updateLocation + ", preference:" + desiredBusLocation);
+                    if(updateLocation.equals(desiredBusLocation))
+                    {
+                        showNotification("Bus is coming at " + updateLocation, "Bus is comming", 3);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+
+
+
+
+
 
         //showNotification("service:" + testCounter,"service", testCounter++);
         try {

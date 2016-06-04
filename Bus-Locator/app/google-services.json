@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "869297674110",
+    "firebase_url": "https://solid-coder-131612.firebaseio.com",
+    "project_id": "solid-coder-131612",
+    "storage_bucket": "solid-coder-131612.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869297674110:android:107ec94c14942ea5",
+        "android_client_info": {
+          "package_name": "com.example.ruofei.bus_locator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869297674110-sans3as7etp7i1fhc0eba82tpmglrvkt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvkjQ_mbFoiPnfmNmHUJe05dlTkp2IJRo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869297674110:android:1e83981c655d8497",
+        "android_client_info": {
+          "package_name": "com.example.ruofei.bus_locatort"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869297674110-sans3as7etp7i1fhc0eba82tpmglrvkt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvkjQ_mbFoiPnfmNmHUJe05dlTkp2IJRo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

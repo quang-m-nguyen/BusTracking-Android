@@ -45,8 +45,8 @@ public class RoutesListFragment extends Fragment {
         // TODO: dynamic update after server updated
         String[] data = {
                 "E",
-                "Route B",
-                "Route C"
+                "I",
+                "North"
         };
 
         List<String> routes = new ArrayList<String>(Arrays.asList(data));

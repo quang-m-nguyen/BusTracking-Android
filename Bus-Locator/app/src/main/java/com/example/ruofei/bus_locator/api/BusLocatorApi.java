@@ -16,5 +16,5 @@ public interface BusLocatorApi {
     Call<List<BusStop>>getBusStop(@Path("name") String routeName);
 
     @GET("getBus")
-    Call<Integer>getBusLocationInt();
+    Call<String>getBusLocationIndicator();
 }

@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        startService(new Intent(this,FirebaseInstanceIdService.class));
         Intent intent = getIntent();
         if (intent != null) {
             try {
@@ -210,8 +212,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.clear();
-        editor.putString(Constants.DISIRED_BUS_ID, marker.getSnippet());
+//        editor.clear();
+        editor.putString(getString(R.string.disired_bus_key), marker.getSnippet());
         editor.commit();
 
         startService(new Intent(this, BusStatusUpdateService.class));
@@ -250,25 +252,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //    private void requestRoute(List<String> waypoints) {
     private void requestRoute(String ori, String dest) {
-//                    Server server = Server.getInstance(this.getApplicationContext());
-//                    server.buildRetrofit(Constants.GOOGLE_MAP_URL);
-//                    server.setApi(GoogleMapApi.class);
-//                    GoogleMapApi service = (GoogleMapApi) server.getService();
-//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-//        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-//        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-//        httpClient.addInterceptor(logging);
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(Constants.GOOGLE_MAP_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .client(httpClient.build())
-//                .build();
-//        GoogleMapApi service = retrofit.create(GoogleMapApi.class);
-////        String oriLatLng = waypoints.get(0);
-//        String oriLatLng = ori;
-////        String destLatLng = waypoints.get(waypoints.size() - 1);
-//        String destLatLng = dest;
-//
 //        String waypointsStr = "";
 //        if (waypoints.size() >= 3) {
 //            waypointsStr = waypoints.get(1);

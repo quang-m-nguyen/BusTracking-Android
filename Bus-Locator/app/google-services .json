@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "238370200494",
+    "firebase_url": "https://project-5858196831327493240.firebaseio.com",
+    "project_id": "project-5858196831327493240",
+    "storage_bucket": "project-5858196831327493240.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238370200494:android:107ec94c14942ea5",
+        "android_client_info": {
+          "package_name": "com.example.ruofei.bus_locator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "238370200494-og06tfqsoa82mbsp69eqqlbljipdro99.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTJ6B6d3Z6Hs7MwxKIeDFCb7dFR1cgfvI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
