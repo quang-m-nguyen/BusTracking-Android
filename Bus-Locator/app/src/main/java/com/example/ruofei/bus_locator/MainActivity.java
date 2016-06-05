@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
-import com.example.ruofei.bus_locator.service.FirebaseBusSatusService;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;
 import com.google.android.gms.maps.CameraUpdate;
@@ -32,7 +31,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        Log.e(TAG, "Subscribed to news topic");
+        Log.e(TAG, "InstanceID token: " + FirebaseInstanceId.getInstance().getToken());
 
         MapFragment mapFragment =
                 (MapFragment) getFragmentManager().findFragmentById(R.id.map);
@@ -217,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         editor.commit();
 
 //        startService(new Intent(this, BusStatusUpdateService.class));
-        startService(new Intent(this, FirebaseBusSatusService.class));
+//        startService(new Intent(this, MyFirebaseInstanceIDService.class));
 
         showNotification("marker clicked", "detail", 0);
     }

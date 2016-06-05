@@ -57,11 +57,18 @@
 
         <activity android:name=".BusStopListActivity"></activity>
 
+        <!--<service-->
+            <!--android:name=".service.BusStatusUpdateService"-->
+            <!--android:label="Bus StatusUpdateService" >-->
+            <!--<intent-filter>-->
+            <!--<action android:name="com.google.firebase.MESSAGING_EVENT"/>-->
+            <!--</intent-filter>-->
+        <!--</service>-->
+
         <service
-            android:name=".service.BusStatusUpdateService"
-            android:label="Bus StatusUpdateService" >
+            android:name=".service.FirebaseBusMessagingService">
             <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
