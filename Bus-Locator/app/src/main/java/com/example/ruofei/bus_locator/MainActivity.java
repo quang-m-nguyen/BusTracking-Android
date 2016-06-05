@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
-import com.example.ruofei.bus_locator.service.BusStatusUpdateService;
+import com.example.ruofei.bus_locator.service.FirebaseBusSatusService;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;
 import com.google.android.gms.maps.CameraUpdate;
@@ -216,7 +216,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         editor.putString(getString(R.string.disired_bus_key), marker.getSnippet());
         editor.commit();
 
-        startService(new Intent(this, BusStatusUpdateService.class));
+//        startService(new Intent(this, BusStatusUpdateService.class));
+        startService(new Intent(this, FirebaseBusSatusService.class));
 
         showNotification("marker clicked", "detail", 0);
     }
