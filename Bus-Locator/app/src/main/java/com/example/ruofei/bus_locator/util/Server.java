@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.ruofei.bus_locator.api.BusLocatorApi;
+import com.example.ruofei.bus_locator.api.FirebaseNotificationApi;
 import com.example.ruofei.bus_locator.api.GoogleMapApi;
 import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
@@ -49,12 +50,15 @@ public class Server {
         // add your other interceptors …
         // add logging as last interceptor
         httpClient.addInterceptor(logging);
+
+        //default api and url
+        // TODO: update error handling if no api and url setup
         buildRetrofit(serverUrl);
         mApi = BusLocatorApi.class;
     }
 
 
-    public static synchronized Server getInstance(Context context) {
+    public static synchronized Server getInstance(final Context context) {
         if (instance == null) {
             instance = new Server(context);
         }
@@ -89,6 +93,14 @@ public class Server {
         this.setApi(GoogleMapApi.class);
         GoogleMapApi service = (GoogleMapApi) this.getService();
         return service.getRoutePath(oriLatLng, destLatLng, false, "driving", false, Constants.GOOGLE_MAP_API_KEY);
+    }
+
+    public Call<Void> sendNotification(String token, int routeID, int busStopID)
+    {
+        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
+        this.setApi(FirebaseNotificationApi.class);
+        FirebaseNotificationApi service = (FirebaseNotificationApi)this.getService();
+        return service.sendToken(token,routeID,busStopID);
     }
 
     //clear shared preference

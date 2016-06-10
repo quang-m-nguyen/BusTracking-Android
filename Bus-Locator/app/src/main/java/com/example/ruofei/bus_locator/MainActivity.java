@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ruofei.bus_locator.api.FirebaseNotificationApi;
 import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
 import com.example.ruofei.bus_locator.util.Constants;
@@ -25,6 +28,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -51,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //    static public double mCurrentLongitude = -117.1658558;
 //    static public String mBusStopMakerTitle = "Marker";
     GoogleMap mMap;
-    int disiredBusStopId;
 
     public enum MapDisplayType {
         DISPLAY_BUSSTOP,
@@ -75,9 +79,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
 
-        FirebaseMessaging.getInstance().subscribeToTopic("news");
-        Log.e(TAG, "Subscribed to news topic");
-        Log.e(TAG, "InstanceID token: " + FirebaseInstanceId.getInstance().getToken());
+        //FirebaseMessaging.getInstance().subscribeToTopic("news");
+//        Log.e(TAG, "Subscribed to news topic");
+        String token  = FirebaseInstanceId.getInstance().getToken();
+        Log.e(TAG, "InstanceID token: " + token);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.device_info_reference), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.clear();
+//        editor.putString(getString(R.string.disired_bus_key), marker.getSnippet());
+        editor.putString(getString(R.string.device_info_firebase_cloud_messaging_token), token);
+        editor.commit();
+
 
         MapFragment mapFragment =
                 (MapFragment) getFragmentManager().findFragmentById(R.id.map);
@@ -176,12 +188,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mUpdateRouteFlag = false;
                 mUpdateRouteFlag = true;
                 List<Marker> markers = new ArrayList<Marker>();
+                Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                        R.drawable.bus_stop_icon);
                 for (int i = 0; i < mBusStops.size(); i++) {
                     BusStop busStop = mBusStops.get(i);
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(
+                    Marker marker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(icon))
+                            .position(
                             new LatLng(busStop.getLatitude(),
                                     busStop.getLongtitude()
-                            )).title(busStop.getStopName()).snippet(Integer.toString(busStop.getStopNum())));
+                            )).title(busStop.getStopName())
+                            .snippet(Integer.toString(busStop.getStopNum())));
                     markers.add(marker);
                 }
                 setMapMarker(mMap, markers);
@@ -213,19 +229,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(this, "Click busstop num:" + marker.getSnippet(),
                 Toast.LENGTH_SHORT).show();
-        disiredBusStopId = Integer.parseInt(marker.getSnippet());
+//        int disiredBusStopId = Integer.parseInt(marker.getSnippet());
+
+        // pop up a window
+        startActivity(new Intent(this, BusStopDetailActivity.class));
+
 
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 //        editor.clear();
-        editor.putString(getString(R.string.disired_bus_key), marker.getSnippet());
+//        editor.putString(getString(R.string.disired_bus_key), marker.getSnippet());
+        editor.putString(Constants.DISIRED_BUS_Key, marker.getSnippet());
         editor.commit();
 
-//        startService(new Intent(this, BusStatusUpdateService.class));
-//        startService(new Intent(this, MyFirebaseInstanceIDService.class));
+        sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.device_info_reference),Context.MODE_PRIVATE);
+        String token = sharedPref.getString(getString(R.string.device_info_firebase_cloud_messaging_token),"unknown");
 
-        showNotification("marker clicked", "detail", 0);
+//        Server server = Server.getInstance(this.getApplicationContext());
+//        // TODO: change route id and bus stop id to be dynamic
+//        Call<Void> call = server.sendNotification(token,0,0);
+//        Log.e(TAG,"send token");
+//        call.enqueue(new Callback<Void>() {
+//            @Override
+//            public void onResponse(Call<Void> call, Response<Void> response) {
+//
+//            }
+//            @Override
+//            public void onFailure(Call<Void> call, Throwable t) {
+//                Log.e(TAG, "Fail:" + t.getMessage());
+//                t.printStackTrace();
+//            }
+//        });
+
+//        showNotification("marker clicked", "detail", 0);
     }
 
     public void showNotification(String title,String detail, int id) {
@@ -289,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                    mRoutes.addAll(list);
                     mRoutes.addAll(list);
                 }
-                Log.e(TAG, "size1:" +mBusStops.size()+" size2:" +mRoutes.size());
+//                Log.e(TAG, "size1:" +mBusStops.size()+" size2:" +mRoutes.size());
                 if (mBusStops.size() <= mRoutes.size() + 1) {
                     updateMap();
                 }
@@ -355,6 +392,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             LatLngBounds bounds = builder.build();
             int padding = 0; // offset from edges of the map in pixels
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+            // No animate
+            googleMap.moveCamera(cu);
+
+            // Animate
             googleMap.animateCamera(cu);
         }
 //        Log.e(TAG, "Error");

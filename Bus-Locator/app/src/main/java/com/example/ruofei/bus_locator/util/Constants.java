@@ -13,8 +13,13 @@ public interface Constants {
 
     final static String BUS_LOCATOR_URL = "http://52.33.19.46/";
     final static String GOOGLE_MAP_URL = "https://maps.googleapis.com/maps/api/directions/";
+    final static String FIRE_BASE_NOTIFICATION_URL = "http://sudokit.com:3000/";
 
     final static String DISIRED_BUS_PREFFERNCE = "disiredBusPreference";
+    final static String DISIRED_BUS_Key = "disiredBusKey";
     final static String DISIRED_BUS_ID = "disiredBusId";
+
+    final static String DEVICE_INFO_PREFFERNCE = "deviceInfo";
+    final static String DEVICE_TOKEN_KEY = "deviceTokenKey";
 
 }

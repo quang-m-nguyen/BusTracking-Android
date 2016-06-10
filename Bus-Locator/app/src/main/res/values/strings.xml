@@ -4,10 +4,13 @@
     <!--Route string value-->
     <string name="default_route_name">Unknown Route</string>
     <string name="change_route_button_label">Change Route</string>
-    
+
     <string name="disired_bus_key">com.example.myapp.PREFERENCE_FILE_KEY</string>
     <string name="disired_bus_default">Unknown</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
+
+    <string name="device_info_firebase_cloud_messaging_token">com.example.myapp.FIREBASE_CLOUD_MESSAGEING_TOKEN</string>
+    <string name="device_info_reference">com.example.myapp.DEVICE_INFO_REFERENCE</string>
 </resources>

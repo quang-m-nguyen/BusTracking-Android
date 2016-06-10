@@ -1,0 +1,4 @@
+curl --header "Authorization: key=AIzaSyDQK7avspHWfkTacCLs27c8GdMND_Ll7so" \
+       --header Content-Type:"application/json" \
+       https://fcm.googleapis.com/fcm/send \
+       -d "{\"registration_ids\":[\"c4YN1hQ7A0o:APA91bEUR7-xqBfZBTxSahDmw94Xa8jsNaUZ58mCuKpgKyo28v1O1eOGJ-v1ei8JOdHuNvNl7Ywx7KSC6jUkCjzwT9aFLFgLXG1DiXpk-cPBkb2PH1k_QDY2GppjWeuYQT1pSYLl5GqO\"]}"
