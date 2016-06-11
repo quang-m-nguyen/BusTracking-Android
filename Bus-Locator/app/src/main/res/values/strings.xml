@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">Bus-Locator</string>
+    <string name="app_name">Bus Locator</string>
+    <string name="app_title">Coug Transit</string>
+
+
 
     <!--Route string value-->
     <string name="default_route_name">Unknown Route</string>

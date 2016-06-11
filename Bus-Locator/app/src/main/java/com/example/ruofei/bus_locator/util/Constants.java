@@ -8,8 +8,6 @@ public interface Constants {
     final static String ROUTE_NAME_KEY = "com.example.ruofei.bus_locator.ROUTE_NAME";
     final static String GOOGLE_MAP_API_KEY = "AIzaSyDCDYoiyBgsn8Imhscv417hwyW5sErNaKc";
 
-    final static String ROUTE_LIST_FRAGMENT_TAG = "ROUTE_LIST_FRAGMENT";
-    final static String BUSSTOP_LIST_FRAGMENT_TAG = "BUSSTOP_LIST_FRAGMENT";
 
     final static String BUS_LOCATOR_URL = "http://52.33.19.46/";
     final static String GOOGLE_MAP_URL = "https://maps.googleapis.com/maps/api/directions/";
@@ -21,5 +19,7 @@ public interface Constants {
 
     final static String DEVICE_INFO_PREFFERNCE = "deviceInfo";
     final static String DEVICE_TOKEN_KEY = "deviceTokenKey";
+
+    final static String INTENT_EXTRA_BUS_STOP_NAME = "com.example.ruofei.bus_locator.INTENT_EXTRA_BUS_STOP_NAME";
 
 }

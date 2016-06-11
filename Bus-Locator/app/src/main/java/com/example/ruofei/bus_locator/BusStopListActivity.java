@@ -3,7 +3,6 @@ package com.example.ruofei.bus_locator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 public class BusStopListActivity extends AppCompatActivity {
 
@@ -15,7 +14,6 @@ public class BusStopListActivity extends AppCompatActivity {
 
         if(savedInstanceState == null){
 
-            Log.e("test retro", "activ start");
             BusStopListFragment newFragment = new BusStopListFragment();
 
             //Check Route Name
@@ -26,7 +24,6 @@ public class BusStopListActivity extends AppCompatActivity {
                 bundle.putString("RouteName",message);
                 newFragment.setArguments(bundle);
             }
-            Log.e("test retro act meesage", message);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.busStopContainer, newFragment, "busStopList")
                     .commit();

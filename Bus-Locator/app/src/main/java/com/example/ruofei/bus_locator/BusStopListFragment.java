@@ -35,7 +35,7 @@ public class BusStopListFragment extends Fragment {
     public final static String BUS_STOP_NAME = "com.example.ruofei.bus_locator.BusStopName";
     public final static String BUS_STOP_LATITUDE = "com.example.ruofei.bus_locator.BusStopLatitude";
     public final static String BUS_STOP_LONGITUDE = "com.example.ruofei.bus_locator.BusStopLongtitude";
-    static final String TAG = Constants.BUSSTOP_LIST_FRAGMENT_TAG;
+    public final String TAG = this.getClass().getName();
 
     private ArrayAdapter<String> mBusStopAdapter;
     private List<BusStop> mBustStopList;

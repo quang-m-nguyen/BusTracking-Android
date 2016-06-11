@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ruofei.bus_locator.api.FirebaseNotificationApi;
 import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
 import com.example.ruofei.bus_locator.util.Constants;
@@ -28,7 +27,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -38,7 +36,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        //TODO:Try to delete it
         startService(new Intent(this,FirebaseInstanceIdService.class));
         Intent intent = getIntent();
         if (intent != null) {
@@ -117,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String callFrom = intent.getStringExtra(Constants.INTENT_CALL_FROM_KEY);
                 String routeName = intent.getStringExtra(Constants.ROUTE_NAME_KEY);
 
-                if (callFrom.equals(Constants.ROUTE_LIST_FRAGMENT_TAG)) {
+                if (callFrom.equals(RoutesListFragment.class.getName())) {
                     Server server = Server.getInstance(this.getApplicationContext());
                     Call<List<BusStop>> call = server.getBusStopsCall(routeName) ;
                     call.enqueue(new Callback<List<BusStop>>() {
@@ -165,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     });
 
-                } else if (callFrom.equals(Constants.BUSSTOP_LIST_FRAGMENT_TAG)) {
+                } else if (callFrom.equals(BusStopListFragment.class.getName())) {
 //                    Log.e(TAG, "POSTRESUME BUST STOP LIST");
                     TextView textView = (TextView) findViewById(R.id.routeName);
                     textView.setTextSize(20);
@@ -232,7 +230,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        int disiredBusStopId = Integer.parseInt(marker.getSnippet());
 
         // pop up a window
-        startActivity(new Intent(this, BusStopDetailActivity.class));
+        Intent busStopPopUp = new Intent(this, BusStopPopupActivity.class);
+        busStopPopUp.putExtra(Constants.INTENT_EXTRA_BUS_STOP_NAME, marker.getTitle());
+        startActivity(busStopPopUp);
 
 
 

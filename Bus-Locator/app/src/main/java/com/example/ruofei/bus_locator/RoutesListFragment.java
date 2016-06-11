@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class RoutesListFragment extends Fragment {
 
-    static final String TAG = Constants.ROUTE_LIST_FRAGMENT_TAG;
+    public final String TAG = this.getClass().getName();
     public final static String EXTRA_MESSAGE = "com.example.ruofei.bus_locator.E";
     private ArrayAdapter<String> mRouteAdapter;
 
