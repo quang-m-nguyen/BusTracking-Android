@@ -1,7 +1,9 @@
-package com.example.ruofei.bus_locator;
+package com.example.ruofei.bus_locator.routes;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.ruofei.bus_locator.R;
 
 public class RouteListActivity extends AppCompatActivity {
 

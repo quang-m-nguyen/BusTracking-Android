@@ -13,13 +13,13 @@ public class GoogleMapDirection {
 
     @Expose
     @SerializedName("routes")
-    private List<Route> routes;
+    private List<RouteInfo> routeInfos;
 
-    public List<Route> getRoute() {
-        return routes;
+    public List<RouteInfo> getRoute() {
+        return routeInfos;
     }
 
-    public void setRoute(List<Route> routes) {
-        this.routes = routes;
+    public void setRoute(List<RouteInfo> routeInfos) {
+        this.routeInfos = routeInfos;
     }
 }

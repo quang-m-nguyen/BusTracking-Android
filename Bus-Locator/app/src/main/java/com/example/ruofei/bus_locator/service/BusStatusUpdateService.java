@@ -13,7 +13,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.example.ruofei.bus_locator.R;
-import com.example.ruofei.bus_locator.RouteListActivity;
+import com.example.ruofei.bus_locator.routes.RouteListActivity;
 import com.example.ruofei.bus_locator.api.BusLocatorApi;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;

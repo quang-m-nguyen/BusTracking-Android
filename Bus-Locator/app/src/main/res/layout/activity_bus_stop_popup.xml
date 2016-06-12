@@ -41,6 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
+                    android:onClick="onClickNotification"
                     android:src="@drawable/ic_bell_outline_grey600_24dp" />
 
                 <TextView
@@ -54,6 +55,7 @@
                     android:paddingEnd="24dp"
                     android:paddingRight="24dp"
                     android:text="Notification"
+                    android:onClick="onClickNotification"
                     android:textSize="16dp" />
 
             </LinearLayout>
@@ -78,6 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
+                    android:onClick="onClickDetail"
                     android:src="@drawable/ic_details_grey600_24dp" />
 
 
@@ -92,6 +95,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
                     android:text="Detail"
+                    android:onClick="onClickDetail"
                     android:textSize="16dp" />
             </LinearLayout>
 

@@ -66,7 +66,7 @@ public class BusStopPopupActivity extends AppCompatActivity {
         ImageView iw = (ImageView) findViewById(R.id.notificationImageView);
         notificationFlag = !notificationFlag;
         Log.e(TAG, "Notification clicked, flag:" + notificationFlag);
-        if (notificationFlag = false)
+        if (notificationFlag ==false)
             iw.setImageResource(R.drawable.ic_bell_outline_grey600_24dp);
         else
             iw.setImageResource(R.drawable.ic_bell_grey600_24dp);

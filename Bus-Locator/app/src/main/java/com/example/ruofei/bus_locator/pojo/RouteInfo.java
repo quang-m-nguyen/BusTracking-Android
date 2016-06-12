@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by ruofei on 5/29/2016.
  */
-public class Route {
+public class RouteInfo {
 
     @Expose
     @SerializedName("legs")

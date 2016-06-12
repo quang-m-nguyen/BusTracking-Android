@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
+import com.example.ruofei.bus_locator.pojo.RouteInfo;
+import com.example.ruofei.bus_locator.routes.RouteListActivity;
+import com.example.ruofei.bus_locator.routes.RoutesListFragment;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;
 import com.google.android.gms.maps.CameraUpdate;
@@ -315,9 +318,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                    Log.e(TAG, "Route body:" + response.body());
                     List<List<LatLng>> list = new ArrayList<>();
 
-                    List<com.example.ruofei.bus_locator.pojo.Route> routes = response.body().getRoute();
-                    for (int i = 0; i < routes.size(); i++) {
-                        list.add(decodePoly(routes.get(i).getPolyline().getPoints()));
+                    List<RouteInfo> routeInfos = response.body().getRoute();
+                    for (int i = 0; i < routeInfos.size(); i++) {
+                        list.add(decodePoly(routeInfos.get(i).getPolyline().getPoints()));
                     }
 //                    for (int i = 0; i < list.size(); i++) {
 //                        Log.e(TAG, "polyline:" + list.get(0));

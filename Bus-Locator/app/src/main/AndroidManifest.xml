@@ -39,7 +39,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RouteListActivity">
+        <activity android:name=".routes.RouteListActivity">
             android:name=".RouteListActivity"
             android:label="@string/title_activity_route_list"
             android:parentActivityName=".MainActivity" >
