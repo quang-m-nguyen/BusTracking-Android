@@ -25,7 +25,7 @@ public class RoutesListFragment extends Fragment {
     public final String TAG = this.getClass().getName();
     public final static String EXTRA_MESSAGE = "com.example.ruofei.bus_locator.E";
     private RoutesAdapter mRouteAdapter;
-    List<Route> routeList  = new ArrayList<>();
+    List<Route> routeList = new ArrayList<>();
 
     // Using ListView for test
     // TODO: update to recycler view
@@ -57,9 +57,12 @@ public class RoutesListFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mRouteAdapter);
 
-        routeList.add(new Route("1","E"));
-        routeList.add(new Route("2","I"));
-        routeList.add(new Route("3","North"));
+
+
+
+                routeList.add(new Route("1", "E"));
+                routeList.add(new Route("2", "I"));
+                routeList.add(new Route("3", "North"));
 
 
 //        recyclerView.setAdapter(mRouteAdapter);
@@ -77,9 +80,8 @@ public class RoutesListFragment extends Fragment {
 //            }
 //        });
 
-        return  rootView;
-    }
+                return rootView;
+            }
 
 
-
-}
+        }

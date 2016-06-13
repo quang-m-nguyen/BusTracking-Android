@@ -29,6 +29,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
 
         public  MyViewHolder(View view){
             super(view);
+            view.setOnClickListener(this);
             context = view.getContext();
             routeNum = (TextView) view.findViewById(R.id.routeNum);
             routeName = (TextView) view.findViewById(R.id.routeName);
@@ -36,9 +37,10 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
 
         @Override
         public void onClick(View v) {
-            Intent intent =  new Intent(context, MainActivity.class);
-            String routeName = v.getTag().toString();
+            TextView nameTextView = (TextView)v.findViewById(R.id.routeName);
+            String routeName = nameTextView.getText().toString();
             Log.e(TAG,routeName);
+            Intent intent =  new Intent(context, MainActivity.class);
             // TODO: user shared preference
             MainActivity.mCurrentRoute = routeName;
             intent.putExtra(Constants.ROUTE_NAME_KEY,routeName);

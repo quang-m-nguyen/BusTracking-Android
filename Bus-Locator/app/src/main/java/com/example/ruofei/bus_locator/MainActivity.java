@@ -22,7 +22,7 @@ import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
 import com.example.ruofei.bus_locator.pojo.RouteInfo;
 import com.example.ruofei.bus_locator.routes.RouteListActivity;
-import com.example.ruofei.bus_locator.routes.RoutesListFragment;
+import com.example.ruofei.bus_locator.routes.RoutesAdapter;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;
 import com.google.android.gms.maps.CameraUpdate;
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String callFrom = intent.getStringExtra(Constants.INTENT_CALL_FROM_KEY);
                 String routeName = intent.getStringExtra(Constants.ROUTE_NAME_KEY);
 
-                if (callFrom.equals(RoutesListFragment.class.getName())) {
+                if (callFrom.equals(RoutesAdapter.class.getName())) {
                     Server server = Server.getInstance(this.getApplicationContext());
                     Call<List<BusStop>> call = server.getBusStopsCall(routeName) ;
                     call.enqueue(new Callback<List<BusStop>>() {
