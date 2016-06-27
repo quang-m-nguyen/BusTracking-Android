@@ -27,6 +27,7 @@ import retrofit2.Response;
 public class BusStopPopupActivity extends AppCompatActivity {
 
     final String TAG = this.getClass().getName();
+    private String busstopID = "unknown";
 
     //TODO:using shared preference  to store this flag
     boolean notificationFlag = false;
@@ -43,6 +44,10 @@ public class BusStopPopupActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String busstopName = intent.getStringExtra(Constants.INTENT_EXTRA_BUS_STOP_NAME);
+
+        //TODO: get ID INSTEAD
+        busstopID = "99163"+busstopName;
+
         Log.e(TAG, "get busstop name");
         if (busstopName != null) {
             Log.e(TAG, busstopName);
@@ -128,5 +133,32 @@ public class BusStopPopupActivity extends AppCompatActivity {
 
     public void onClickDetail(View view) {
 
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Server server = Server.getInstance(this.getApplicationContext());
+        String token  = FirebaseInstanceId.getInstance().getToken();
+        Call<Void> call = server.unsubscribeBusstop(token,busstopID);
+        Log.e(TAG,"send token");
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "Fail:" + t.getMessage());
+                t.printStackTrace();
+            }
+        });
     }
 }

@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "337980972115",
-    "firebase_url": "https://coug-transit.firebaseio.com",
-    "project_id": "coug-transit",
-    "storage_bucket": "coug-transit.appspot.com"
+    "project_number": "1038631331613",
+    "firebase_url": "https://thrifa-1dd03.firebaseio.com",
+    "project_id": "thrifa-1dd03",
+    "storage_bucket": "thrifa-1dd03.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:337980972115:android:107ec94c14942ea5",
+        "mobilesdk_app_id": "1:1038631331613:android:107ec94c14942ea5",
         "android_client_info": {
           "package_name": "com.example.ruofei.bus_locator"
         }
       },
       "oauth_client": [
         {
-          "client_id": "337980972115-i7hfcnf7e0h0k74hv6dsvm2rstv5qsjs.apps.googleusercontent.com",
+          "client_id": "1038631331613-it7d0adkd4hjaocnktopb0apvkc6l054.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD1NV2Ce6weowOIj9qlM9S6Hp9ZXNvDmfw"
+          "current_key": "AIzaSyDSEyZ2Y3AZ-uq9HxW17RC8j3PNrqsRHWE"
         }
       ],
       "services": {

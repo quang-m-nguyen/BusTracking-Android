@@ -7,6 +7,7 @@ import com.example.ruofei.bus_locator.api.BusLocatorApi;
 import com.example.ruofei.bus_locator.api.BusTrakerApi;
 import com.example.ruofei.bus_locator.api.FirebaseNotificationApi;
 import com.example.ruofei.bus_locator.api.GoogleMapApi;
+import com.example.ruofei.bus_locator.api.UnsubscribeBusstopApi;
 import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.pojo.BusTracker;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
@@ -103,6 +104,14 @@ public class Server {
         this.setApi(FirebaseNotificationApi.class);
         FirebaseNotificationApi service = (FirebaseNotificationApi)this.getService();
         return service.sendToken(token,routeID,busStopID);
+    }
+
+    public Call<Void> unsubscribeBusstop(String token, String busStopID)
+    {
+        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
+        this.setApi(UnsubscribeBusstopApi.class);
+        UnsubscribeBusstopApi service = (UnsubscribeBusstopApi)this.getService();
+        return service.unsubscribeBusstop(token,busStopID);
     }
 
     public Call<List<BusTracker>> getBusTrakerCall(String busstopID, String token){
