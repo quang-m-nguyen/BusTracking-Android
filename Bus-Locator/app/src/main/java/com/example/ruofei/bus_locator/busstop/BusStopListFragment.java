@@ -1,4 +1,4 @@
-package com.example.ruofei.bus_locator;
+package com.example.ruofei.bus_locator.busstop;
 
 
 import android.content.Intent;
@@ -14,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.ruofei.bus_locator.MainActivity;
+import com.example.ruofei.bus_locator.R;
 import com.example.ruofei.bus_locator.api.BusLocatorApi;
 import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.util.Constants;

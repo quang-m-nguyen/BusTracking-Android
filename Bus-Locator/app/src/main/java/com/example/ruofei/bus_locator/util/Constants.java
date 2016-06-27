@@ -16,6 +16,7 @@ public interface Constants {
     final static String DISIRED_BUS_PREFFERNCE = "disiredBusPreference";
     final static String DISIRED_BUS_Key = "disiredBusKey";
     final static String DISIRED_BUS_ID = "disiredBusId";
+    final static String BUSSTOP_ID_KEY = "busstopIDKey";
 
     final static String DEVICE_INFO_PREFFERNCE = "deviceInfo";
     final static String DEVICE_TOKEN_KEY = "deviceTokenKey";

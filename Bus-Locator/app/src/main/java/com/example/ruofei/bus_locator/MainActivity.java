@@ -2,8 +2,10 @@ package com.example.ruofei.bus_locator;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +20,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ruofei.bus_locator.busstop.BusStopListFragment;
+import com.example.ruofei.bus_locator.busstop.BusStopPopupActivity;
 import com.example.ruofei.bus_locator.pojo.BusStop;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
 import com.example.ruofei.bus_locator.pojo.RouteInfo;
@@ -55,7 +59,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //    static public double mCurrentLatitude = 46.73241830;
 //    static public double mCurrentLongitude = -117.1658558;
 //    static public String mBusStopMakerTitle = "Marker";
+    static public double busLat = -1;
+    static public double busLng = -1;
     GoogleMap mMap;
+
+
 
     public enum MapDisplayType {
         DISPLAY_BUSSTOP,
@@ -69,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<List<LatLng>> mRoutes = new ArrayList<>();
     private List<String> mBustStopLatLngStr = new ArrayList<>();
 
-    private int mRouteRequestCounter = 0;
     private boolean mUpdateMarkerFlag = false;
     private boolean mUpdateRouteFlag = false;
 
@@ -79,9 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
 
-        //FirebaseMessaging.getInstance().subscribeToTopic("news");
-//        Log.e(TAG, "Subscribed to news topic");
-        String token  = FirebaseInstanceId.getInstance().getToken();
+        String token = FirebaseInstanceId.getInstance().getToken();
         Log.e(TAG, "InstanceID token: " + token);
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.device_info_reference), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -111,16 +116,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onPostResume() {
         super.onPostResume();
         //TODO:Try to delete it
-        startService(new Intent(this,FirebaseInstanceIdService.class));
+//        startService(new Intent(this, FirebaseInstanceIdService.class));
         Intent intent = getIntent();
         if (intent != null) {
             try {
                 String callFrom = intent.getStringExtra(Constants.INTENT_CALL_FROM_KEY);
                 String routeName = intent.getStringExtra(Constants.ROUTE_NAME_KEY);
+                mCurrentRoute = routeName;
 
                 if (callFrom.equals(RoutesAdapter.class.getName())) {
                     Server server = Server.getInstance(this.getApplicationContext());
-                    Call<List<BusStop>> call = server.getBusStopsCall(routeName) ;
+                    Call<List<BusStop>> call = server.getBusStopsCall(routeName);
                     call.enqueue(new Callback<List<BusStop>>() {
                         @Override
                         public void onResponse(Call<List<BusStop>> call, Response<List<BusStop>> response) {
@@ -165,40 +171,67 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         }
                     });
-
-                } else if (callFrom.equals(BusStopListFragment.class.getName())) {
-//                    Log.e(TAG, "POSTRESUME BUST STOP LIST");
-                    TextView textView = (TextView) findViewById(R.id.routeName);
-                    textView.setTextSize(20);
-                    textView.setText(mCurrentRoute);
                 }
+                TextView textView = (TextView) findViewById(R.id.routeName);
+                textView.setTextSize(20);
+                textView.setText(mCurrentRoute);
             } catch (Exception e) {
 
             }
         }
     }
 
+    private BroadcastReceiver mReceiver;
+
     @Override
     protected void onResume() {
         super.onResume();
+        IntentFilter intentFilter = new IntentFilter(
+                "android.intent.action.MAIN");
+
+        mReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //extract our message from intent
+                busLat = Double.parseDouble(intent.getStringExtra("BUS_LAT"));
+                busLng = Double.parseDouble(intent.getStringExtra("BUS_LNG"));
+                //log our message value
+                Log.i("InchooTutorial", "latlng:" + busLat + busLng);
+                mUpdateMarkerFlag = true;
+                updateMap();
+            }
+        };
+        //registering our receiver
+        this.registerReceiver(mReceiver, intentFilter);
     }
 
-    private void updateMap() {
+
+    public void updateMap() {
         if (mMap != null) {
             if (mUpdateMarkerFlag == true) {
                 mUpdateRouteFlag = false;
-                mUpdateRouteFlag = true;
                 List<Marker> markers = new ArrayList<Marker>();
                 Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
                         R.drawable.bus_stop_icon);
                 for (int i = 0; i < mBusStops.size(); i++) {
                     BusStop busStop = mBusStops.get(i);
-                    Marker marker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(icon))
+                    Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(
-                            new LatLng(busStop.getLatitude(),
-                                    busStop.getLongtitude()
-                            )).title(busStop.getStopName())
+                                    new LatLng(busStop.getLatitude(),
+                                            busStop.getLongtitude()
+                                    )).title(busStop.getStopName())
                             .snippet(Integer.toString(busStop.getStopNum())));
+                    markers.add(marker);
+                }
+
+                if(busLat != -1 && busLng != -1){
+                     Marker marker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(icon))
+                            .position(
+                                    new LatLng(busLat,
+                                            busLng
+                                    )).title("Bus I Location")
+                            .snippet("lat:" + busLat + ",lng:"+ busLng));
                     markers.add(marker);
                 }
                 setMapMarker(mMap, markers);
@@ -230,13 +263,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(this, "Click busstop num:" + marker.getSnippet(),
                 Toast.LENGTH_SHORT).show();
-//        int disiredBusStopId = Integer.parseInt(marker.getSnippet());
 
         // pop up a window
         Intent busStopPopUp = new Intent(this, BusStopPopupActivity.class);
         busStopPopUp.putExtra(Constants.INTENT_EXTRA_BUS_STOP_NAME, marker.getTitle());
         startActivity(busStopPopUp);
-
 
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
@@ -246,8 +277,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         editor.putString(Constants.DISIRED_BUS_Key, marker.getSnippet());
         editor.commit();
 
-        sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.device_info_reference),Context.MODE_PRIVATE);
-        String token = sharedPref.getString(getString(R.string.device_info_firebase_cloud_messaging_token),"unknown");
+        sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.device_info_reference), Context.MODE_PRIVATE);
+        String token = sharedPref.getString(getString(R.string.device_info_firebase_cloud_messaging_token), "unknown");
 
 //        Server server = Server.getInstance(this.getApplicationContext());
 //        // TODO: change route id and bus stop id to be dynamic
@@ -268,13 +299,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        showNotification("marker clicked", "detail", 0);
     }
 
-    public void showNotification(String title,String detail, int id) {
+    public void showNotification(String title, String detail, int id) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setSmallIcon(R.drawable.common_full_open_on_phone);
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(detail);
 
-        mBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
+        mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
 
         //LED
         mBuilder.setLights(Color.RED, 3000, 3000);
@@ -299,37 +330,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //    private void requestRoute(List<String> waypoints) {
     private void requestRoute(String ori, String dest) {
-//        String waypointsStr = "";
-//        if (waypoints.size() >= 3) {
-//            waypointsStr = waypoints.get(1);
-//            for (int i = 2; i < 22; i++) {
-//                waypointsStr += ("|" + waypoints.get(i));
-//            }
-//        }
         Server server = Server.getInstance(this.getApplicationContext());
-        Call<GoogleMapDirection> call = server.getRouteCall(ori,dest);
+        Call<GoogleMapDirection> call = server.getRouteCall(ori, dest);
 
 //        Call<GoogleMapDirection> call = service.getRoutePath(oriLatLng, destLatLng, false, "driving", false, Constants.GOOGLE_MAP_API_KEY);
         call.enqueue(new Callback<GoogleMapDirection>() {
             @Override
             public void onResponse(Call<GoogleMapDirection> call, Response<GoogleMapDirection> response) {
-//                Log.e(TAG, "Route Response:");
                 if (response != null) {
-//                    Log.e(TAG, "Route body:" + response.body());
                     List<List<LatLng>> list = new ArrayList<>();
 
                     List<RouteInfo> routeInfos = response.body().getRoute();
                     for (int i = 0; i < routeInfos.size(); i++) {
                         list.add(decodePoly(routeInfos.get(i).getPolyline().getPoints()));
                     }
-//                    for (int i = 0; i < list.size(); i++) {
-//                        Log.e(TAG, "polyline:" + list.get(0));
-//                    }
-//                    Log.e(TAG, "Add new Polyline:" + list.get(0));
-//                    mRoutes.addAll(list);
                     mRoutes.addAll(list);
                 }
-//                Log.e(TAG, "size1:" +mBusStops.size()+" size2:" +mRoutes.size());
                 if (mBusStops.size() <= mRoutes.size() + 1) {
                     updateMap();
                 }
@@ -344,9 +360,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private List<LatLng> decodePoly(String encoded) {
-//        Log.e(TAG, "Start decodePoly");
-//        Log.e(TAG, "encoded string:" + encoded);
-
         List<LatLng> poly = new ArrayList<LatLng>();
         int index = 0, len = encoded.length();
         int lat = 0, lng = 0;
@@ -388,7 +401,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             googleMap.animateCamera(cu);
         } else if (markers.size() > 1) {
             for (int i = 0; i < markers.size(); i++) {
-//                Log.e(TAG, "multiple marker position:" + marker.getPosition().toString());
                 builder.include(markers.get(i).getPosition());
             }
 
@@ -400,10 +412,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             googleMap.moveCamera(cu);
 
             // Animate
-            googleMap.animateCamera(cu);
+//            googleMap.animateCamera(cu);
         }
-//        Log.e(TAG, "Error");
-
     }
 }
 

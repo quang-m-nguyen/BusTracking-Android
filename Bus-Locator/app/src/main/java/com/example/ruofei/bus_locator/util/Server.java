@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.ruofei.bus_locator.api.BusLocatorApi;
+import com.example.ruofei.bus_locator.api.BusTrakerApi;
 import com.example.ruofei.bus_locator.api.FirebaseNotificationApi;
 import com.example.ruofei.bus_locator.api.GoogleMapApi;
 import com.example.ruofei.bus_locator.pojo.BusStop;
+import com.example.ruofei.bus_locator.pojo.BusTracker;
 import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
 
 import java.util.List;
@@ -102,6 +104,14 @@ public class Server {
         FirebaseNotificationApi service = (FirebaseNotificationApi)this.getService();
         return service.sendToken(token,routeID,busStopID);
     }
+
+    public Call<List<BusTracker>> getBusTrakerCall(String busstopID, String token){
+        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
+        this.setApi(BusTrakerApi.class);
+        BusTrakerApi service = (BusTrakerApi)this.getService();
+        return service.getBusTracker(busstopID,token);
+    }
+
 
     //clear shared preference
     public void reset() {

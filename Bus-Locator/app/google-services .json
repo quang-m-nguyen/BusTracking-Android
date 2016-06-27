@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "238370200494",
-    "firebase_url": "https://project-5858196831327493240.firebaseio.com",
-    "project_id": "project-5858196831327493240",
-    "storage_bucket": "project-5858196831327493240.appspot.com"
+    "project_number": "337980972115",
+    "firebase_url": "https://coug-transit.firebaseio.com",
+    "project_id": "coug-transit",
+    "storage_bucket": "coug-transit.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:238370200494:android:107ec94c14942ea5",
+        "mobilesdk_app_id": "1:337980972115:android:107ec94c14942ea5",
         "android_client_info": {
           "package_name": "com.example.ruofei.bus_locator"
         }
       },
       "oauth_client": [
         {
-          "client_id": "238370200494-og06tfqsoa82mbsp69eqqlbljipdro99.apps.googleusercontent.com",
+          "client_id": "337980972115-i7hfcnf7e0h0k74hv6dsvm2rstv5qsjs.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBTJ6B6d3Z6Hs7MwxKIeDFCb7dFR1cgfvI"
+          "current_key": "AIzaSyD1NV2Ce6weowOIj9qlM9S6Hp9ZXNvDmfw"
         }
       ],
       "services": {

@@ -1,9 +1,10 @@
-package com.example.ruofei.bus_locator;
+package com.example.ruofei.bus_locator.busstop;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.ruofei.bus_locator.R;
 import com.example.ruofei.bus_locator.routes.RoutesListFragment;
 
 public class BusStopListActivity extends AppCompatActivity {
