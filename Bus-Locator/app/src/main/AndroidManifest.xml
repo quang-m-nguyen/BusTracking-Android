@@ -33,7 +33,9 @@
         <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
         <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> -->
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -85,9 +87,9 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".busstop.BusStopPopupActivity"
-            android:theme="@style/AppTheme.CustomTheme"
-            ></activity>
+        <activity
+            android:name=".busstop.BusStopPopupActivity"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
     </application>
 
 </manifest>
