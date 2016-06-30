@@ -67,24 +67,6 @@ public class BusStopListFragment extends Fragment {
     }
 
     public void getBusStop(String RouteName) {
-//
-//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-//        // set your desired log level
-//        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-//        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-//        // add your other interceptors …
-//        // add logging as last interceptor
-//        httpClient.addInterceptor(logging);
-
-//        String questUrl = url;
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(questUrl)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .client(httpClient.build())
-//                .build();
-//        Log.e("URL", questUrl);
-//
-//        BusLocatorApi service = retrofit.create(BusLocatorApi.class);
         Server server =  Server.getInstance(this.getContext());
         server.buildRetrofit(Constants.BUS_LOCATOR_URL);
         server.setApi(BusLocatorApi.class);
@@ -123,7 +105,6 @@ public class BusStopListFragment extends Fragment {
                 ft.attach(frg);
                 ft.commit();
             }
-
             @Override
             public void onFailure(Call<List<BusStop>> call, Throwable t) {
 
@@ -136,17 +117,7 @@ public class BusStopListFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.e("retro", "create view");
         // Inflate the layout for this fragment
-
-        // Don't have dynamic route update from server
         // TODO: dynamic update after server updated
-//        String[] data = {
-//                "BusStop A",
-//                "BusStop B",
-//                "BusStop C"
-//        };
-//
-//        List<String> busStops = new ArrayList<String>(Arrays.asList(data));
-
         View rootView = inflater.inflate(R.layout.fragment_bus_stop_list, container, false);
 
         recyclerView = (ListView) rootView.findViewById(R.id.recyclerview_bus_stop);
@@ -164,7 +135,6 @@ public class BusStopListFragment extends Fragment {
                 Log.e("SEND_BUS_STOP", "lat:" + busStopLatitude + ",long:" + busStopLongitude + ",title:" + busStopName);
 
                 intent.putExtra(Constants.INTENT_CALL_FROM_KEY,TAG);
-                MainActivity.mMapDisplayType = MainActivity.MapDisplayType.DISPLAY_BUSSTOP;
 //                MainActivity.mGoogleMap.clear(); // Clear old markers
 //                MainActivity.mMakers.clear();
                 //Marker busStopMarker = MainActivity.mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(busStopLatitude, busStopLongitude)).title(busStopName));
@@ -177,7 +147,6 @@ public class BusStopListFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        Log.e("retro", "create view end");
         return rootView;
     }
 }

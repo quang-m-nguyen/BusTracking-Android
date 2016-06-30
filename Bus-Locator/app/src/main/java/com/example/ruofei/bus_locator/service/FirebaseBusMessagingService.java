@@ -58,8 +58,8 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         String busLng = remoteMessage.getData().get("long");
         Log.e(TAG, "get broad cast lat" +busLat + ", lng:" + busLng);
         if(busLat != null && busLng != null) {
-            MainActivity.busLng = Double.parseDouble(busLng);
-            MainActivity.busLat = Double.parseDouble(busLat);
+//            MainActivity.busLng = Double.parseDouble(busLng);
+//            MainActivity.busLat = Double.parseDouble(busLat);
 
             if (busLat != null && busLng != null) {
                 Log.e(TAG, "broad cast lat" +busLat + ", lng:" + busLng);
