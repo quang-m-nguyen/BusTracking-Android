@@ -3,6 +3,7 @@ package com.example.ruofei.bus_locator;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,8 +15,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -40,6 +46,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,12 +59,14 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainTabFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
+public class MainTabFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener,SearchView.OnQueryTextListener {
     final String TAG = this.getClass().getName();
     static public String mCurrentRoute = "Unknown";
     //    static public double busLat = -1;
 //    static public double busLng = -1;
     GoogleMap mMap;
+
+    SearchView searchView;
 
     static public List<BusStop> mBusStops = new ArrayList<BusStop>();
     private List<List<LatLng>> mRoutes = new ArrayList<>();
@@ -69,22 +78,125 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG,"onCreate set option menu to true");
+        setHasOptionsMenu(true);
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // What i have added is this
+        setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         final View inflate = inflater.inflate(R.layout.fragment_main_tab, container, false);
+
+//        searchView = (SearchView)this.getView().findViewById(R.id.search_view);
+//// Sets searchable configuration defined in searchable.xml for this SearchView
+//        SearchManager searchManager =
+//                (SearchManager)this.getActivity().getSystemService(Context.SEARCH_SERVICE);
+////        searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getActivity().getComponentName()));
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                System.out.println("search query submit");
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                System.out.println("tap");
+//                return false;
+//            }
+//        });
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         return inflate;
     }
 
+
+
+//
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.search_menu, menu);
+//        super.onCreateOptionsMenu(menu,inflater);
+//    }
+
+
+        @Override
+        public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
+Log.e(TAG, "option menu test");
+            inflater.inflate(R.menu.search_menu, menu); // removed to not double the menu items
+            MenuItem item = menu.findItem(R.id.action_search);
+            SearchView sv = new SearchView(((MainActivity) getActivity()).getSupportActionBar().getThemedContext());
+            MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+            MenuItemCompat.setActionView(item, sv);
+            sv.setOnQueryTextListener(this);
+            sv.setIconifiedByDefault(false);
+            sv.setOnSearchClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                }
+            });
+
+            MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    // Do something when collapsed
+                    return true;  // Return true to collapse action view
+                }
+
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    // Do something when expanded
+                    return true;  // Return true to expand action view
+                }
+            });
+
+            super.onCreateOptionsMenu(menu,inflater);
+        }
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return true;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            return false;
+        }
+
+//    @Override
+//    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
+//        inflater.inflate(R.menu.search_menu, menu);
+//        MenuItem item = menu.findItem(R.id.action_search);
+//        SearchView sv = new SearchView(((MainActivity) getActivity()).getSupportActionBar().getThemedContext());
+//        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+//        MenuItemCompat.setActionView(item, sv);
+//        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                System.out.println("search query submit");
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                System.out.println("tap");
+//                return false;
+//            }
+//        });
+//    }
 
     @Override
     public void onResume() {
@@ -140,6 +252,17 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             }
         }
     }
+
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//
+//        MenuItem item = menu.findItem(R.id.action_search);
+//        searchView.setMenuItem(item);
+//
+//        return true;
+//    }
 
     public void changeRoute(View view) {
         Intent intent = new Intent(this.getContext(), RouteListActivity.class);

@@ -9,7 +9,7 @@ public interface Constants {
     final static String GOOGLE_MAP_API_KEY = "AIzaSyDCDYoiyBgsn8Imhscv417hwyW5sErNaKc";
 
 
-    final static String BUS_LOCATOR_URL = "http://52.33.19.46/";
+    final static String BUS_LOCATOR_URL = "http://sudokit.com:3000/";
     final static String GOOGLE_MAP_URL = "https://maps.googleapis.com/maps/api/directions/";
     final static String FIRE_BASE_NOTIFICATION_URL = "http://sudokit.com:3000/";
 

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ruofei.bus_locator.MainActivity;
+import com.example.ruofei.bus_locator.MainTabFragment;
 import com.example.ruofei.bus_locator.R;
 import com.example.ruofei.bus_locator.util.Constants;
 
@@ -42,7 +43,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
             Log.e(TAG,routeName);
             Intent intent =  new Intent(context, MainActivity.class);
             // TODO: user shared preference
-            MainActivity.mCurrentRoute = routeName;
+            MainTabFragment.mCurrentRoute = routeName;
             intent.putExtra(Constants.ROUTE_NAME_KEY,routeName);
             intent.putExtra(Constants.INTENT_CALL_FROM_KEY, TAG);
             context.startActivity(intent);

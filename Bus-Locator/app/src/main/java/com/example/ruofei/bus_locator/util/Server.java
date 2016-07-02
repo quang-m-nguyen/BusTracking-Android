@@ -25,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class Server {
     static final String TAG = "SERVER";
-    static Server instance;
+    static volatile Server instance;
 
     Context context;
     String serverUrl = "http://52.33.19.46/";
@@ -68,7 +68,7 @@ public class Server {
         return instance;
     }
 
-    public void buildRetrofit(String url)
+    public synchronized void buildRetrofit(String url)
     {
         serverUrl = url;
         retrofit = new Retrofit.Builder()
@@ -78,7 +78,7 @@ public class Server {
                 .build();
     }
 
-    public void setApi(Class<?> api )
+    public synchronized void setApi(Class<?> api )
     {
         mApi = api;
     }

@@ -11,9 +11,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -55,30 +61,42 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity  {
 
     final String TAG = this.getClass().getName();
-    static public String mCurrentRoute = "Unknown";
-//    static public double busLat = -1;
-//    static public double busLng = -1;
-    GoogleMap mMap;
+//    static public String mCurrentRoute = "Unknown";
+////    static public double busLat = -1;
+////    static public double busLng = -1;
+//    GoogleMap mMap;
+//
+//    static public List<BusStop> mBusStops = new ArrayList<BusStop>();
+//    private List<List<LatLng>> mRoutes = new ArrayList<>();
 
-    static public List<BusStop> mBusStops = new ArrayList<BusStop>();
-    private List<List<LatLng>> mRoutes = new ArrayList<>();
-
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-//            Bundle bundle = new Bundle();
-//            bundle.putString(Constants.BUSSTOP_ID_KEY, "99163"+busstopName);
-            MainTabFragment newFragment = new MainTabFragment();
-//            newFragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.mainContainer, newFragment)
-                    .commit();
-            Log.e(TAG, "CREATE LIST");
-        }
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+//        if (savedInstanceState == null) {
+////            Bundle bundle = new Bundle();
+////            bundle.putString(Constants.BUSSTOP_ID_KEY, "99163"+busstopName);
+//            MainTabFragment newFragment = new MainTabFragment();
+////            newFragment.setArguments(bundle);
+////            getSupportFragmentManager().beginTransaction()
+////                    .add(R.id.mainContainer, newFragment)
+////                    .commit();
+//        }
 //        String token = FirebaseInstanceId.getInstance().getToken();
 //        Log.e(TAG, "InstanceID token: " + token);
 //        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.device_info_reference), Context.MODE_PRIVATE);
@@ -91,11 +109,43 @@ public class MainActivity extends AppCompatActivity  {
 //        mapFragment.getMapAsync(this);
     }
 
-    @Override
-    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-
-        return super.onCreateView(parent, name, context, attrs);
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new MainTabFragment(), "ONE");
+        adapter.addFragment(new AboutTabFragment(), "TWO");
+//        adapter.addFragment(new ThreeFragment(), "THREE");
+        viewPager.setAdapter(adapter);
     }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+
 
     public void changeRoute(View view) {
         Intent intent = new Intent(this, RouteListActivity.class);

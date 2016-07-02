@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.ruofei.bus_locator.MainActivity;
+import com.example.ruofei.bus_locator.MainTabFragment;
 import com.example.ruofei.bus_locator.R;
 import com.example.ruofei.bus_locator.api.BusLocatorApi;
 import com.example.ruofei.bus_locator.pojo.BusStop;
@@ -142,7 +143,7 @@ public class BusStopListFragment extends Fragment {
                 busStop.setStopName(busStopName);
                 busStop.setLatitude(busStopLatitude);
                 busStop.setLongtitude(busStopLongitude);
-                MainActivity.mBusStops.add(busStop);
+                MainTabFragment.mBusStops.add(busStop);
 
                 startActivity(intent);
             }
