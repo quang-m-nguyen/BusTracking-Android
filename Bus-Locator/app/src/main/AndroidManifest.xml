@@ -5,6 +5,7 @@
     <permission
         android:name="com.example.ruofei.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
+    <permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-permission android:name="com.example.ruofei.bus_locator.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />

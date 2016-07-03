@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.ruofei.bus_locator.MainTabFragment">
 <LinearLayout
     android:layout_width="fill_parent"
@@ -9,39 +10,39 @@
     android:orientation="vertical"
 >
 
-    <LinearLayout
-        android:baselineAligned="false"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_gravity="center">
-            <TextView
-                android:id="@+id/routeName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:gravity="center"
-                android:text="@string/default_route_name" />
-        </RelativeLayout>
+    <!--<LinearLayout-->
+        <!--android:baselineAligned="false"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_gravity="center">-->
+            <!--<TextView-->
+                <!--android:id="@+id/routeName"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:padding="16dp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/default_route_name" />-->
+        <!--</RelativeLayout>-->
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_gravity="top">
-            <Button
-                android:id="@+id/changeRouteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:onClick="changeRoute"
-                android:text="@string/change_route_button_label"></Button>
-        </RelativeLayout>
-    </LinearLayout>
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_gravity="top">-->
+            <!--<Button-->
+                <!--android:id="@+id/changeRouteButton"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
+                <!--android:onClick="changeRoute"-->
+                <!--android:text="@string/change_route_button_label"></Button>-->
+        <!--</RelativeLayout>-->
+    <!--</LinearLayout>-->
 
 
     <android.support.design.widget.CoordinatorLayout
@@ -58,38 +59,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context="com.example.ruofei.bus_locator.MainTabFragment" />
-        <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:name="com.google.android.gms.maps.MapFragment"-->
-            <!--android:id="@+id/map"-->
-            <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--tools:context="com.example.ruofei.bus_locator.MainTabFragment"/>-->
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_action_search"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:onClick="onGithubClick"
-            />
 
-        <!--<com.mypopsy.widget.FloatingSearchView-->
-            <!--android:id="@+id/search"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:paddingTop="16dp"-->
-            <!--android:paddingRight="8dp"-->
-            <!--android:paddingLeft="8dp"-->
-            <!--android:background="#90000000"-->
-            <!--android:hint="@string/hint"-->
-            <!--app:logo="@drawable/"-->
-            <!--app:fsv_menu="@menu/search"-->
-            <!--tools:context="com.mypopsy.floatingsearchview.demo.MainActivity"-->
-            <!--app:theme="@style/CustomFloatingSearchViewTheme"/>-->
+
+        <com.mypopsy.widget.FloatingSearchView
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="16dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            android:background="#90000000"
+            android:hint="@string/hint"
+            app:fsv_menu="@menu/search"
+            tools:context="com.example.ruofei.bus_locator.MainTabFragment"
+            app:theme="@style/CustomFloatingSearchViewTheme"/>
+        <!--app:logo="@drawable/logo"-->
+
+
    </android.support.design.widget.CoordinatorLayout>
 
 </LinearLayout>

@@ -27,4 +27,10 @@
     <string name="menu.clear">clear</string>
     <string name="menu.tts">text to speech</string>
     <string name="menu.toggle.icon">Icon Visible</string>
-    <string name="menu.icon.type">Icon Type</string></resources>
+    <string name="menu.icon.type">Icon Type</string>
+
+    <!--location permission request-->
+    <string name="permission_rationale_location">permission_rationale_location</string>
+    <string name="permission_required_toast">permission_required_toast</string>
+    <string name="location_permission_denied">location_permission_denied</string>
+</resources>

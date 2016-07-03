@@ -78,41 +78,18 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-//        if (savedInstanceState == null) {
-////            Bundle bundle = new Bundle();
-////            bundle.putString(Constants.BUSSTOP_ID_KEY, "99163"+busstopName);
-//            MainTabFragment newFragment = new MainTabFragment();
-////            newFragment.setArguments(bundle);
-////            getSupportFragmentManager().beginTransaction()
-////                    .add(R.id.mainContainer, newFragment)
-////                    .commit();
-//        }
-//        String token = FirebaseInstanceId.getInstance().getToken();
-//        Log.e(TAG, "InstanceID token: " + token);
-//        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.device_info_reference), Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putString(getString(R.string.device_info_firebase_cloud_messaging_token), token);
-//        editor.commit();
 
-//        MapFragment mapFragment =
-//                (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new MainTabFragment(), "ONE");
-        adapter.addFragment(new AboutTabFragment(), "TWO");
+        adapter.addFragment(new MainTabFragment(), "Home");
+        adapter.addFragment(new AboutTabFragment(), "Setting");
 //        adapter.addFragment(new ThreeFragment(), "THREE");
         viewPager.setAdapter(adapter);
     }
