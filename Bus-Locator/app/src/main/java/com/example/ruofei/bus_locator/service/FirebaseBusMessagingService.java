@@ -8,26 +8,19 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.StrictMode;
-import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.ruofei.bus_locator.MainActivity;
 import com.example.ruofei.bus_locator.R;
-import com.example.ruofei.bus_locator.TrackedBus;
-import com.example.ruofei.bus_locator.TrackedBusFragment;
+import com.example.ruofei.bus_locator.BusTracker.TrackedBus;
+import com.example.ruofei.bus_locator.BusTracker.TrackedBusFragment;
 import com.example.ruofei.bus_locator.pojo.BusTracker;
 import com.example.ruofei.bus_locator.util.MyDeserializer;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ruofei on 6/4/2016.

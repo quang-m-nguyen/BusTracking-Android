@@ -83,6 +83,7 @@ import retrofit2.Response;
 public class MainTabFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
     final String TAG = this.getClass().getName();
     static public String mCurrentRoute = "Unknown";
+    private Context context;
     //    static public double busLat = -1;
 //    static public double busLng = -1;
     GoogleMap mMap;
@@ -101,6 +102,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getContext();
         Log.e(TAG, "onCreate set option menu to true");
         setHasOptionsMenu(true);
     }
@@ -121,7 +123,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 //        mSearchView.showLogo(true);
 //        mSearchView.setItemAnimator(new CustomSuggestionItemAnimator(mSearchView));
 
-        updateNavigationIcon(R.id.menu_icon_custom);
+        updateNavigationIcon(R.id.menu_icon_drawer);
         mSearchView.showIcon(shouldShowNavigationIcon());
 
         mSearchView.setOnIconClickListener(new FloatingSearchView.OnIconClickListener() {
@@ -129,6 +131,10 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             public void onNavigationClick() {
                 // toggle
                 mSearchView.setActivated(!mSearchView.isActivated());
+                Log.e(TAG, "click icon");
+
+                Intent intent = new Intent(context, RouteListActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -136,6 +142,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             @Override
             public void onSearchAction(CharSequence text) {
                 mSearchView.setActivated(false);
+                Log.e(TAG, "click search");
             }
         });
 
@@ -199,12 +206,12 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 drawable = new android.support.v7.graphics.drawable.DrawerArrowDrawable(context);
                 break;
             case R.id.menu_icon_custom:
-                drawable = new TextDrawable("Test");
-//                drawable = new CustomDrawable(context);
+//                drawable = new TextDrawable("Test");
+                drawable = new CustomDrawable(context);
                 break;
         }
         drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ViewUtils.getThemeAttrColor(context, R.attr.colorControlNormal));
+//        DrawableCompat.setTint(drawable, ViewUtils.getThemeAttrColor(context, R.attr.colorControlNormal));
         mSearchView.setIcon(drawable);
     }
 
@@ -330,22 +337,22 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                                     mBusStops = response.body();
 
                                     //create bus stop latlng list request route polyline
-                                    if (mBusStops.size() > 1) {
-                                        List<String> latLngList = new ArrayList<String>();
-                                        mRoutes.clear();
-                                        for (int i = 0; i < mBusStops.size(); i++) {
-                                            latLngList.clear();
-                                            if (i < mBusStops.size() - 1) {
-                                                String ori = mBusStops.get(i).getLatitude() + "," + mBusStops.get(i).getLongtitude();
-                                                String dest = mBusStops.get(i + 1).getLatitude() + "," + mBusStops.get(i + 1).getLongtitude();
-                                                requestRoute(ori, dest);
-//                                                requestRoute(latLngList);
-                                            } else if (i == mBusStops.size() - 1) {
-                                                latLngList.add(mBusStops.get(i).getLatitude() + "," + mBusStops.get(i).getLongtitude());
-                                                latLngList.add(mBusStops.get(0).getLatitude() + "," + mBusStops.get(0).getLongtitude());
-                                            }
-                                        }
-                                    }
+//                                    if (mBusStops.size() > 1) {
+//                                        List<String> latLngList = new ArrayList<String>();
+//                                        mRoutes.clear();
+//                                        for (int i = 0; i < mBusStops.size(); i++) {
+//                                            latLngList.clear();
+//                                            if (i < mBusStops.size() - 1) {
+//                                                String ori = mBusStops.get(i).getLatitude() + "," + mBusStops.get(i).getLongtitude();
+//                                                String dest = mBusStops.get(i + 1).getLatitude() + "," + mBusStops.get(i + 1).getLongtitude();
+//                                                requestRoute(ori, dest);
+////                                                requestRoute(latLngList);
+//                                            } else if (i == mBusStops.size() - 1) {
+//                                                latLngList.add(mBusStops.get(i).getLatitude() + "," + mBusStops.get(i).getLongtitude());
+//                                                latLngList.add(mBusStops.get(0).getLatitude() + "," + mBusStops.get(0).getLongtitude());
+//                                            }
+//                                        }
+//                                    }
                                     updateMap();
                                 }
                             }
@@ -440,7 +447,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             return;
         }
         Location location = locationManager.getLastKnownLocation(provider);
-        double latitude =  location.getLatitude();
+        double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         LatLng latLng = new LatLng(latitude, longitude);
 //        googleMap.addMarker(new MarkerOptions().position(latLng));
@@ -459,6 +466,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     }
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -491,7 +499,6 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             mPermissionDenied = true;
         }
     }
-
 
 
     @Override

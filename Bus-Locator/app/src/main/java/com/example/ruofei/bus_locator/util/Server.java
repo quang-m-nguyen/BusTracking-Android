@@ -106,12 +106,12 @@ public class Server {
         return service.sendToken(token,routeID,busStopID);
     }
 
-    public Call<Void> unsubscribeBusstop(String token, String busStopID)
+    public Call<Void> unsubscribeBusstop(String busStopID, String token)
     {
         this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
         this.setApi(UnsubscribeBusstopApi.class);
         UnsubscribeBusstopApi service = (UnsubscribeBusstopApi)this.getService();
-        return service.unsubscribeBusstop(token,busStopID);
+        return service.unsubscribeBusstop(busStopID,token);
     }
 
     public Call<List<BusTracker>> getBusTrakerCall(String busstopID, String token){

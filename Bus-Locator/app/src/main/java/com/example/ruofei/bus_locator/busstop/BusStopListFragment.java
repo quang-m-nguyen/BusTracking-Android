@@ -150,4 +150,10 @@ public class BusStopListFragment extends Fragment {
         });
         return rootView;
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+    }
 }

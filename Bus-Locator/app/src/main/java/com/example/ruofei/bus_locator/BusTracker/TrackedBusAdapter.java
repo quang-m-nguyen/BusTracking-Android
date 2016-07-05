@@ -1,18 +1,17 @@
-package com.example.ruofei.bus_locator;
+package com.example.ruofei.bus_locator.BusTracker;
 
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ruofei.bus_locator.MainActivity;
 import com.example.ruofei.bus_locator.R;
-import com.example.ruofei.bus_locator.TrackedBus;
-import com.example.ruofei.bus_locator.util.Constants;
+import com.example.ruofei.bus_locator.SetBusNotificationFragment;
 
 import java.util.List;
 
@@ -48,7 +47,13 @@ public class TrackedBusAdapter extends RecyclerView.Adapter<TrackedBusAdapter.My
 //            intent.putExtra(Constants.ROUTE_NAME_KEY,routeName);
 //            intent.putExtra(Constants.INTENT_CALL_FROM_KEY, TAG);
 //            context.startActivity(intent);
+            setUpNotification();
         }
+    }
+
+    public void setUpNotification() {
+        DialogFragment newFragment = new SetBusNotificationFragment();
+        newFragment.show(((AppCompatActivity) context).getFragmentManager(), "missiles");
     }
 
 

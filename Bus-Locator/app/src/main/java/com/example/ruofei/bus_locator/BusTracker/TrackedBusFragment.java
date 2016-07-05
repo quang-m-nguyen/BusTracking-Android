@@ -1,4 +1,4 @@
-package com.example.ruofei.bus_locator;
+package com.example.ruofei.bus_locator.BusTracker;
 
 
 import android.os.Bundle;
@@ -13,8 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ruofei.bus_locator.R;
+import com.example.ruofei.bus_locator.RecycleViewDividerItemDecoration;
 import com.example.ruofei.bus_locator.pojo.BusTracker;
-import com.example.ruofei.bus_locator.pojo.Leg;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -36,6 +37,8 @@ public class TrackedBusFragment extends Fragment {
     public static TrackedBusAdapter mTrackedBusAdapter;
     public static List<TrackedBus> trackedBusList = new ArrayList<>();
     public final String TAG = this.getClass().getName();
+    String busstopID;
+    String token;
 
 
     private RecyclerView recyclerView;
@@ -70,24 +73,24 @@ public class TrackedBusFragment extends Fragment {
 
 //        mTrackedBusAdapter.notifyDataSetChanged();
 //        String BussstopID = getArguments().getString(Constants.BUSSTOP_ID_KEY);
-        String busstopID = "unset";
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             busstopID = bundle.getString(Constants.BUSSTOP_ID_KEY, "unknown");
             Log.e(TAG, "id is " + busstopID);
+            token = bundle.getString(Constants.DEVICE_TOKEN_KEY,"unknown");
         } else {
             Log.e(TAG, "Can't get busstopID");
         }
-        subscribeBusTrackerData(busstopID);
+//        subscribeBusTrackerData();
 
         return rootView;
 
     }
 
-    private void subscribeBusTrackerData(String busstopID) {
+    private void subscribeBusTrackerData() {
         Log.e(TAG, "subscribe");
-        String token = FirebaseInstanceId.getInstance().getToken();
+//        String token = FirebaseInstanceId.getInstance().getToken();
         //send notification request
         Server server = Server.getInstance(this.getContext());
         Call<List<BusTracker>> call = server.getBusTrakerCall(busstopID, token);
@@ -124,13 +127,44 @@ public class TrackedBusFragment extends Fragment {
         });
     }
 
-    private void unsubcribeBusTrakerData() {
+    private  void unsubscribeBusTrakerData(){
 
+        Server server = Server.getInstance(this.getContext());
+        Call<Void> call = server.unsubscribeBusstop(busstopID,token);
+        Log.e(TAG,"send token to unsubscribe");
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "Fail:" + t.getMessage());
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override
     public void onStop() {
         super.onStop();
         trackedBusList.clear();
+        unsubscribeBusTrakerData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        subscribeBusTrackerData();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 }

@@ -47,9 +47,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".routes.RouteListActivity">
-            android:name=".RouteListActivity"
-            android:label="@string/title_activity_route_list"
+        <activity android:name=".routes.RouteListActivity"
+            android:theme="@style/AppTheme.CustomTheme"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

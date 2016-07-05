@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.example.ruofei.bus_locator.MainActivity;
 import com.example.ruofei.bus_locator.R;
-import com.example.ruofei.bus_locator.TrackedBusFragment;
+import com.example.ruofei.bus_locator.BusTracker.TrackedBusFragment;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -31,12 +31,13 @@ public class BusStopPopupActivity extends AppCompatActivity {
 
     //TODO:using shared preference  to store this flag
     boolean notificationFlag = false;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Log.e(TAG, "start create");
         super.onCreate(savedInstanceState);
+        String token  = FirebaseInstanceId.getInstance().getToken();
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar_title);
@@ -54,13 +55,12 @@ public class BusStopPopupActivity extends AppCompatActivity {
             textView.setText(busstopName);
         }
 
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-
         setContentView(R.layout.activity_bus_stop_popup);
 
         if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.BUSSTOP_ID_KEY, "99163"+busstopName);
+            bundle.putString(Constants.DEVICE_TOKEN_KEY, token);
             TrackedBusFragment newFragment = new TrackedBusFragment();
             newFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
@@ -79,6 +79,7 @@ public class BusStopPopupActivity extends AppCompatActivity {
 
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.gravity = Gravity.BOTTOM | Gravity.CENTER;
+
 
         getWindow().setLayout(width, (int) (height * .6));
 
@@ -142,23 +143,22 @@ public class BusStopPopupActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-
-        Server server = Server.getInstance(this.getApplicationContext());
-        String token  = FirebaseInstanceId.getInstance().getToken();
-        Call<Void> call = server.unsubscribeBusstop(token,busstopID);
-        Log.e(TAG,"send token");
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-
-            }
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.e(TAG, "Fail:" + t.getMessage());
-                t.printStackTrace();
-            }
-        });
+    protected void onPause() {
+        super.onPause();
+//
+//        Server server = Server.getInstance(this.getApplicationContext());
+//        Call<Void> call = server.unsubscribeBusstop(busstopID,token);
+//        Log.e(TAG,"send token");
+//        call.enqueue(new Callback<Void>() {
+//            @Override
+//            public void onResponse(Call<Void> call, Response<Void> response) {
+//
+//            }
+//            @Override
+//            public void onFailure(Call<Void> call, Throwable t) {
+//                Log.e(TAG, "Fail:" + t.getMessage());
+//                t.printStackTrace();
+//            }
+//        });
     }
 }

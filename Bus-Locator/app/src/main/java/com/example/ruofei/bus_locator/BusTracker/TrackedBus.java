@@ -1,6 +1,4 @@
-package com.example.ruofei.bus_locator;
-
-import android.util.Log;
+package com.example.ruofei.bus_locator.BusTracker;
 
 /**
  * Created by ruofeixu on 6/15/16.
