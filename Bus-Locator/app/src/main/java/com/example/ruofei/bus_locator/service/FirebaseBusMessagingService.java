@@ -4,11 +4,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.ruofei.bus_locator.MainActivity;
@@ -16,11 +18,14 @@ import com.example.ruofei.bus_locator.R;
 import com.example.ruofei.bus_locator.BusTracker.TrackedBus;
 import com.example.ruofei.bus_locator.BusTracker.TrackedBusFragment;
 import com.example.ruofei.bus_locator.pojo.BusTracker;
+import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.MyDeserializer;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.Map;
 
 /**
  * Created by ruofei on 6/4/2016.
@@ -28,6 +33,7 @@ import com.google.gson.GsonBuilder;
 public class FirebaseBusMessagingService extends FirebaseMessagingService {
 
     private final String TAG = this.getClass().getName();
+    private Context context;
 
 
     @Override
@@ -42,72 +48,64 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
 //        sendNotification(remoteMessage.getNotification().getBody());
 //        Log.d(TAG, "Notifcation Body:" + remoteMessage.getNotification().toString());
 
+        context = getApplicationContext();
+        final Map<String, String> data = remoteMessage.getData();
+        if (data != null) {
 
-        String dataStr = remoteMessage.getData().toString();
-        Log.e(TAG, "get data from firebase " + dataStr);
-        String busArray = remoteMessage.getData().get("busArray");
+            String dataStr = data.toString();
+            Log.e(TAG, "get data from firebase " + dataStr);
 
-        String busLat = remoteMessage.getData().get("lat");
-        String busLng = remoteMessage.getData().get("long");
-        Log.e(TAG, "get broad cast lat" +busLat + ", lng:" + busLng);
-        if(busLat != null && busLng != null) {
-//            MainActivity.busLng = Double.parseDouble(busLng);
-//            MainActivity.busLat = Double.parseDouble(busLat);
+            String content_type = data.get("content_type");
 
-            if (busLat != null && busLng != null) {
-                Log.e(TAG, "broad cast lat" +busLat + ", lng:" + busLng);
-                Intent i = new Intent("android.intent.action.MAIN").putExtra("BUS_LAT", busLat).putExtra("BUS_LNG", busLng);
-                this.sendBroadcast(i);
-            }
-        }
-        if (busArray != null) {
+            if (content_type != null) {
+                if (content_type.equals("AlarmTimeUpdate")) {
 
-            Gson gson =
-                    new GsonBuilder()
-                            .registerTypeAdapter(BusTracker[].class, new MyDeserializer<BusTracker[]>())
-                            .create();
-            BusTracker[] busList = gson.fromJson(busArray, BusTracker[].class);
+                    //UpdateAlarmTime
+                    Log.e(TAG,"typecheck correct");
 
-            if (busList != null) {
-                Log.e(TAG, "Bus List:" + busList.toString());
-//
-                for (int i = 0; i < busList.length; i++) {
-                    Log.e(TAG, "index:" + i + ", content:" + busList[i].getRouteID());
+                    SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.alarm_preference_key), Context.MODE_PRIVATE);
+//                    SharedPreferences.Editor editor = sharedPref.edit();
 
-                    String routeID = busList[i].getRouteID();
-                    String time = busList[i].getTime();
-                    String busstopNum = busList[i].getStopNum();
-                    String busstopID = busList[i].getStopID();
+                    //Check if the user set up an alarm
+                    String flag = sharedPref.getString(context.getString(R.string.alarm_flag_key), "false");
+                    if (flag.equals("true")) {
+                        Log.e(TAG,"typecheck correct2 ");
+                        // Set current remaining time
+                        Double newRemainingTimeDouble = Double.parseDouble(data.get("remain_time"));
+                        Integer newRemainingTime =(int)(newRemainingTimeDouble * 60); // convert sec
+                        if (newRemainingTime != null) {
+                            Log.e(TAG,"typecheck correct3 ");
+                            // Set current remaining time
+                            // TODO: change server side to send time in sec
+//                            editor.putInt(getString(R.string.current_remaining_time_key), newRemainingTime * 60);
+                            // TODO: notify alarm service the update
 
-                    try {
-                        Handler mainThread = new Handler(Looper.getMainLooper());
-                        // In your worker thread
-                        int index = TrackedBusFragment.trackedBusList.indexOf(new TrackedBus(routeID, "n/a", "n/a"));
-                        Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + time + ", stopNum:" + busstopNum);
-                        if (index == -1)
-                            return;
+                            Log.e(TAG,"update alarm time:" + newRemainingTime);
+//                            Intent i = new Intent("android.intent.action.UpdateBusStatus").putExtra(Constants.BROADCAST_NEW_BUS_REMAINING_TIME, newRemainingTime);
+//                            this.sendBroadcast(i);
 
-                        TrackedBusFragment.trackedBusList.get(index).setEstimatedTime(time);
-                        TrackedBusFragment.trackedBusList.get(index).setBusstopNum(busstopNum);
-                        mainThread.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (TrackedBusFragment.trackedBusList.size() != 0) {
-                                    TrackedBusFragment.mTrackedBusAdapter.notifyDataSetChanged();
-                                } else {
-                                    Log.e(TAG, "size is o");
-                                }
+//                            Intent localIntent =
+//                                    new Intent(Constants.BROADCAST_NEW_BUS_REMAINING_TIME)
+//                                            // Puts the status into the Intent
+//                                            .putExtra(Constants.BUS_REMAINING_TIME, newRemainingTime);
+//                            // Broadcasts the Intent to receivers in this app.
+//                            LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
 
-                            }
-                        });
 
-                    } catch (Exception e) {
-                        Log.e(TAG, e.toString());
+        Intent intent = new Intent();
+        intent.setAction(Constants.BROADCAST_NEW_BUS_REMAINING_TIME);
+        intent.putExtra(Constants.BUS_REMAINING_TIME,newRemainingTime);
+        getApplicationContext().sendBroadcast(intent);
+//                            editor.commit();
+                        }
+
                     }
-
                 }
             }
+
+            updateBusstopTime(data);
         }
+
 
 //        String timeStr = remoteMessage.getData().get("time");
 //        if(timeStr != null) {
@@ -150,6 +148,75 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
 //                Log.e(TAG,e.toString());
 //            }
 //        }
+    }
+
+    private void updateBusLocation(Map<String, String> data) {
+
+        String busLat = data.get("lat");
+        String busLng = data.get("long");
+        Log.e(TAG, "get broad cast lat" + busLat + ", lng:" + busLng);
+        if (busLat != null && busLng != null) {
+//            MainActivity.busLng = Double.parseDouble(busLng);
+//            MainActivity.busLat = Double.parseDouble(busLat);
+
+            if (busLat != null && busLng != null) {
+                Log.e(TAG, "broad cast lat" + busLat + ", lng:" + busLng);
+                Intent i = new Intent("android.intent.action.MAIN").putExtra("BUS_LAT", busLat).putExtra("BUS_LNG", busLng);
+                this.sendBroadcast(i);
+            }
+        }
+    }
+
+    private void updateBusstopTime(Map<String, String> data) {
+
+        String busArray = data.get("busArray");
+
+        if (busArray != null) {
+            Gson gson =
+                    new GsonBuilder()
+                            .registerTypeAdapter(BusTracker[].class, new MyDeserializer<BusTracker[]>())
+                            .create();
+            BusTracker[] busList = gson.fromJson(busArray, BusTracker[].class);
+
+            if (busList != null) {
+                Log.e(TAG, "Bus List:" + busList.toString());
+                for (int i = 0; i < busList.length; i++) {
+                    Log.e(TAG, "index:" + i + ", content:" + busList[i].getRouteID());
+
+                    String routeID = busList[i].getRouteID();
+                    String time = busList[i].getTime();
+                    String busstopNum = busList[i].getStopNum();
+                    String busstopID = busList[i].getStopID();
+
+                    try {
+                        Handler mainThread = new Handler(Looper.getMainLooper());
+                        // In your worker thread
+                        int index = TrackedBusFragment.trackedBusList.indexOf(new TrackedBus(routeID, "n/a", "n/a"));
+                        Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + time + ", stopNum:" + busstopNum);
+                        if (index == -1)
+                            return;
+
+                        TrackedBusFragment.trackedBusList.get(index).setEstimatedTime(time);
+                        TrackedBusFragment.trackedBusList.get(index).setBusstopNum(busstopNum);
+                        mainThread.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (TrackedBusFragment.trackedBusList.size() != 0) {
+                                    TrackedBusFragment.mTrackedBusAdapter.notifyDataSetChanged();
+                                } else {
+                                    Log.e(TAG, "size is o");
+                                }
+
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        Log.e(TAG, e.toString());
+                    }
+
+                }
+            }
+        }
     }
 
     private void sendNotification(String messageBody) {

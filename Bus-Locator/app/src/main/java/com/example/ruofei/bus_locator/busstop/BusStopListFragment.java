@@ -60,7 +60,6 @@ public class BusStopListFragment extends Fragment {
         if (savedInstanceState == null) {
             //TODO:get route name from instance state
             String RouteName;
-            Log.e("test1", "test1");
             //Set to E for testing
             RouteName = "E";
             getBusStop(RouteName);
@@ -88,7 +87,7 @@ public class BusStopListFragment extends Fragment {
                     for (int i = 0; i < response.body().size(); i++) {
                         String name = response.body().get(i).getStopName();
                         busStops.add(name);
-                        Log.e("BUSSTOPLIST_NAME", name);
+                        Log.d("BUSSTOPLIST_NAME", name);
                     }
                 }
                 // Create a adapter for routes
@@ -116,7 +115,6 @@ public class BusStopListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e("retro", "create view");
         // Inflate the layout for this fragment
         // TODO: dynamic update after server updated
         View rootView = inflater.inflate(R.layout.fragment_bus_stop_list, container, false);
@@ -133,7 +131,7 @@ public class BusStopListFragment extends Fragment {
                 String busStopName = recyclerView.getItemAtPosition(position).toString();
                 double busStopLatitude = mBustStopList.get(position).getLatitude();
                 double busStopLongitude =  mBustStopList.get(position).getLongtitude();
-                Log.e("SEND_BUS_STOP", "lat:" + busStopLatitude + ",long:" + busStopLongitude + ",title:" + busStopName);
+                Log.d("SEND_BUS_STOP", "lat:" + busStopLatitude + ",long:" + busStopLongitude + ",title:" + busStopName);
 
                 intent.putExtra(Constants.INTENT_CALL_FROM_KEY,TAG);
 //                MainActivity.mGoogleMap.clear(); // Clear old markers

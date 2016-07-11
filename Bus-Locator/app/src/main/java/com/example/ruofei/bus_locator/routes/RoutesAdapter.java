@@ -41,7 +41,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
         public void onClick(View v) {
             TextView nameTextView = (TextView)v.findViewById(R.id.routeName);
             String routeName = nameTextView.getText().toString();
-            Log.e(TAG,routeName);
+            Log.d(TAG,routeName);
             Intent intent =  new Intent(context, MainActivity.class);
             // TODO: user shared preference
             MainTabFragment.mCurrentRoute = routeName;

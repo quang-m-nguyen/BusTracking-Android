@@ -1,17 +1,21 @@
 package com.example.ruofei.bus_locator.BusTracker;
 
 import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ruofei.bus_locator.R;
-import com.example.ruofei.bus_locator.SetBusNotificationFragment;
+import com.example.ruofei.bus_locator.SetBusAlarmFragment;
+import com.example.ruofei.bus_locator.util.Constants;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.List;
 
@@ -23,6 +27,7 @@ public class TrackedBusAdapter extends RecyclerView.Adapter<TrackedBusAdapter.My
     public final String TAG = this.getClass().getName();
     private List<TrackedBus> trackedBusList;
     private Context context;
+//    private String routeID, stopID, token;
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView trackedBusRoute, trackedBusTime, trackedBusstopNum;
@@ -38,22 +43,27 @@ public class TrackedBusAdapter extends RecyclerView.Adapter<TrackedBusAdapter.My
 
         @Override
         public void onClick(View v) {
-//            TextView nameTextView = (TextView)v.findViewById(R.id.routeName);
-//            String routeName = nameTextView.getText().toString();
-//            Log.e(TAG,routeName);
-//            Intent intent =  new Intent(context, MainActivity.class);
-//            // TODO: user shared preference
-//            MainActivity.mCurrentRoute = routeName;
-//            intent.putExtra(Constants.ROUTE_NAME_KEY,routeName);
-//            intent.putExtra(Constants.INTENT_CALL_FROM_KEY, TAG);
-//            context.startActivity(intent);
-            setUpNotification();
+            // TODO: user shared preference
+            String routeID = trackedBusRoute.getText().toString();
+            String token  = FirebaseInstanceId.getInstance().getToken();
+            SharedPreferences sharedPref = context.getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
+//            String defaultValue = context.getString(R.string.disired_bus_default);
+            String currentBusstopID = sharedPref.getString(context.getString(R.string.currenct_selected_busstop_key), "Unselect Current Busstop, ERROR");
+            Log.d(TAG, "RouteID:" + currentBusstopID);
+            setUpNotification(routeID,currentBusstopID,token);
         }
     }
 
-    public void setUpNotification() {
-        DialogFragment newFragment = new SetBusNotificationFragment();
-        newFragment.show(((AppCompatActivity) context).getFragmentManager(), "missiles");
+    public void setUpNotification(String routeID, String stopID, String token) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.ROUTE_ID_KEY, routeID);
+        bundle.putString(Constants.BUSSTOP_ID_KEY, stopID);
+        bundle.putString(Constants.DEVICE_TOKEN_KEY, token);
+        DialogFragment newFragment = new SetBusAlarmFragment();
+        newFragment.setArguments(bundle);
+
+        newFragment.show(((AppCompatActivity) context).getFragmentManager(), "set up notification");
     }
 
 

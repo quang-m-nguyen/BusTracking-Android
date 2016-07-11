@@ -16,11 +16,24 @@ public interface Constants {
     final static String DISIRED_BUS_PREFFERNCE = "disiredBusPreference";
     final static String DISIRED_BUS_Key = "disiredBusKey";
     final static String DISIRED_BUS_ID = "disiredBusId";
+
     final static String BUSSTOP_ID_KEY = "busstopIDKey";
+    final static String ROUTE_ID_KEY = "routeIDKey";
+    final static String TOKEN_ID_KEY = "tokenIDKey";
+
+
+    final static String CURRENT_REMAINNING_TIME_KEY = "currentRemainingTime";
+
+
+    final static String CURRENT_SELECTED_BUSSTOP = "currentSelectedBusstopPreference";
 
     final static String DEVICE_INFO_PREFFERNCE = "deviceInfo";
     final static String DEVICE_TOKEN_KEY = "deviceTokenKey";
 
     final static String INTENT_EXTRA_BUS_STOP_NAME = "com.example.ruofei.bus_locator.INTENT_EXTRA_BUS_STOP_NAME";
+
+
+    final static String BROADCAST_NEW_BUS_REMAINING_TIME = "android.intent.action.BROADCAST_NEW_BUS_REMAINING_TIME";
+    final static String BUS_REMAINING_TIME = "com.example.ruofei.bus_locator.BUS_REMAINING_TIME";
 
 }

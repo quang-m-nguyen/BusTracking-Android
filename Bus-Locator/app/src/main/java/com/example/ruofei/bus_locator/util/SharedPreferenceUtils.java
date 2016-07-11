@@ -13,7 +13,7 @@ public class SharedPreferenceUtils {
     private static SharedPreferenceUtils instance;
     private Context context;
 
-    private SharedPreferenceUtils(Context context){
+    private SharedPreferenceUtils(Context context) {
         this.context = context;
 
     }
@@ -25,14 +25,29 @@ public class SharedPreferenceUtils {
         return instance;
     }
 
-    public void setString(String preferenceName, String key, String value)
-    {
-        SharedPreferences sharedPref = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
+    public void setString(String preferenceKey, String valueKey, String value) {
+        SharedPreferences sharedPref = context.getSharedPreferences(preferenceKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(key, value);
+        editor.putString(valueKey, value);
         editor.commit();
     }
 
+    public void setString(int preferenceKey, String valueKey, String value) {
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(preferenceKey), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(valueKey, value);
+        editor.commit();
+    }
+
+    public String getString(String preferenceKey, int valueKey, String defaultValue) {
+        SharedPreferences sharedPref = context.getSharedPreferences(preferenceKey, Context.MODE_PRIVATE);
+        return sharedPref.getString(context.getString(valueKey), defaultValue);
+    }
+
+    public String getString(int preferenceKey, int valueKey, String defaultValue) {
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(preferenceKey), Context.MODE_PRIVATE);
+        return sharedPref.getString(context.getString(valueKey), defaultValue);
+    }
 //    public Class<?> getValue(String key)
 //    {
 //

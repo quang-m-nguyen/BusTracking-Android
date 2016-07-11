@@ -77,8 +77,8 @@ public class TrackedBusFragment extends Fragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             busstopID = bundle.getString(Constants.BUSSTOP_ID_KEY, "unknown");
-            Log.e(TAG, "id is " + busstopID);
-            token = bundle.getString(Constants.DEVICE_TOKEN_KEY,"unknown");
+            Log.d(TAG, "id is " + busstopID);
+            token = bundle.getString(Constants.DEVICE_TOKEN_KEY, "unknown");
         } else {
             Log.e(TAG, "Can't get busstopID");
         }
@@ -89,7 +89,7 @@ public class TrackedBusFragment extends Fragment {
     }
 
     private void subscribeBusTrackerData() {
-        Log.e(TAG, "subscribe");
+        Log.d(TAG, "subscribe");
 //        String token = FirebaseInstanceId.getInstance().getToken();
         //send notification request
         Server server = Server.getInstance(this.getContext());
@@ -97,7 +97,7 @@ public class TrackedBusFragment extends Fragment {
         call.enqueue(new Callback<List<BusTracker>>() {
             @Override
             public void onResponse(Call<List<BusTracker>> call, Response<List<BusTracker>> response) {
-                Log.e(TAG, "Response:" + response.body());
+                Log.d(TAG, "Response:" + response.body());
                 List<BusTracker> trackerList = response.body();
 
                 for (int i = 0; i < trackerList.size(); i++) {
@@ -112,7 +112,7 @@ public class TrackedBusFragment extends Fragment {
                         if (TrackedBusFragment.trackedBusList.size() != 0) {
                             TrackedBusFragment.mTrackedBusAdapter.notifyDataSetChanged();
                         } else {
-                            Log.e(TAG, "size is o");
+                            Log.d(TAG, "size is o");
                         }
 
                     }
@@ -127,16 +127,17 @@ public class TrackedBusFragment extends Fragment {
         });
     }
 
-    private  void unsubscribeBusTrakerData(){
+    private void unsubscribeBusTrakerData() {
 
         Server server = Server.getInstance(this.getContext());
-        Call<Void> call = server.unsubscribeBusstop(busstopID,token);
-        Log.e(TAG,"send token to unsubscribe");
+        Call<Void> call = server.unsubscribeBusstop(busstopID, token);
+        Log.d(TAG, "send token to unsubscribe");
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
 
             }
+
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Log.e(TAG, "Fail:" + t.getMessage());
@@ -148,23 +149,25 @@ public class TrackedBusFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        trackedBusList.clear();
-        unsubscribeBusTrakerData();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        subscribeBusTrackerData();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        subscribeBusTrackerData();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        trackedBusList.clear();
+        unsubscribeBusTrakerData();
     }
 }

@@ -64,13 +64,13 @@
 
         <activity android:name=".busstop.BusStopListActivity" />
 
-        <!-- <service -->
-        <!-- android:name=".service.BusStatusUpdateService" -->
-        <!-- android:label="Bus StatusUpdateService" > -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="com.google.firebase.MESSAGING_EVENT"/> -->
-        <!-- </intent-filter> -->
-        <!-- </service> -->
+         <service
+         android:name=".service.BusStatusUpdateService"
+         android:label="Bus StatusUpdateService" >
+         <intent-filter>
+         <action android:name="android.intent.action.BROADCAST_NEW_BUS_REMAINING_TIME"/>
+         </intent-filter>
+         </service>
 
         <service android:name=".service.FirebaseBusMessagingService">
             <intent-filter>

@@ -82,7 +82,7 @@ import retrofit2.Response;
  */
 public class MainTabFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
     final String TAG = this.getClass().getName();
-    static public String mCurrentRoute = "Unknown";
+    static public String mCurrentRoute = "N/A";
     private Context context;
     //    static public double busLat = -1;
 //    static public double busLng = -1;
@@ -103,7 +103,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
-        Log.e(TAG, "onCreate set option menu to true");
+        Log.d(TAG, "onCreate set option menu to true");
         setHasOptionsMenu(true);
     }
 
@@ -131,7 +131,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             public void onNavigationClick() {
                 // toggle
                 mSearchView.setActivated(!mSearchView.isActivated());
-                Log.e(TAG, "click icon");
+                Log.d(TAG, "click icon");
 
                 Intent intent = new Intent(context, RouteListActivity.class);
                 startActivity(intent);
@@ -142,7 +142,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             @Override
             public void onSearchAction(CharSequence text) {
                 mSearchView.setActivated(false);
-                Log.e(TAG, "click search");
+                Log.d(TAG, "click search");
             }
         });
 
@@ -510,9 +510,11 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         busStopPopUp.putExtra(Constants.INTENT_EXTRA_BUS_STOP_NAME, marker.getTitle());
         startActivity(busStopPopUp);
 
+        // TODO:fix this part
         SharedPreferences sharedPref = getContext().getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(Constants.DISIRED_BUS_Key, marker.getSnippet());
+        editor.putString(getString(R.string.currenct_selected_busstop_key), "99163" + marker.getTitle());
         editor.commit();
     }
 
@@ -542,7 +544,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
 // notificationID allows you to update the notification later on.
         mNotificationManager.notify(id, mBuilder.build());
-        Log.e(TAG, "Notification");
+        Log.d(TAG, "Notification");
     }
 
     private void requestRoute(String ori, String dest) {
@@ -566,7 +568,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
             @Override
             public void onFailure(Call<GoogleMapDirection> call, Throwable t) {
-                Log.e(TAG, "Fail:" + t.getMessage());
+                Log.d(TAG, "Fail:" + t.getMessage());
                 t.printStackTrace();
             }
         });

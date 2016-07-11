@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity  {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MainTabFragment(), "Home");
+//        adapter.addFragment(new ThreeFragment(), "Alarm List");
         adapter.addFragment(new AboutTabFragment(), "Setting");
-//        adapter.addFragment(new ThreeFragment(), "THREE");
         viewPager.setAdapter(adapter);
     }
 

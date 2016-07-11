@@ -27,7 +27,7 @@ import retrofit2.Response;
 public class BusStopPopupActivity extends AppCompatActivity {
 
     final String TAG = this.getClass().getName();
-    private String busstopID = "unknown";
+    private String busstopID = "N/A";
 
     //TODO:using shared preference  to store this flag
     boolean notificationFlag = false;
@@ -49,9 +49,9 @@ public class BusStopPopupActivity extends AppCompatActivity {
         //TODO: get ID INSTEAD
         busstopID = "99163"+busstopName;
 
-        Log.e(TAG, "get busstop name");
+        Log.d(TAG, "get busstop name");
         if (busstopName != null) {
-            Log.e(TAG, busstopName);
+            Log.d(TAG, busstopName);
             textView.setText(busstopName);
         }
 
@@ -66,7 +66,6 @@ public class BusStopPopupActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.arrivingBusContainer, newFragment)
                     .commit();
-            Log.e(TAG, "CREATE LIST");
         }
 
 
@@ -100,7 +99,7 @@ public class BusStopPopupActivity extends AppCompatActivity {
     public void onClickNotification(View view) {
 
         ImageView iw = (ImageView) findViewById(R.id.notificationImageView);
-        Log.e(TAG, "Notification clicked, flag:" + notificationFlag);
+        Log.d(TAG, "Notification clicked, flag:" + notificationFlag);
         if (notificationFlag == false) {
             iw.setImageResource(R.drawable.ic_bell_outline_grey600_24dp);
 
@@ -109,7 +108,7 @@ public class BusStopPopupActivity extends AppCompatActivity {
             Server server = Server.getInstance(this.getApplicationContext());
             // TODO: change route id and bus stop id to be dynamic
             Call<Void> call = server.sendNotification(token, 1, 41);
-            Log.e(TAG, "send token");
+            Log.d(TAG, "send token");
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
@@ -118,7 +117,7 @@ public class BusStopPopupActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-                    Log.e(TAG, "Fail:" + t.getMessage());
+                    Log.d(TAG, "Fail:" + t.getMessage());
                     t.printStackTrace();
                 }
             });
