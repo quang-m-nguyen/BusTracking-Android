@@ -26,4 +26,9 @@
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#c8e8ff</color>
+
+
+    <color name="materialColorRed">#FF5252</color>
+    <color name="materialColorCyan">#00BCD4</color>
+    <color name="materialColorGreen">#4CAF50</color>
 </resources>

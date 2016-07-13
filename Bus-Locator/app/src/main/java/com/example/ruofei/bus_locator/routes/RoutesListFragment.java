@@ -2,19 +2,29 @@ package com.example.ruofei.bus_locator.routes;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ruofei.bus_locator.BusTracker.TrackedBusFragment;
 import com.example.ruofei.bus_locator.R;
+import com.example.ruofei.bus_locator.util.Server;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -26,8 +36,8 @@ public class RoutesListFragment extends Fragment {
 
     // TODO: Dydamic set message
     public final static String EXTRA_MESSAGE = "com.example.ruofei.bus_locator.Extra";
-    private RoutesAdapter mRouteAdapter;
-    List<Route> routeList = new ArrayList<>();
+    public static RoutesAdapter mRouteAdapter;
+    public static List<Route> routeList = new ArrayList<>();
 
     private RecyclerView recyclerView;
 
@@ -57,9 +67,44 @@ public class RoutesListFragment extends Fragment {
         recyclerView.setAdapter(mRouteAdapter);
 
 
-        routeList.add(new Route("1", "E"));
-        routeList.add(new Route("2", "I"));
-        routeList.add(new Route("3", "North"));
+        //send notification request
+        Server server = Server.getInstance(this.getContext());
+        Call<List<Route>> call = server.getBusRoute();
+        call.enqueue(new Callback<List<Route>>() {
+            @Override
+            public void onResponse(Call<List<Route>> call, Response<List<Route>> response) {
+                Log.d(TAG, "Response:" + response.body());
+                List<Route> trackerList = response.body();
+
+                for (int i = 0; i < trackerList.size(); i++) {
+                    final String routeName = trackerList.get(i).getRouteName();
+                    routeList.add(new Route(Integer.toString(i),routeName));
+                }
+                Handler mainThread = new Handler(Looper.getMainLooper());
+                // In your worker thread
+                mainThread.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (RoutesListFragment.routeList.size() != 0) {
+                            RoutesListFragment.mRouteAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d(TAG, "size is o");
+                        }
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<List<Route>> call, Throwable t) {
+                Log.e(TAG, "Fail:" + t.getMessage());
+                t.printStackTrace();
+            }
+        });
+
+//        routeList.add(new Route("1", "E"));
+//        routeList.add(new Route("2", "I"));
+//        routeList.add(new Route("3", "North"));
 
 
         return rootView;

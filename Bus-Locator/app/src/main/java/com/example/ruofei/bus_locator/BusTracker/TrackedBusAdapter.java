@@ -49,7 +49,7 @@ public class TrackedBusAdapter extends RecyclerView.Adapter<TrackedBusAdapter.My
             SharedPreferences sharedPref = context.getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
 //            String defaultValue = context.getString(R.string.disired_bus_default);
             String currentBusstopID = sharedPref.getString(context.getString(R.string.currenct_selected_busstop_key), "Unselect Current Busstop, ERROR");
-            Log.d(TAG, "RouteID:" + currentBusstopID);
+            Log.e(TAG, "RouteID:" + currentBusstopID);
             setUpNotification(routeID,currentBusstopID,token);
         }
     }

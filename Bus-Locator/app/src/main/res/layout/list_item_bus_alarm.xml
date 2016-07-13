@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    
+    <ImageView
+        android:id="@+id/alarmImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="16dp"/>
+
+
+    <TextView
+        android:id="@+id/alarmBusRoute"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_toRightOf="@id/alarmImageView"
+        android:text="Route"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/alarmBusstop"
+        android:text="Bussstop"
+        android:layout_below="@id/alarmBusRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/alarmSettingTime"
+        android:text="Setting Time"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/alarmRemainingTime"
+        android:text="Remaining Time"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/alarmSettingTime"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content" />
+    <!--<TextView-->
+        <!--android:id="@+id/alarmID"-->
+        <!--android:text="Alarm ID"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_height="wrap_content" />-->
+</RelativeLayout>

@@ -3,6 +3,7 @@ package com.example.ruofei.bus_locator.routes;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,12 +69,12 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
         holder.routeNum.setText(route.getRouteNum());
         holder.routeName.setText(route.getRouteName());
 
-        if(position==1)
-            holder.itemView.setBackgroundColor(Color.RED);
-        else if(position==2)
-            holder.itemView.setBackgroundColor(Color.BLUE);
-        else if(position==3)
-            holder.itemView.setBackgroundColor(Color.YELLOW);
+        if(position % 3 ==0)
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.materialColorGreen));
+        else if(position % 3==1)
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.materialColorCyan));
+        else if(position %3 ==2)
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.materialColorRed));
     }
 
     @Override
