@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +34,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -93,7 +95,9 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     private List<List<LatLng>> mRoutes = new ArrayList<>();
 
     private FloatingSearchView mSearchView;
-//    private SearchAdapter mAdapter;
+    //    private SearchAdapter mAdapter;
+    private static View view;
+
 
     public MainTabFragment() {
         // Required empty public constructor
@@ -113,12 +117,23 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View inflate = inflater.inflate(R.layout.fragment_main_tab, container, false);
+
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(R.layout.fragment_main_tab, container, false);
+        } catch (InflateException e) {
+        /* map is already there, just return view as it is */
+        }
+//        final View inflate = inflater.inflate(R.layout.fragment_main_tab, container, false);
 
 
 //        mSearch.setListener(this);
 
-        mSearchView = (FloatingSearchView) inflate.findViewById(R.id.search);
+        mSearchView = (FloatingSearchView) view.findViewById(R.id.search);
 //        mSearchView.setAdapter(mAdapter = new SearchAdapter());
 //        mSearchView.showLogo(true);
 //        mSearchView.setItemAnimator(new CustomSuggestionItemAnimator(mSearchView));
@@ -182,11 +197,13 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         });
 
         mSearchView.setText(null);
+
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        return inflate;
+        return view;
     }
 
 //    private void search(String query) {
@@ -219,6 +236,20 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     private boolean shouldShowNavigationIcon() {
         return mSearchView.getMenu().findItem(R.id.menu_toggle_icon).isChecked();
     }
+
+
+//    @Override
+//    public void onDestroyView() {
+//
+//        FragmentManager fm = getFragmentManager();
+//
+//        Fragment xmlFragment = fm.findFragmentById(R.id.map);
+//        if (xmlFragment != null) {
+//            fm.beginTransaction().remove(xmlFragment).commit();
+//        }
+//
+//        super.onDestroyView();
+//    }
 
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -447,7 +478,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             return;
         }
         Location location = locationManager.getLastKnownLocation(provider);
-        if(location != null) {
+        if (location != null) {
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
             LatLng latLng = new LatLng(latitude, longitude);

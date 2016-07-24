@@ -42,68 +42,23 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         // If the application is in the foreground handle both data and notification messages here.
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-//        Log.d(TAG, "From: " + remoteMessage.getFrom());
-//        Log.e(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
         //Calling method to generate notification
 //        sendNotification(remoteMessage.getNotification().getBody());
-//        Log.d(TAG, "Notifcation Body:" + remoteMessage.getNotification().toString());
-
         context = getApplicationContext();
         final Map<String, String> data = remoteMessage.getData();
         if (data != null) {
-
             String dataStr = data.toString();
             Log.e(TAG, "get data from firebase " + dataStr);
-
             String content_type = data.get("content_type");
 
             if (content_type != null) {
-                if (content_type.equals("AlarmTimeUpdate")) {
-
-                    //UpdateAlarmTime
-                    Log.e(TAG,"typecheck correct");
-
-                    SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.alarm_preference_key), Context.MODE_PRIVATE);
-//                    SharedPreferences.Editor editor = sharedPref.edit();
-
-                    //Check if the user set up an alarm
-                    String flag = sharedPref.getString(context.getString(R.string.alarm_flag_key), "false");
-                    if (flag.equals("true")) {
-                        Log.e(TAG,"typecheck correct2 ");
-                        // Set current remaining time
-                        Double newRemainingTimeDouble = Double.parseDouble(data.get("remain_time"));
-                        Integer newRemainingTime =(int)(newRemainingTimeDouble * 60); // convert sec
-                        if (newRemainingTime != null) {
-                            Log.e(TAG,"typecheck correct3 ");
-                            // Set current remaining time
-                            // TODO: change server side to send time in sec
-//                            editor.putInt(getString(R.string.current_remaining_time_key), newRemainingTime * 60);
-                            // TODO: notify alarm service the update
-
-                            Log.e(TAG,"update alarm time:" + newRemainingTime);
-//                            Intent i = new Intent("android.intent.action.UpdateBusStatus").putExtra(Constants.BROADCAST_NEW_BUS_REMAINING_TIME, newRemainingTime);
-//                            this.sendBroadcast(i);
-
-//                            Intent localIntent =
-//                                    new Intent(Constants.BROADCAST_NEW_BUS_REMAINING_TIME)
-//                                            // Puts the status into the Intent
-//                                            .putExtra(Constants.BUS_REMAINING_TIME, newRemainingTime);
-//                            // Broadcasts the Intent to receivers in this app.
-//                            LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
-
-
-        Intent intent = new Intent();
-        intent.setAction(Constants.BROADCAST_NEW_BUS_REMAINING_TIME);
-        intent.putExtra(Constants.BUS_REMAINING_TIME,newRemainingTime);
-        getApplicationContext().sendBroadcast(intent);
-//                            editor.commit();
-                        }
-
-                    }
+                if (content_type.equals("AlarmTimeUpdate")){
+                    updateAlarmTime(data);
+                }
+                else if (content_type.equals("BusstopTimeUpdate")){
+                    updateBusstopTime(data);
                 }
             }
-
-            updateBusstopTime(data);
         }
 
 
@@ -148,6 +103,43 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
 //                Log.e(TAG,e.toString());
 //            }
 //        }
+    }
+
+    private void updateAlarmTime(Map<String, String> data) {
+        //UpdateAlarmTime
+        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.alarm_preference_key), Context.MODE_PRIVATE);
+//                    SharedPreferences.Editor editor = sharedPref.edit();
+        //Check if the user set up an alarm
+        String flag = sharedPref.getString(context.getString(R.string.alarm_flag_key), "false");
+        if (flag.equals("true")) {
+            Log.e(TAG, "typecheck correct2 ");
+            // Set current remaining time
+            Double newRemainingTimeDouble = Double.parseDouble(data.get("remain_time"));
+            Integer newRemainingTime = (int) (newRemainingTimeDouble * 60); // convert sec
+            if (newRemainingTime != null) {
+                Log.e(TAG, "typecheck correct3 ");
+                // Set current remaining time
+                // TODO: change server side to send time in sec
+//                            editor.putInt(getString(R.string.current_remaining_time_key), newRemainingTime * 60);
+                // TODO: notify alarm service the update
+                Log.e(TAG, "update alarm time:" + newRemainingTime);
+//                            Intent i = new Intent("android.intent.action.UpdateBusStatus").putExtra(Constants.BROADCAST_NEW_BUS_REMAINING_TIME, newRemainingTime);
+//                            this.sendBroadcast(i);
+
+//                            Intent localIntent =
+//                                    new Intent(Constants.BROADCAST_NEW_BUS_REMAINING_TIME)
+//                                            // Puts the status into the Intent
+//                                            .putExtra(Constants.BUS_REMAINING_TIME, newRemainingTime);
+//                            // Broadcasts the Intent to receivers in this app.
+//                            LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
+                Intent intent = new Intent();
+                intent.setAction(Constants.BROADCAST_NEW_BUS_REMAINING_TIME);
+                intent.putExtra(Constants.BUS_REMAINING_TIME, newRemainingTime);
+                getApplicationContext().sendBroadcast(intent);
+//                            editor.commit();
+            }
+
+        }
     }
 
     private void updateBusLocation(Map<String, String> data) {

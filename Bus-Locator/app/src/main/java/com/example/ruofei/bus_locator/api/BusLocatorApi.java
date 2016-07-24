@@ -15,6 +15,10 @@ public interface BusLocatorApi {
     @GET("GetBusStops/{name}")
     Call<List<BusStop>>getBusStop(@Path("name") String routeName);
 
+    @GET("SubscribeBusCoordinate/{id}/{token}")
+    Call<Void>subscribeBus(@Path("id") String busID,
+                           @Path("token") String token);
+
     @GET("getBus")
     Call<String>getBusLocationIndicator();
 }

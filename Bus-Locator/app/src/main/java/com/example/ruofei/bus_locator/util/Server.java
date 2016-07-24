@@ -145,6 +145,13 @@ public class Server {
         return service.getBusRoute();
     }
 
+    public Call<Void> subscribeBus(String id, String token){
+        this.buildRetrofit((Constants.FIRE_BASE_NOTIFICATION_URL));
+        this.setApi((BusLocatorApi.class));
+        BusLocatorApi service = (BusLocatorApi)this.getService();
+        return service.subscribeBus(id,token);
+    }
+
     //clear shared preference
     public void reset() {
         storage.edit().clear().apply();

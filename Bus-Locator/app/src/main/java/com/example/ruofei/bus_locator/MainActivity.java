@@ -34,6 +34,7 @@ import com.example.ruofei.bus_locator.pojo.GoogleMapDirection;
 import com.example.ruofei.bus_locator.pojo.RouteInfo;
 import com.example.ruofei.bus_locator.routes.RouteListActivity;
 import com.example.ruofei.bus_locator.routes.RoutesAdapter;
+import com.example.ruofei.bus_locator.routes.RoutesListFragment;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;
 import com.google.android.gms.maps.CameraUpdate;
@@ -74,6 +75,12 @@ public class MainActivity extends AppCompatActivity  {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    private int[] tabIcons = {
+//            R.drawable.ic_tab_favourite,
+//            R.drawable.ic_tab_call,
+//            R.drawable.ic_tab_contacts
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,9 +97,15 @@ public class MainActivity extends AppCompatActivity  {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MainTabFragment(), "Home");
-        adapter.addFragment(new BusAlarmListFragment(), "Alarm List");
-        adapter.addFragment(new AboutTabFragment(), "Setting");
+        adapter.addFragment(new AboutTabFragment(), "Alarm List");
+        adapter.addFragment(new RoutesListFragment(), "Setting");
         viewPager.setAdapter(adapter);
+    }
+
+    private void setupTabIcons() {
+        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

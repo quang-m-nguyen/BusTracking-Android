@@ -14,9 +14,16 @@ import android.widget.TextView;
 import com.example.ruofei.bus_locator.MainActivity;
 import com.example.ruofei.bus_locator.MainTabFragment;
 import com.example.ruofei.bus_locator.R;
+import com.example.ruofei.bus_locator.api.BusLocatorApi;
 import com.example.ruofei.bus_locator.util.Constants;
+import com.example.ruofei.bus_locator.util.Server;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by ruofei on 6/11/2016.
@@ -42,6 +49,31 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
         public void onClick(View v) {
             TextView nameTextView = (TextView)v.findViewById(R.id.routeName);
             String routeName = nameTextView.getText().toString();
+
+            String token = FirebaseInstanceId.getInstance().getToken();
+
+            Server server = Server.getInstance(context);
+            server.buildRetrofit(Constants.BUS_LOCATOR_URL);
+            server.setApi(BusLocatorApi.class);
+            BusLocatorApi service = (BusLocatorApi) server.getService();
+            Call<Void> call = service.subscribeBus(routeName,token);
+
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response != null) {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+
+                }
+            });
+
+
+
             Log.d(TAG,routeName);
             Intent intent =  new Intent(context, MainActivity.class);
             // TODO: user shared preference
