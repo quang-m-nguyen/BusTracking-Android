@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.ruofei.bus_locator.MainActivity;
@@ -57,6 +56,9 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                 }
                 else if (content_type.equals("BusstopTimeUpdate")){
                     updateBusstopTime(data);
+                }
+                else if (content_type.equals("BusCoordinate")){
+                    updateBusCoordinate(data);
                 }
             }
         }
@@ -142,18 +144,17 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void updateBusLocation(Map<String, String> data) {
-
+    private void updateBusCoordinate(Map<String, String> data){
         String busLat = data.get("lat");
-        String busLng = data.get("long");
-        Log.e(TAG, "get broad cast lat" + busLat + ", lng:" + busLng);
+        String busLng = data.get("lng");
+//        Log.e(TAG, "get broad cast lat" + busLat + ", lng:" + busLng);
         if (busLat != null && busLng != null) {
 //            MainActivity.busLng = Double.parseDouble(busLng);
 //            MainActivity.busLat = Double.parseDouble(busLat);
 
             if (busLat != null && busLng != null) {
-                Log.e(TAG, "broad cast lat" + busLat + ", lng:" + busLng);
-                Intent i = new Intent("android.intent.action.MAIN").putExtra("BUS_LAT", busLat).putExtra("BUS_LNG", busLng);
+                Log.e(TAG, "broadcast lat" + busLat + ", lng:" + busLng);
+                Intent i = new Intent(Constants.MAIN_ACTION).putExtra("BUS_LAT", busLat).putExtra("BUS_LNG", busLng);
                 this.sendBroadcast(i);
             }
         }

@@ -36,4 +36,6 @@ public interface Constants {
     final static String BROADCAST_NEW_BUS_REMAINING_TIME = "android.intent.action.BROADCAST_NEW_BUS_REMAINING_TIME";
     final static String BUS_REMAINING_TIME = "com.example.ruofei.bus_locator.BUS_REMAINING_TIME";
 
+    final static String MAIN_ACTION = "android.intent.action.MAIN";
+
 }

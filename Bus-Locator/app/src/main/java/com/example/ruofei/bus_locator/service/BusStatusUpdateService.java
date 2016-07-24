@@ -87,11 +87,6 @@ public class BusStatusUpdateService extends Service {
     }
 
 
-//    @Override
-//    protected void onHandleIntent(Intent intent) {
-//        String dataString  = intent.getDataString();
-//    }
-
     @Override
     public synchronized void onDestroy() {
         super.onDestroy();

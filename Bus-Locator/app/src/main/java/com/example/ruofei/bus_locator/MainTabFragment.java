@@ -4,8 +4,10 @@ package com.example.ruofei.bus_locator;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -59,6 +61,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -98,6 +101,11 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     //    private SearchAdapter mAdapter;
     private static View view;
 
+    private BroadcastReceiver mReceiver;
+    private double busLat;
+    private double busLng;
+    private boolean updateBusMarkerFlag = false;
+
 
     public MainTabFragment() {
         // Required empty public constructor
@@ -109,6 +117,8 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         context = getContext();
         Log.d(TAG, "onCreate set option menu to true");
         setHasOptionsMenu(true);
+
+
     }
 
 
@@ -348,9 +358,35 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (mReceiver != null)
+            getActivity().unregisterReceiver(mReceiver);
+    }
 
+    @Override
     public void onResume() {
+
         super.onResume();
+        Log.e(TAG, "resume receiver");
+        IntentFilter intentFilter = new IntentFilter(
+                Constants.MAIN_ACTION);
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //extract our message from intent
+                busLat = Double.parseDouble(intent.getStringExtra("BUS_LAT"));
+                busLng = Double.parseDouble(intent.getStringExtra("BUS_LNG"));
+                //log our message value
+                Log.e("receiver", "latlng:" + busLat + busLng);
+
+                updateBusMarkerFlag = true;
+                updateMap();
+            }
+        };
+        //registering our receiver
+        getActivity().registerReceiver(mReceiver, intentFilter);
+
         Intent intent = this.getActivity().getIntent();
         if (intent != null) {
             try {
@@ -403,7 +439,6 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     }
 
-
 //
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
@@ -436,15 +471,15 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                         .snippet(Integer.toString(busStop.getStopNum())));
                 markers.add(marker);
             }
-//                if(busLat != -1 && busLng != -1){
-//                     Marker marker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(icon))
-//                            .position(
-//                                    new LatLng(busLat,
-//                                            busLng
-//                                    )).title("Bus I Location")
-//                            .snippet("lat:" + busLat + ",lng:"+ busLng));
-//                    markers.add(marker);
-//                }
+            if (updateBusMarkerFlag) {
+                Marker marker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(icon))
+                        .position(
+                                new LatLng(busLat,
+                                        busLng
+                                )).title("Bus I Location")
+                        .snippet("lat:" + busLat + ",lng:" + busLng));
+                markers.add(marker);
+            }
             setMapMarker(mMap, markers);
         }
         for (int i = 0; i < mRoutes.size(); i++) {
