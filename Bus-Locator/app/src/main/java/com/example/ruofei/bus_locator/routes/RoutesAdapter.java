@@ -52,27 +52,25 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
 
             String token = FirebaseInstanceId.getInstance().getToken();
 
-            Server server = Server.getInstance(context);
-            server.buildRetrofit(Constants.BUS_LOCATOR_URL);
-            server.setApi(BusLocatorApi.class);
-            BusLocatorApi service = (BusLocatorApi) server.getService();
-            Call<Void> call = service.subscribeBus(routeName,token);
-
-            call.enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response != null) {
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-
-                }
-            });
-
-
+//            Server server = Server.getInstance(context);
+//            server.buildRetrofit(Constants.BUS_LOCATOR_URL);
+//            server.setApi(BusLocatorApi.class);
+//            BusLocatorApi service = (BusLocatorApi) server.getService();
+//            Call<Void> call = service.subscribeBus(routeName,token);
+//
+//            call.enqueue(new Callback<Void>() {
+//                @Override
+//                public void onResponse(Call<Void> call, Response<Void> response) {
+//                    if (response != null) {
+//
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<Void> call, Throwable t) {
+//
+//                }
+//            });
 
             Log.d(TAG,routeName);
             Intent intent =  new Intent(context, MainActivity.class);
