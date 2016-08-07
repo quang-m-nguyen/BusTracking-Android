@@ -37,6 +37,7 @@ import com.example.ruofei.bus_locator.routes.RoutesAdapter;
 import com.example.ruofei.bus_locator.routes.RoutesListFragment;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;
+import com.google.android.gms.cast.framework.media.widget.MiniControllerFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -97,15 +98,15 @@ public class MainActivity extends AppCompatActivity  {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MainTabFragment(), "Home");
-        adapter.addFragment(new AboutTabFragment(), "Alarm List");
-        adapter.addFragment(new RoutesListFragment(), "Setting");
+        adapter.addFragment(new BusAlarmListFragment(), "Alarm List");
+        adapter.addFragment(new AboutTabFragment(), "Setting");
         viewPager.setAdapter(adapter);
     }
 
     private void setupTabIcons() {
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+//        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

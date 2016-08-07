@@ -57,6 +57,8 @@ public class RoutesListFragment extends Fragment {
         // Don't have dynamic bus stop update from server
         // TODO: dynamic update after server updated
 
+        routeList.clear();
+
         View rootView = inflater.inflate(R.layout.fragment_routes_list, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_route);
         mRouteAdapter = new RoutesAdapter(routeList);

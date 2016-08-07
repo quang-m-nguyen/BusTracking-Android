@@ -1,5 +1,6 @@
 package com.example.ruofei.bus_locator.BusAlarm;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -46,6 +47,8 @@ public class BusAlarmListFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_bus_alarm_list, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_alarm_list);
+
+
         mBusAlarmAdapter = new BusAlarmAdapter(busAlarmList);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -54,10 +57,8 @@ public class BusAlarmListFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mBusAlarmAdapter);
 
-//        trackedBusList.add(new TrackedBus("E","unknown"));
-//        trackedBusList.add(new TrackedBus("I","1:00"));
-//        trackedBusList.add(new TrackedBus("I","1:00"));
-//        trackedBusList.add(new TrackedBus("I", "1:00"));
+        busAlarmList.add(new BusAlarmItem("routeName1","busstop1", "remainingTime1", "alarmSettingTime1", "aLarmID"));
+        busAlarmList.add(new BusAlarmItem("routeName1","busstop1", "remainingTime1", "alarmSettingTime1", "aLarmID"));
 
 //        mTrackedBusAdapter.notifyDataSetChanged();
 //        String BussstopID = getArguments().getString(Constants.BUSSTOP_ID_KEY);
@@ -76,4 +77,8 @@ public class BusAlarmListFragment extends Fragment {
         return rootView;
     }
 
+    private Cursor getAlarmList(){
+
+        return null;
+    }
 }

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.ruofei.bus_locator.MainActivity;
@@ -134,10 +135,12 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
 //                                            .putExtra(Constants.BUS_REMAINING_TIME, newRemainingTime);
 //                            // Broadcasts the Intent to receivers in this app.
 //                            LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
-                Intent intent = new Intent();
-                intent.setAction(Constants.BROADCAST_NEW_BUS_REMAINING_TIME);
-                intent.putExtra(Constants.BUS_REMAINING_TIME, newRemainingTime);
-                getApplicationContext().sendBroadcast(intent);
+
+//                Intent intent = new Intent();
+//                intent.setAction(Constants.BROADCAST_NEW_BUS_REMAINING_TIME);
+//                intent.putExtra(Constants.BUS_REMAINING_TIME, newRemainingTime);
+//                getApplicationContext().sendBroadcast(intent);
+
 //                            editor.commit();
             }
 

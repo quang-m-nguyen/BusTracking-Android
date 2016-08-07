@@ -20,11 +20,13 @@
     <color name="black_overlay">#66000000</color>
 
 
-    <color name="colorPrimary">#125688</color>
-    <color name="colorPrimaryDark">#125688</color>
-    <color name="textColorPrimary">#FFFFFF</color>
-    <color name="windowBackground">#FFFFFF</color>
-    <color name="navigationBarColor">#000000</color>
+    <color name="colorPrimary">#26A69A</color>
+    <!--<color name="colorPrimaryDark">#125688</color>-->
+    <color name="colorPrimaryDark">#00695C</color>
+    <!--<color name="textColorPrimary">#FFFFFF</color>-->
+    <color name="textColorPrimary">#212121</color>
+    <color name="windowBackground">#000000</color>
+    <color name="navigationBarColor">#B0BEC5</color>
     <color name="colorAccent">#c8e8ff</color>
 
 

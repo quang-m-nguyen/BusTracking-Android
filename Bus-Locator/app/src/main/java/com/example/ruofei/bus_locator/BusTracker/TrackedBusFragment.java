@@ -65,7 +65,6 @@ public class TrackedBusFragment extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mTrackedBusAdapter);
-
 //        trackedBusList.add(new TrackedBus("E","unknown"));
 //        trackedBusList.add(new TrackedBus("I","1:00"));
 //        trackedBusList.add(new TrackedBus("I","1:00"));
@@ -83,9 +82,7 @@ public class TrackedBusFragment extends Fragment {
             Log.e(TAG, "Can't get busstopID");
         }
 //        subscribeBusTrackerData();
-
         return rootView;
-
     }
 
     private void subscribeBusTrackerData() {
@@ -118,7 +115,6 @@ public class TrackedBusFragment extends Fragment {
                     }
                 });
             }
-
             @Override
             public void onFailure(Call<List<BusTracker>> call, Throwable t) {
                 Log.e(TAG, "Fail:" + t.getMessage());

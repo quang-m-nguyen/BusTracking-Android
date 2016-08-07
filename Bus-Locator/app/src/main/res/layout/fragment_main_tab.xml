@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.ruofei.bus_locator.MainTabFragment">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
->
+<!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical"-->
+<!--&gt;-->
 
     <!--<LinearLayout-->
         <!--android:baselineAligned="false"-->
@@ -71,13 +71,14 @@
             tools:context="com.example.ruofei.bus_locator.MainTabFragment"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             app:fsv_menu="@menu/search"
-            app:theme="@style/CustomFloatingSearchViewTheme"
             />
+
+        <!--app:theme="@style/CustomFloatingSearchViewTheme"-->
         <!--app:logo="@drawable/logo"-->
 
 
    </android.support.design.widget.CoordinatorLayout>
 
-</LinearLayout>
+<!--</LinearLayout>-->
 
 </FrameLayout>

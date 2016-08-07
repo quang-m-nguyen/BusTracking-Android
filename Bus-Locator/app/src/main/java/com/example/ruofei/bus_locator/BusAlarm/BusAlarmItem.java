@@ -7,13 +7,13 @@ public class BusAlarmItem {
 
     private String routeName, busstopName;
     private String remainingTime, alarmSettingTime;
-    private Integer alarmID;
+    private String alarmID;
 
     public BusAlarmItem(){
 
     }
 
-    public BusAlarmItem(String routeName, String busstopName, String remainingTime, String alarmSettingTime, Integer alarmID){
+    public BusAlarmItem(String routeName, String busstopName, String remainingTime, String alarmSettingTime, String alarmID){
         this.routeName = routeName;
         this.busstopName = busstopName;
         this.remainingTime = remainingTime;
@@ -54,11 +54,11 @@ public class BusAlarmItem {
         this.alarmSettingTime = alarmSettingTime;
     }
 
-    public Integer getAlarmID() {
+    public String getAlarmID() {
         return alarmID;
     }
 
-    public void setAlarmID(Integer alarmID) {
+    public void setAlarmID(String alarmID) {
         this.alarmID = alarmID;
     }
 

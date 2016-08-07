@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ruofei.bus_locator.BusAlarm.BusAlarmItem;
+import com.example.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
 import com.example.ruofei.bus_locator.service.BusStatusUpdateService;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.Server;
@@ -59,13 +63,10 @@ public class SetBusAlarmFragment extends DialogFragment {
             token = bundle.getString(Constants.DEVICE_TOKEN_KEY, "N/A");
         }
 
-
         builder.setMessage(getString(R.string.alarm_setting_message))
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) { // Ok, send request
                         // start a service that tracking alarm data
-
-
                         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.alarm_preference_key), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(getString(R.string.alarm_flag_key), "true");
@@ -78,10 +79,26 @@ public class SetBusAlarmFragment extends DialogFragment {
                         if (alarmSettingTime != null) {
                             editor.putInt(getString(R.string.alarm_setting_time_key), (int) (alarmSettingTime * 60));
                         }
-
                         editor.commit();
 
+
+                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID, busstopID, "time", "time", "id"));
+                        Handler mainThread = new Handler(Looper.getMainLooper());
+                        // In your worker thread
+                        mainThread.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (BusAlarmListFragment.busAlarmList.size() != 0) {
+                                    BusAlarmListFragment.mBusAlarmAdapter.notifyDataSetChanged();
+                                } else {
+                                    Log.d(TAG, "size is o");
+                                }
+                            }
+                        });
+
                         // send request
+                        //set alarm add alarm to alarm list
+
                         Server server = Server.getInstance(context);
                         Call<Void> call = server.subscribeBusAlarm(routeID, busstopID, token);
                         Log.d(TAG, "send token to subscribe alarm");
@@ -97,8 +114,6 @@ public class SetBusAlarmFragment extends DialogFragment {
                                 t.printStackTrace();
                             }
                         });
-
-
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

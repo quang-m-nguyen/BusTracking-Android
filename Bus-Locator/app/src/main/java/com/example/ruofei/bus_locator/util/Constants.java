@@ -38,4 +38,12 @@ public interface Constants {
 
     final static String MAIN_ACTION = "android.intent.action.MAIN";
 
+    public interface AlarmList{
+       final static String ID = "alarmListID";
+        final static String ALARM_SETTING_TIME = "alarmSettingTime";
+        final static String REMAINING_TIME = "remainingTime";
+        final static String BUS_ROUTE = "busRoute";
+        final static String BUSSTOP = "busstop";
+    }
+
 }
