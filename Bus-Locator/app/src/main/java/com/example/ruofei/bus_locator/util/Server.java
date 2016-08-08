@@ -121,14 +121,14 @@ public class Server {
         this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
         this.setApi(BusTrakerApi.class);
         BusTrakerApi service = (BusTrakerApi)this.getService();
-        return service.getBusTracker(busstopID,token);
+        return service.getBusTracker(busstopID,token, "Android");
     }
 
     public Call<Void> subscribeBusAlarm(String routeID, String busstopID, String token){
         this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
         this.setApi(SubscribeBusAlarmApi.class);
         SubscribeBusAlarmApi service = (SubscribeBusAlarmApi)this.getService();
-        return service.subscribeBusAlarm(routeID,busstopID,token);
+        return service.subscribeBusAlarm(routeID,busstopID,token, "Android");
     }
 
     public Call<Void> unsubscribeBusAlarm(String routeID, String busstopID, String token){

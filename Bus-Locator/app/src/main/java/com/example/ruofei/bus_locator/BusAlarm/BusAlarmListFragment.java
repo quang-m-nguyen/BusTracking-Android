@@ -57,8 +57,8 @@ public class BusAlarmListFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mBusAlarmAdapter);
 
-        busAlarmList.add(new BusAlarmItem("routeName1","busstop1", "remainingTime1", "alarmSettingTime1", "aLarmID"));
-        busAlarmList.add(new BusAlarmItem("routeName1","busstop1", "remainingTime1", "alarmSettingTime1", "aLarmID"));
+//        busAlarmList.add(new BusAlarmItem("routeName1","busstop1", "remainingTime1", "alarmSettingTime1", "aLarmID"));
+//        busAlarmList.add(new BusAlarmItem("routeName1","busstop1", "remainingTime1", "alarmSettingTime1", "aLarmID"));
 
 //        mTrackedBusAdapter.notifyDataSetChanged();
 //        String BussstopID = getArguments().getString(Constants.BUSSTOP_ID_KEY);

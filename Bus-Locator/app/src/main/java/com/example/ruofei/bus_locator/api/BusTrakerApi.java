@@ -12,8 +12,10 @@ import retrofit2.http.Path;
  * Created by ruofeixu on 6/21/16.
  */
 public interface BusTrakerApi {
-        @GET("Simulation/SubscribeBusstop/{busstopID}/{token}")
+        @GET("Simulation/SubscribeBusstop/{busstopID}/{token}/{os}")
         Call<List<BusTracker>> getBusTracker(
                 @Path("busstopID") String busstopID,
-                @Path("token") String token);
+                @Path("token") String token,
+                @Path("os") String os
+        );
 }

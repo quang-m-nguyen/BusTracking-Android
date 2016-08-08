@@ -9,16 +9,30 @@ public class BusAlarmItem {
     private String remainingTime, alarmSettingTime;
     private String alarmID;
 
+    private Double remainTimeNum, settingTimeNum;
+    private boolean alarmFlag;
+
     public BusAlarmItem(){
 
     }
 
-    public BusAlarmItem(String routeName, String busstopName, String remainingTime, String alarmSettingTime, String alarmID){
+    public BusAlarmItem(String routeName,
+                        String busstopName,
+                        String remainingTime,
+                        String alarmSettingTime,
+                        String alarmID,
+                        Double remainTimeNum,
+                        Double settingTimeNum,
+                        boolean alarmFlag){
         this.routeName = routeName;
         this.busstopName = busstopName;
         this.remainingTime = remainingTime;
         this.alarmSettingTime = alarmSettingTime;
         this.alarmID = alarmID;
+
+        this.remainTimeNum = remainTimeNum;
+        this.settingTimeNum = settingTimeNum;
+        this.alarmFlag = alarmFlag;
 
     }
 
@@ -62,14 +76,44 @@ public class BusAlarmItem {
         this.alarmID = alarmID;
     }
 
+    public Double getRemainTimeNum() {
+        return remainTimeNum;
+    }
+
+    public void setRemainTimeNum(Double remainTimeNum) {
+        this.remainTimeNum = remainTimeNum;
+    }
+
+    public Double getSettingTimeNum() {
+        return settingTimeNum;
+    }
+
+    public void setSettingTimeNum(Double settingTimeNum) {
+        this.settingTimeNum = settingTimeNum;
+    }
+
+    public boolean isAlarmFlag() {
+        return alarmFlag;
+    }
+
+    public void setAlarmFlag(boolean alarmFlag) {
+        this.alarmFlag = alarmFlag;
+    }
+
     @Override
     public boolean equals(Object o) {
         if(o == null)
             return false;
         BusAlarmItem other = (BusAlarmItem) o;
-        if(this.alarmID == null || other.alarmID == null) return false;
-        if(this.alarmID.equals(other.alarmID))
+        // TODO: update this
+//        if(this.alarmID == null || other.alarmID == null) return false;
+//        if(this.alarmID.equals(other.alarmID))
+//            return true;
+//        return false;
+         if(this.routeName == null || other.routeName == null || this.busstopName == null || other.busstopName == null) return false;
+        if(this.routeName.equals(other.routeName) && this.busstopName.equals(other.busstopName))
             return true;
         return false;
+
     }
 }

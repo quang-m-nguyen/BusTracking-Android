@@ -12,7 +12,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -43,6 +46,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +66,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -138,224 +145,32 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         } catch (InflateException e) {
         /* map is already there, just return view as it is */
         }
-//        final View inflate = inflater.inflate(R.layout.fragment_main_tab, container, false);
 
 
-//        mSearch.setListener(this);
+        Button clickButton = (Button) view.findViewById(R.id.get_route_button_on_map);
+        clickButton.setOnClickListener( new View.OnClickListener() {
 
-        mSearchView = (FloatingSearchView) view.findViewById(R.id.search);
-//        mSearchView.setAdapter(mAdapter = new SearchAdapter());
-//        mSearchView.showLogo(true);
-//        mSearchView.setItemAnimator(new CustomSuggestionItemAnimator(mSearchView));
-
-        updateNavigationIcon(R.id.menu_icon_drawer);
-        mSearchView.showIcon(shouldShowNavigationIcon());
-
-        mSearchView.setOnIconClickListener(new FloatingSearchView.OnIconClickListener() {
             @Override
-            public void onNavigationClick() {
-                // toggle
-                mSearchView.setActivated(!mSearchView.isActivated());
-                Log.d(TAG, "click icon");
-
+            public void onClick(View v) {
                 Intent intent = new Intent(context, RouteListActivity.class);
                 startActivity(intent);
             }
         });
 
-        mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
-            @Override
-            public void onSearchAction(CharSequence text) {
-                mSearchView.setActivated(false);
-                Log.d(TAG, "click search");
-            }
-        });
-
-//        mSearchView.setOnMenuItemClickListener(this);
-
-        mSearchView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence query, int start, int before, int count) {
-                showClearButton(query.length() > 0 && mSearchView.isActivated());
-//                search(query.toString().trim());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        mSearchView.setOnSearchFocusChangedListener(new FloatingSearchView.OnSearchFocusChangedListener() {
-            @Override
-            public void onFocusChanged(final boolean focused) {
-                boolean textEmpty = mSearchView.getText().length() == 0;
-
-                showClearButton(focused && !textEmpty);
-                if (!focused) showProgressBar(false);
-                mSearchView.showLogo(!focused && textEmpty);
-
-                if (focused)
-                    mSearchView.showIcon(true);
-                else
-                    mSearchView.showIcon(shouldShowNavigationIcon());
-            }
-        });
-
-        mSearchView.setText(null);
-
-
         SupportMapFragment mapFragment =
                 (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
+        View locationButton = ((View) view.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+        // position on right bottom
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+//        rlp.setMargins(0, 0, 30, 105);
         return view;
     }
 
-//    private void search(String query) {
-//        showProgressBar(mSearchView.isActivated());
-//        mSearch.search(query);
-//    }
-
-    private void updateNavigationIcon(int itemId) {
-        Context context = mSearchView.getContext();
-        Drawable drawable = null;
-
-        switch (itemId) {
-            case R.id.menu_icon_search:
-                drawable = new SearchArrowDrawable(context);
-                break;
-            case R.id.menu_icon_drawer:
-                drawable = new android.support.v7.graphics.drawable.DrawerArrowDrawable(context);
-                break;
-            case R.id.menu_icon_custom:
-//                drawable = new TextDrawable("Test");
-                drawable = new CustomDrawable(context);
-                break;
-        }
-        drawable = DrawableCompat.wrap(drawable);
-//        DrawableCompat.setTint(drawable, ViewUtils.getThemeAttrColor(context, R.attr.colorControlNormal));
-        mSearchView.setIcon(drawable);
-    }
-
-
-    private boolean shouldShowNavigationIcon() {
-        return mSearchView.getMenu().findItem(R.id.menu_toggle_icon).isChecked();
-    }
-
-
-//    @Override
-//    public void onDestroyView() {
-//
-//        FragmentManager fm = getFragmentManager();
-//
-//        Fragment xmlFragment = fm.findFragmentById(R.id.map);
-//        if (xmlFragment != null) {
-//            fm.beginTransaction().remove(xmlFragment).commit();
-//        }
-//
-//        super.onDestroyView();
-//    }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        switch (requestCode) {
-//            case REQ_CODE_SPEECH_INPUT: {
-//                if (resultCode == RESULT_OK && null != data) {
-//                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-//                    mSearchView.setActivated(true);
-//                    mSearchView.setText(result.get(0));
-//                }
-//                break;
-//            }
-//        }
-//    }
-//
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        mSearch.cancel();
-//    }
-//
-//    @Override
-//    public boolean onMenuItemClick(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.menu_clear:
-//                mSearchView.setText(null);
-//                mSearchView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-//                break;
-//            case R.id.menu_toggle_icon:
-//                item.setChecked(!item.isChecked());
-//                mSearchView.showIcon(item.isChecked());
-//                break;
-//            case R.id.menu_tts:
-//                PackageUtils.startTextToSpeech(this, getString(R.string.speech_prompt), REQ_CODE_SPEECH_INPUT);
-//                break;
-//            case R.id.menu_icon_search:
-//            case R.id.menu_icon_drawer:
-//            case R.id.menu_icon_custom:
-//                updateNavigationIcon(item.getItemId());
-//                Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-//                break;
-//        }
-//        return true;
-//    }
-
-//    @Override
-//    public void onSearchStarted(String query) {
-//        //nothing to do
-//    }
-
-//    @Override
-//    public void onSearchResults(SearchResult ...searchResults) {
-//        mAdapter.setNotifyOnChange(false);
-//        mAdapter.clear();
-//        if (searchResults != null) mAdapter.addAll(searchResults);
-//        mAdapter.setNotifyOnChange(true);
-//        mAdapter.notifyDataSetChanged();
-//        showProgressBar(false);
-//    }
-//
-//    @Override
-//    public void onSearchError(Throwable throwable) {
-//        onSearchResults(getErrorResult(throwable));
-//    }
-//
-//    private void onItemClick(SearchResult result) {
-//        mSearchView.setActivated(false);
-//        if(!TextUtils.isEmpty(result.url)) PackageUtils.start(this, Uri.parse(result.url));
-//    }
-
-
-    private void showProgressBar(boolean show) {
-        mSearchView.getMenu().findItem(R.id.menu_progress).setVisible(show);
-    }
-
-    private void showClearButton(boolean show) {
-        mSearchView.getMenu().findItem(R.id.menu_clear).setVisible(show);
-    }
-
-    private static class CustomDrawable extends ToggleDrawable {
-
-        public CustomDrawable(Context context) {
-            super(context);
-            float radius = ViewUtils.dpToPx(9);
-
-            CrossModel cross = new CrossModel(radius * 2);
-
-            // From circle to cross
-            add(Bezier.quadrant(radius, 0), cross.downLine);
-            add(Bezier.quadrant(radius, 90), cross.upLine);
-            add(Bezier.quadrant(radius, 180), cross.upLine);
-            add(Bezier.quadrant(radius, 270), cross.downLine);
-        }
-    }
 
     @Override
     public void onPause() {
@@ -439,36 +254,53 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     }
 
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//
-//        MenuItem item = menu.findItem(R.id.action_search);
-//        searchView.setMenuItem(item);
-//
-//        return true;
-//    }
-
-    public void changeRoute(View view) {
-        Intent intent = new Intent(this.getContext(), RouteListActivity.class);
-        startActivity(intent);
-    }
-
 
     public void updateMap() {
         if (mMap != null) {
             List<Marker> markers = new ArrayList<Marker>();
             Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),
                     R.drawable.bus_stop_icon);
+
+            Bitmap bmp = Bitmap.createBitmap(50,50,Bitmap.Config.ARGB_8888);
+            bmp.eraseColor(Color.argb(0,0,0,0));
+
+            Canvas c = new Canvas(bmp);
+            c.drawColor(0, PorterDuff.Mode.CLEAR);
+
+            Paint p = new Paint();
+
+            p.setColor(ContextCompat.getColor(context, R.color.colorAccent));
+            c.drawCircle(bmp.getHeight()/2, bmp.getWidth()/2 , bmp.getHeight()/2, p);
+
+            p.setColor(ContextCompat.getColor(context, R.color.materialColorRed));
+            c.drawCircle(bmp.getHeight()/2, bmp.getWidth()/2 , bmp.getHeight()/2 -2, p);
+
             for (int i = 0; i < mBusStops.size(); i++) {
                 BusStop busStop = mBusStops.get(i);
+
+                double radiusInMeters = 100.0;
+                //red outline
+                int strokeColor = 0xffff0000;
+                //opaque red fill
+                int shadeColor = 0x44ff0000;
+
+                LatLng position =new LatLng(busStop.getLatitude(),
+                        busStop.getLongtitude()
+                );
+//
+//                CircleOptions circleOptions = new CircleOptions().center(position).radius(radiusInMeters).fillColor(shadeColor).strokeColor(strokeColor).strokeWidth(2);
+//                mMap.addCircle(circleOptions);
+//                MarkerOptions markerOptions = new MarkerOptions().position(position);
+//                mMap.addMarker(markerOptions);
+
+
                 Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(
                                 new LatLng(busStop.getLatitude(),
                                         busStop.getLongtitude()
                                 )).title(busStop.getStopName())
-                        .snippet(Integer.toString(busStop.getStopNum())));
+                        .snippet(Integer.toString(busStop.getStopNum()))
+                        .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
                 markers.add(marker);
             }
             if (updateBusMarkerFlag) {
@@ -496,6 +328,8 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnInfoWindowClickListener(this);
+
+        mMap.setPadding(0, 0, 30, 180);
 
         enableMyLocation();
         Criteria criteria = new Criteria();
@@ -531,6 +365,9 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 //                    Toast.makeText(this.getContext(), "Dont have the permission to access current location",
 //                Toast.LENGTH_SHORT).show();
 //        }
+
+
+
     }
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;

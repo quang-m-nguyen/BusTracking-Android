@@ -82,7 +82,7 @@ public class SetBusAlarmFragment extends DialogFragment {
                         editor.commit();
 
 
-                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID, busstopID, "time", "time", "id"));
+                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID, busstopID, "time", "Setting Time:" + seekBar.getProgress() + " Mins", "id",-1.0,(double)seekBar.getProgress(), true));
                         Handler mainThread = new Handler(Looper.getMainLooper());
                         // In your worker thread
                         mainThread.post(new Runnable() {

@@ -13,6 +13,8 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.ruofei.bus_locator.BusAlarm.BusAlarmItem;
+import com.example.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
 import com.example.ruofei.bus_locator.MainActivity;
 import com.example.ruofei.bus_locator.R;
 import com.example.ruofei.bus_locator.BusTracker.TrackedBus;
@@ -126,6 +128,41 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
 //                            editor.putInt(getString(R.string.current_remaining_time_key), newRemainingTime * 60);
                 // TODO: notify alarm service the update
                 Log.e(TAG, "update alarm time:" + newRemainingTime);
+
+                    String routeID = data.get("route_ID");
+                    String stopID = data.get("busstop_ID");
+
+                    try {
+                        Handler mainThread = new Handler(Looper.getMainLooper());
+                        // In your worker thread
+                        int index = BusAlarmListFragment.busAlarmList.indexOf(new BusAlarmItem(routeID,stopID, "n/a", "n/a","n/a",-1.0,-1.0, true));
+//                        Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + time + ", stopNum:" + busstopNum);
+                        if (index == -1)
+                            return;
+
+                        final BusAlarmItem alarmItem = BusAlarmListFragment.busAlarmList.get(index);
+                        alarmItem.setRemainingTime("Time For Bus Arrive:" + newRemainingTimeDouble.toString() + " Mins");
+                        alarmItem.setRemainTimeNum(newRemainingTimeDouble);
+//                        BusAlarmListFragment.busAlarmList.get(index).setAlarmSettingTime("Setting Time:" + );
+
+                        if(alarmItem.getSettingTimeNum() >= alarmItem.getRemainTimeNum() && alarmItem.getRemainTimeNum() >= 0)
+                            sendNotification("Bus is about to arriving in " + Math.round(alarmItem.getRemainTimeNum()) + "minutes");
+
+                        // In your worker thread
+                        mainThread.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (BusAlarmListFragment.busAlarmList.size() != 0) {
+                                    BusAlarmListFragment.mBusAlarmAdapter.notifyDataSetChanged();
+                                } else {
+                                    Log.d(TAG, "size is o");
+                                }
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        Log.e(TAG, e.toString());
+                    }
 //                            Intent i = new Intent("android.intent.action.UpdateBusStatus").putExtra(Constants.BROADCAST_NEW_BUS_REMAINING_TIME, newRemainingTime);
 //                            this.sendBroadcast(i);
 

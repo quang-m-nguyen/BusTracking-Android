@@ -14,13 +14,13 @@
         android:padding="16dp">
 
 
-    <ImageView
-        android:id="@+id/alarmImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="16dp"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/alarmImageView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_marginRight="16dp"/>-->
 
 
     <TextView
@@ -28,13 +28,14 @@
         android:textSize="16dp"
         android:textStyle="bold"
         android:layout_width="match_parent"
-        android:layout_toRightOf="@id/alarmImageView"
         android:text="Route"
         android:layout_height="wrap_content" />
+            <!--android:layout_toRightOf="@id/alarmImageView"-->
 
     <TextView
         android:id="@+id/alarmBusstop"
         android:text="Bussstop"
+        android:textStyle="bold"
         android:layout_below="@id/alarmBusRoute"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -42,12 +43,14 @@
     <TextView
         android:id="@+id/alarmSettingTime"
         android:text="Setting Time"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/alarmRemainingTime"
         android:text="Remaining Time"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_below="@+id/alarmSettingTime"
         android:layout_alignParentRight="true"

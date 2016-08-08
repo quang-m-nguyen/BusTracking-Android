@@ -3,53 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.ruofei.bus_locator.MainTabFragment">
-<!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:orientation="vertical"-->
-<!--&gt;-->
-
-    <!--<LinearLayout-->
-        <!--android:baselineAligned="false"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal">-->
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:layout_gravity="center">-->
-            <!--<TextView-->
-                <!--android:id="@+id/routeName"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:padding="16dp"-->
-                <!--android:gravity="center"-->
-                <!--android:text="@string/default_route_name" />-->
-        <!--</RelativeLayout>-->
-
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:layout_gravity="top">-->
-            <!--<Button-->
-                <!--android:id="@+id/changeRouteButton"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="center"-->
-                <!--android:onClick="changeRoute"-->
-                <!--android:text="@string/change_route_button_label"></Button>-->
-        <!--</RelativeLayout>-->
-    <!--</LinearLayout>-->
-
 
     <android.support.design.widget.CoordinatorLayout
             android:id="@+id/main_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
-
+            android:layout_height="match_parent">
 
         <fragment
             android:id="@+id/map"
@@ -59,26 +17,17 @@
             />
 
 
-        <com.mypopsy.widget.FloatingSearchView
-            android:id="@+id/search"
+        <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="16dp"
-            android:paddingRight="8dp"
-            android:paddingLeft="8dp"
-            android:background="#90000000"
-            android:hint="@string/hint"
-            tools:context="com.example.ruofei.bus_locator.MainTabFragment"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            app:fsv_menu="@menu/search"
-            />
+            android:layout_height="wrap_content"
+            android:id="@+id/get_route_button_on_map"
+            android:text="Find A Route"
+            android:padding="@dimen/place_autocomplete_button_padding"/>
 
         <!--app:theme="@style/CustomFloatingSearchViewTheme"-->
         <!--app:logo="@drawable/logo"-->
 
 
    </android.support.design.widget.CoordinatorLayout>
-
-<!--</LinearLayout>-->
 
 </FrameLayout>
