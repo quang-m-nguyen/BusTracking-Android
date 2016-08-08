@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Thrifa</string>
     <string name="app_title">Coug Transit</string>
+    <string name="app_version">v 0.0.0.1</string>
 
 
     <!--Route string value-->
@@ -27,8 +28,8 @@
 
 
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="about_tab_info">Copyright 2016, Thrifa. All Right Reserved</string>
+    <string name="contact_email">cougtransit@gmail.com</string>
 
     <!--set alarm-->
     <string name="alarm_setting_title">Set Alarm</string>

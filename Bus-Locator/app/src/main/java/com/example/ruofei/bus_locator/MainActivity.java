@@ -79,9 +79,9 @@ public class MainActivity extends AppCompatActivity  {
     private NonSwipeableViewPager viewPager;
 
     private int[] tabIcons = {
-            R.drawable.bell,
-            R.drawable.bell,
-            R.drawable.bell
+            R.drawable.ic_home_white_48dp,
+            R.drawable.ic_alarm_white_48dp,
+            R.drawable.ic_information_outline_white_48dp
     };
 
     @Override
