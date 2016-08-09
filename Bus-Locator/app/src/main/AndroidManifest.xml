@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ruofei.bus_locator">
+    package="com.thrifa.ruofei.bus_locator">
 
     <permission
-        android:name="com.example.ruofei.permission.MAPS_RECEIVE"
+        android:name="com.thrifa.ruofei.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
     <permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-permission android:name="com.example.ruofei.bus_locator.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="com.thrifa.ruofei.bus_locator.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -16,9 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
-
 
     <!--<application-->
         <!--android:allowBackup="true"-->
@@ -43,7 +41,7 @@
         <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
         <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> -->
 
-        <activity android:name=".MainActivity"
+        <activity android:name="com.thrifa.ruofei.bus_locator.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,12 +49,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".routes.RouteListActivity"
+        <activity android:name="com.thrifa.ruofei.bus_locator.routes.RouteListActivity"
             android:theme="@style/AppTheme.CustomTheme"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName="com.thrifa.ruofei.bus_locator.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.thrifa.ruofei.bus_locator.MainActivity" />
         </activity>
 
         <meta-data
@@ -66,17 +64,17 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDCDYoiyBgsn8Imhscv417hwyW5sErNaKc" />
 
-        <activity android:name=".busstop.BusStopListActivity" />
+        <activity android:name="com.thrifa.ruofei.bus_locator.busstop.BusStopListActivity" />
 
          <service
-         android:name=".service.BusStatusUpdateService"
+         android:name="com.thrifa.ruofei.bus_locator.service.BusStatusUpdateService"
          android:label="Bus StatusUpdateService" >
          <intent-filter>
          <action android:name="android.intent.action.BROADCAST_NEW_BUS_REMAINING_TIME"/>
          </intent-filter>
          </service>
 
-        <service android:name=".service.FirebaseBusMessagingService">
+        <service android:name="com.thrifa.ruofei.bus_locator.service.FirebaseBusMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -89,13 +87,13 @@
         <!-- </intent-filter> -->
         <!-- </service> -->
 
-        <service android:name=".service.MyFirebaseInstanceIDService">
+        <service android:name="com.thrifa.ruofei.bus_locator.service.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name=".busstop.BusStopPopupActivity"
+        <activity android:name="com.thrifa.ruofei.bus_locator.busstop.BusStopPopupActivity"
             android:theme="@style/AppTheme.CustomTheme"
             ></activity>
     </application>

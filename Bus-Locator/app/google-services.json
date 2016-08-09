@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1038631331613:android:107ec94c14942ea5",
+        "mobilesdk_app_id": "1:1038631331613:android:c12c04d201898be6",
         "android_client_info": {
-          "package_name": "com.example.ruofei.bus_locator"
+          "package_name": "com.thrifa.ruofei.bus_locator"
         }
       },
       "oauth_client": [

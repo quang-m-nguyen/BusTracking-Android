@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.0"
 
     defaultConfig {
-        applicationId "com.example.ruofei.bus_locator"
+        applicationId "com.thrifa.ruofei.bus_locator"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
@@ -15,10 +15,10 @@ android {
     }
     buildTypes {
         release {
-            shrinkResources true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            shrinkResources true
+            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             debuggable true
@@ -44,7 +44,7 @@ dependencies {
 
     // GoogleMap
     compile 'com.google.android.gms:play-services:9.2.0'
-    compile 'com.google.android.gms:play-services-maps:9.2.0'
+//    compile 'com.google.android.gms:play-services-maps:9.2.0'
 
     // Retrofit
     compile 'com.google.code.gson:gson:2.6.1'
@@ -58,8 +58,8 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.1.0'
 
     // Firebase
-    compile 'com.google.firebase:firebase-core:9.0.1'
-    compile 'com.google.firebase:firebase-messaging:9.0.1'
+    compile 'com.google.firebase:firebase-core:9.2.0'
+    compile 'com.google.firebase:firebase-messaging:9.2.0'
 
     // SearchView
 //    compile 'com.github.renaudcerrato:FloatingSearchView:1.0.1'
