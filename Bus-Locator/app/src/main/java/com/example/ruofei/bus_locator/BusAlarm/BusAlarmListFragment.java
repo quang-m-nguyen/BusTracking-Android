@@ -3,6 +3,7 @@ package com.example.ruofei.bus_locator.BusAlarm;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.ruofei.bus_locator.R;
 import com.example.ruofei.bus_locator.RecycleViewDividerItemDecoration;
@@ -17,6 +19,7 @@ import com.example.ruofei.bus_locator.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by ruofeixu on 7/10/16.
@@ -29,25 +32,40 @@ public class BusAlarmListFragment extends Fragment {
     String busstopID;
     String token;
 
+    private View rootView;
+
+    private int listSize;
+    public static Stack idPool;
+
 
     private RecyclerView recyclerView;
+
+    private void Initialize(){
+        listSize = 10;
+        idPool = new Stack();
+        for (int i = 0; i < listSize; i++) {
+           idPool.push(i);
+        }
+    }
 
     public BusAlarmListFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                            Bundle savedInstanceState) {
+
+       Initialize();
 
         // Inflate the layout for this fragment
         // Don't have dynamic bus stop update from server
         // TODO: dynamic update after server updated
 
-        View rootView = inflater.inflate(R.layout.fragment_bus_alarm_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_bus_alarm_list, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_alarm_list);
 
+        updateUI();
 
         mBusAlarmAdapter = new BusAlarmAdapter(busAlarmList);
 
@@ -57,8 +75,9 @@ public class BusAlarmListFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mBusAlarmAdapter);
 
-//        busAlarmList.add(new BusAlarmItem("routeName1","busstop1", "remainingTime1", "alarmSettingTime1", "aLarmID"));
-//        busAlarmList.add(new BusAlarmItem("routeName1","busstop1", "remainingTime1", "alarmSettingTime1", "aLarmID"));
+//        if(idPool.size()>0) {
+//        busAlarmList.add(new BusAlarmItem("routeName1", "busstop1", "remainingTime1", "alarmSettingTime1", (Integer)idPool.pop(), -0.1, -0.1, true));
+//    }
 
 //        mTrackedBusAdapter.notifyDataSetChanged();
 //        String BussstopID = getArguments().getString(Constants.BUSSTOP_ID_KEY);
@@ -80,5 +99,24 @@ public class BusAlarmListFragment extends Fragment {
     private Cursor getAlarmList(){
 
         return null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    public void updateUI(){
+
+        TextView textView = (TextView) rootView.findViewById(R.id.alarm_list_empty);
+
+        if(busAlarmList.size() <=0){
+            textView.setVisibility(View.VISIBLE);
+        }
+        else {
+            textView.setVisibility(View.INVISIBLE);
+        }
+
     }
 }

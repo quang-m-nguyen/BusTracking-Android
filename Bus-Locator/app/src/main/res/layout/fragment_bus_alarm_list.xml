@@ -11,8 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
-    <TextView android:id="@id/android:empty"
+    <TextView android:id="@+id/alarm_list_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="No Results" />
+        android:padding="108dp"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:textSize="32dp"
+        android:visibility="visible"
+        android:text="No Alarms" />
 </FrameLayout>

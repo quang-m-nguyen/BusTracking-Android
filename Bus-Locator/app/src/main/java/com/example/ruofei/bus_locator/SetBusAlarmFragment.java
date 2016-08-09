@@ -81,8 +81,8 @@ public class SetBusAlarmFragment extends DialogFragment {
                         }
                         editor.commit();
 
-
-                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID, busstopID, "time", "Setting Time:" + seekBar.getProgress() + " Mins", "id",-1.0,(double)seekBar.getProgress(), true));
+                        int alarmID = (int)BusAlarmListFragment.idPool.pop();
+                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID, busstopID, "time", "Setting Time:" + seekBar.getProgress() + " Mins", alarmID,-1.0,(double)seekBar.getProgress(), true));
                         Handler mainThread = new Handler(Looper.getMainLooper());
                         // In your worker thread
                         mainThread.post(new Runnable() {
@@ -90,6 +90,7 @@ public class SetBusAlarmFragment extends DialogFragment {
                             public void run() {
                                 if (BusAlarmListFragment.busAlarmList.size() != 0) {
                                     BusAlarmListFragment.mBusAlarmAdapter.notifyDataSetChanged();
+
                                 } else {
                                     Log.d(TAG, "size is o");
                                 }
@@ -125,7 +126,7 @@ public class SetBusAlarmFragment extends DialogFragment {
         seekBar.setMax(60);
 
 //        textView.setText("Covered: " + seekBar.getProgress() + "/" + seekBar.getMax());
-        textView.setText("" + seekBar.getProgress());
+        textView.setText("" + seekBar.getProgress() );
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progress = 0;
@@ -133,12 +134,12 @@ public class SetBusAlarmFragment extends DialogFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
                 progress = progresValue;
-                Toast.makeText(getActivity(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(getActivity(), "Started tracking seekbar", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Started tracking seekbar", Toast.LENGTH_SHORT).show();
             }
 
             @Override

@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.ruofei.bus_locator.BuildConfig;
 import com.example.ruofei.bus_locator.BusAlarm.BusAlarmItem;
 import com.example.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
 import com.example.ruofei.bus_locator.MainActivity;
@@ -22,12 +23,18 @@ import com.example.ruofei.bus_locator.BusTracker.TrackedBusFragment;
 import com.example.ruofei.bus_locator.pojo.BusTracker;
 import com.example.ruofei.bus_locator.util.Constants;
 import com.example.ruofei.bus_locator.util.MyDeserializer;
+import com.example.ruofei.bus_locator.util.Server;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by ruofei on 6/4/2016.
@@ -54,13 +61,11 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
             String content_type = data.get("content_type");
 
             if (content_type != null) {
-                if (content_type.equals("AlarmTimeUpdate")){
+                if (content_type.equals("AlarmTimeUpdate")) {
                     updateAlarmTime(data);
-                }
-                else if (content_type.equals("BusstopTimeUpdate")){
+                } else if (content_type.equals("BusstopTimeUpdate")) {
                     updateBusstopTime(data);
-                }
-                else if (content_type.equals("BusCoordinate")){
+                } else if (content_type.equals("BusCoordinate")) {
                     updateBusCoordinate(data);
                 }
             }
@@ -129,24 +134,41 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                 // TODO: notify alarm service the update
                 Log.e(TAG, "update alarm time:" + newRemainingTime);
 
-                    String routeID = data.get("route_ID");
-                    String stopID = data.get("busstop_ID");
+                String routeID = data.get("route_ID");
+                String stopID = data.get("busstop_ID");
 
-                    try {
-                        Handler mainThread = new Handler(Looper.getMainLooper());
-                        // In your worker thread
-                        int index = BusAlarmListFragment.busAlarmList.indexOf(new BusAlarmItem(routeID,stopID, "n/a", "n/a","n/a",-1.0,-1.0, true));
+                try {
+                    Handler mainThread = new Handler(Looper.getMainLooper());
+                    // In your worker thread
+                    int index = BusAlarmListFragment.busAlarmList.indexOf(new BusAlarmItem(routeID, stopID, "n/a", "n/a", -1, -1.0, -1.0, true));
 //                        Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + time + ", stopNum:" + busstopNum);
-                        if (index == -1)
-                            return;
+                    if (index == -1)
+                        return;
 
-                        final BusAlarmItem alarmItem = BusAlarmListFragment.busAlarmList.get(index);
-                        alarmItem.setRemainingTime("Time For Bus Arrive:" + newRemainingTimeDouble.toString() + " Mins");
-                        alarmItem.setRemainTimeNum(newRemainingTimeDouble);
+
+                    final BusAlarmItem alarmItem = BusAlarmListFragment.busAlarmList.get(index);
+                    //check if alarm off
+                    if(alarmItem.isAlarmFlag()) {
+                    alarmItem.setRemainingTime("Time For Bus Arrive:" + newRemainingTimeDouble.toString() + " Mins");
+                    alarmItem.setRemainTimeNum(newRemainingTimeDouble);
 //                        BusAlarmListFragment.busAlarmList.get(index).setAlarmSettingTime("Setting Time:" + );
 
-                        if(alarmItem.getSettingTimeNum() >= alarmItem.getRemainTimeNum() && alarmItem.getRemainTimeNum() >= 0)
-                            sendNotification("Bus is about to arriving in " + Math.round(alarmItem.getRemainTimeNum()) + "minutes");
+                    if (alarmItem.getSettingTimeNum() >= alarmItem.getRemainTimeNum() && alarmItem.getRemainTimeNum() >= 0) {
+                        sendNotification("Bus is about to arriving in " + Math.round(alarmItem.getRemainTimeNum()) + "minutes");
+
+                        // unsubscribe
+                        alarmItem.setAlarmFlag(false);
+                        alarmItem.setRemainingTime("Alarm Off");
+                        mainThread.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                BusAlarmListFragment.mBusAlarmAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+                        String token  = FirebaseInstanceId.getInstance().getToken();
+                        unsubscribeAlarm(alarmItem.getRouteName(),alarmItem.getBusstopName(), token);
+                    }
 
                         // In your worker thread
                         mainThread.post(new Runnable() {
@@ -159,10 +181,11 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                                 }
                             }
                         });
-
-                    } catch (Exception e) {
-                        Log.e(TAG, e.toString());
                     }
+
+                } catch (Exception e) {
+                    Log.e(TAG, e.toString());
+                }
 //                            Intent i = new Intent("android.intent.action.UpdateBusStatus").putExtra(Constants.BROADCAST_NEW_BUS_REMAINING_TIME, newRemainingTime);
 //                            this.sendBroadcast(i);
 
@@ -184,7 +207,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void updateBusCoordinate(Map<String, String> data){
+    private void updateBusCoordinate(Map<String, String> data) {
         String busLat = data.get("lat");
         String busLng = data.get("lng");
 //        Log.e(TAG, "get broad cast lat" + busLat + ", lng:" + busLng);
@@ -271,5 +294,23 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, notificationBuilder.build());
+    }
+
+    private void unsubscribeAlarm(String routeID, String stopID, String token){
+        Server server = Server.getInstance(context);
+        Call<Void> call = server.unsubscribeBusAlarm(routeID,stopID, token);
+        Log.d(TAG, "send token to unsubscribe");
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "Fail:" + t.getMessage());
+                t.printStackTrace();
+            }
+        });
     }
 }

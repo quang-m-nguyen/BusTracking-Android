@@ -33,7 +33,11 @@
 
     <!--set alarm-->
     <string name="alarm_setting_title">Set Alarm</string>
-    <string name="alarm_setting_message">this app will make a notification before bus arriving about setting time</string>
+    <string name="alarm_setting_message">alarm will notify you before the bus arriving in setting time (in minutes)</string>
+
+    <!--remove alarm-->
+    <string name="alarm_remove_message">Do you want to remove this alarm ?</string>
+    <string name="alarm_remove_title">Remove Alarm</string>
 
 
     <!--<string name="app_name">FloatingSearchView</string>-->

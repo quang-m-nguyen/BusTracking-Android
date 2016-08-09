@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -99,12 +100,14 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
         holder.routeNum.setText(route.getRouteNum());
         holder.routeName.setText(route.getRouteName());
 
+        CardView cardView = (CardView)holder.itemView;
+
         if(position % 3 ==0)
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.materialColorGreen));
+            cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.materialColorGreen));
         else if(position % 3==1)
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.materialColorCyan));
+            cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.materialColorCyan));
         else if(position %3 ==2)
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.materialColorRed));
+            cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.materialColorRed));
     }
 
     @Override

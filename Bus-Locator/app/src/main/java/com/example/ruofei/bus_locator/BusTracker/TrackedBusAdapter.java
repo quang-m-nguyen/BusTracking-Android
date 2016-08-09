@@ -82,7 +82,8 @@ public class TrackedBusAdapter extends RecyclerView.Adapter<TrackedBusAdapter.My
         TrackedBus trackedBus = trackedBusList.get(position);
         holder.trackedBusRoute.setText(trackedBus.getRouteName());
         holder.trackedBusTime.setText(trackedBus.getEstimatedTime());
-        holder.trackedBusstopNum.setText(trackedBus.getBusstopNum());
+//        holder.trackedBusstopNum.setText(trackedBus.getBusstopNum());
+        holder.trackedBusstopNum.setText("click to set alarm");
     }
 
     @Override

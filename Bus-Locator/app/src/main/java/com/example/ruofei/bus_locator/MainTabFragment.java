@@ -74,12 +74,12 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.mypopsy.drawable.SearchArrowDrawable;
-import com.mypopsy.drawable.ToggleDrawable;
-import com.mypopsy.drawable.model.CrossModel;
-import com.mypopsy.drawable.util.Bezier;
-import com.mypopsy.widget.FloatingSearchView;
-import com.mypopsy.widget.internal.ViewUtils;
+//import com.mypopsy.drawable.SearchArrowDrawable;
+//import com.mypopsy.drawable.ToggleDrawable;
+//import com.mypopsy.drawable.model.CrossModel;
+//import com.mypopsy.drawable.util.Bezier;
+//import com.mypopsy.widget.FloatingSearchView;
+//import com.mypopsy.widget.internal.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +104,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     static public List<BusStop> mBusStops = new ArrayList<BusStop>();
     private List<List<LatLng>> mRoutes = new ArrayList<>();
 
-    private FloatingSearchView mSearchView;
+//    private FloatingSearchView mSearchView;
     //    private SearchAdapter mAdapter;
     private static View view;
 
@@ -148,6 +148,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
 
         Button clickButton = (Button) view.findViewById(R.id.get_route_button_on_map);
+//        clickButton.setBackground(ContextCompat.getDrawable(context, R.drawable.places_ic_search));
         clickButton.setOnClickListener( new View.OnClickListener() {
 
             @Override
@@ -299,7 +300,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                                 new LatLng(busStop.getLatitude(),
                                         busStop.getLongtitude()
                                 )).title(busStop.getStopName())
-                        .snippet(Integer.toString(busStop.getStopNum()))
+                        .snippet(Integer.toString(busStop.getStopNum()) + " click for detail")
                         .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
                 markers.add(marker);
             }

@@ -6,32 +6,40 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <SeekBar
             android:id="@+id/timeSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progress="20"
+            android:layout_alignParentTop="true"
             android:layout_margin="10dp"
-            android:layout_alignParentTop="true" />
+            android:progress="20" />
 
-        <EditText
-            android:id="@+id/timeText"
-            android:layout_below="@+id/timeSeekBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:layout_centerHorizontal="true" />
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/timeSeekBar">-->
+
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/timeText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/timeSeekBar"
-            android:layout_toRightOf="@+id/timeText"
-            android:layout_alignBottom="@+id/timeText"
-            android:gravity="center_vertical|left"
-            android:textSize="20dp"
-            android:text="min"/>
+            android:gravity="right"
+            android:paddingRight="36dp"
+            android:text="0 min"
+            android:textSize="20dp" />
+
+        <!--<TextView-->
+        <!--android:id="@+id/alarmSettingUnit"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="end"-->
+        <!--android:text="min"-->
+        <!--android:textSize="20dp" />-->
+
+        <!--</LinearLayout>-->
+
     </RelativeLayout>
 </LinearLayout>

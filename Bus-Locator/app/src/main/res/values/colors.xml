@@ -34,4 +34,5 @@
     <color name="materialColorCyan">#00BCD4</color>
     <color name="materialColorGreen">#4CAF50</color>
 
+    <color name="white">#FFFFFF</color>
 </resources>
