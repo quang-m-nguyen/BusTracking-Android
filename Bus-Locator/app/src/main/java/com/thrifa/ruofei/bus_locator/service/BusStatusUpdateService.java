@@ -107,54 +107,6 @@ public class BusStatusUpdateService extends Service {
     }
 
 
-    public void readWebPage() {
-//        HttpClient client = new DefaultHttpClient();
-//        HttpGet request = new HttpGet("http://google.com");
-//        // Get the response
-//        ResponseHandler<String> responseHandler = new BasicResponseHandler();
-//        String response_str = null;
-//Toast.makeText(this, "Service Update:" ,
-//                Toast.LENGTH_SHORT).show();
-        Server server = Server.getInstance(this.getApplicationContext());
-        server.buildRetrofit(Constants.BUS_LOCATOR_URL);
-        server.setApi(BusLocatorApi.class);
-        BusLocatorApi service = (BusLocatorApi) server.getService();
-        Call<String> call = service.getBusLocationIndicator();
-
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response != null) {
-
-                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
-                    String defaultValue = getResources().getString(R.string.disired_bus_default);
-                    String desiredBusLocation = sharedPref.getString(getString(R.string.disired_bus_key), defaultValue);
-
-                    String updateLocation = response.body();
-                    Log.e(TAG, "response " + updateLocation + ", preference:" + desiredBusLocation);
-                    if (updateLocation.equals(desiredBusLocation)) {
-                        showNotification("Bus is coming at " + updateLocation, "Bus is comming", 3);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-
-            }
-        });
-
-        //showNotification("service:" + testCounter,"service", testCounter++);
-        try {
-//            response_str = client.execute(request, responseHandler);
-//            if(!response_str.equalsIgnoreCase("")){
-//                Log.d(TAG, "Got Response");
-//            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void showNotification(String title, String detail, int id) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setSmallIcon(R.drawable.common_full_open_on_phone);

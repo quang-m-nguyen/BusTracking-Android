@@ -50,6 +50,7 @@ public class EditAlarmDialogFragment extends DialogFragment {
         alarmID = bundle.getString(Constants.AlarmList.ID, "unknown");
         routeID = bundle.getString(Constants.AlarmList.BUS_ROUTE, "unknown");
         stopID = bundle.getString(Constants.AlarmList.BUSSTOP, "unknown");
+
         token = FirebaseInstanceId.getInstance().getToken();
 
 //                        }

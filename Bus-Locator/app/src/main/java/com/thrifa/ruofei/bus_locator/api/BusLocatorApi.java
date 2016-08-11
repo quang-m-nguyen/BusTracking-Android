@@ -1,5 +1,6 @@
 package com.thrifa.ruofei.bus_locator.api;
 
+import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.pojo.BusStop;
 
 import java.util.List;
@@ -19,6 +20,6 @@ public interface BusLocatorApi {
     Call<Void>subscribeBus(@Path("id") String busID,
                            @Path("token") String token);
 
-    @GET("getBus")
-    Call<String>getBusLocationIndicator();
+    @GET("GetBusInfo/{id}")
+    Call<BusInfo>getBusLocation(@Path("id") String busID);
 }

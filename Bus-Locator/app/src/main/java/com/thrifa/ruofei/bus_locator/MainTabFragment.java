@@ -18,6 +18,7 @@ import android.graphics.PorterDuff;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,16 +29,17 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thrifa.ruofei.bus_locator.busstop.BusStopPopupActivity;
+import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.pojo.BusStop;
 import com.thrifa.ruofei.bus_locator.pojo.GoogleMapDirection;
 import com.thrifa.ruofei.bus_locator.pojo.RouteInfo;
@@ -56,7 +58,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 //import com.mypopsy.drawable.SearchArrowDrawable;
 //import com.mypopsy.drawable.ToggleDrawable;
 //import com.mypopsy.drawable.model.CrossModel;
@@ -76,29 +77,57 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class MainTabFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
-    final String TAG = this.getClass().getName();
-    static public String mCurrentRoute = "N/A";
-    private Context context;
-    //    static public double busLat = -1;
-//    static public double busLng = -1;
-    GoogleMap mMap;
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    static public String mCurrentRoute = "N/A";
+
+    final String TAG = this.getClass().getName();
+    private Context context;
+    GoogleMap mMap;
+    private Marker mBusMarker;
+    GetBusInfoTask mUpdateBusTask;
 
     static public List<BusStop> mBusStops = new ArrayList<BusStop>();
     private List<List<LatLng>> mRoutes = new ArrayList<>();
 
-//    private FloatingSearchView mSearchView;
-    //    private SearchAdapter mAdapter;
     private static View view;
-
     private BroadcastReceiver mReceiver;
-    private double busLat;
-    private double busLng;
-    private boolean updateBusMarkerFlag = false;
+    private BusInfo mBus;
 
 
     public MainTabFragment() {
         // Required empty public constructor
+    }
+
+    private class GetBusInfoTask extends AsyncTask<Pair<String, Integer>, Void, Integer> {
+        protected Integer doInBackground(Pair<String, Integer>... params) {
+            String routeID = params[0].first;
+            Integer interval = params[0].second;
+            try {
+                this.wait(interval);
+            } catch (Exception e) {
+
+            }
+            Server server = Server.getInstance(context);
+            Call<BusInfo> call = server.getBusInfo(routeID);
+            call.enqueue(new Callback<BusInfo>() {
+                @Override
+                public void onResponse(Call<BusInfo> call, Response<BusInfo> response) {
+                    if (response != null) {
+                        mBus = response.body();
+                            updateBusLocation();
+                    }
+                    return;
+                }
+
+                @Override
+                public void onFailure(Call<BusInfo> call, Throwable t) {
+                    Log.e(TAG, "update error:" + t.toString());
+                }
+            });
+            return interval;
+        }
+
     }
 
     @Override
@@ -107,17 +136,13 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         context = getContext();
         Log.d(TAG, "onCreate set option menu to true");
         setHasOptionsMenu(true);
-
-
     }
-
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null)
@@ -129,10 +154,8 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         /* map is already there, just return view as it is */
         }
 
-
         Button clickButton = (Button) view.findViewById(R.id.get_route_button_on_map);
-//        clickButton.setBackground(ContextCompat.getDrawable(context, R.drawable.places_ic_search));
-        clickButton.setOnClickListener( new View.OnClickListener() {
+        clickButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -145,9 +168,9 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
         View locationButton = ((View) view.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+
         // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
@@ -161,30 +184,23 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         super.onPause();
         if (mReceiver != null)
             getActivity().unregisterReceiver(mReceiver);
+        mUpdateBusTask.cancel(true);
     }
 
     @Override
     public void onResume() {
-
         super.onResume();
-        Log.e(TAG, "resume receiver");
         IntentFilter intentFilter = new IntentFilter(
                 Constants.MAIN_ACTION);
-        mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                //extract our message from intent
-                busLat = Double.parseDouble(intent.getStringExtra("BUS_LAT"));
-                busLng = Double.parseDouble(intent.getStringExtra("BUS_LNG"));
-                //log our message value
-                Log.e("receiver", "latlng:" + busLat + busLng);
 
-                updateBusMarkerFlag = true;
-                updateMap();
-            }
-        };
         //registering our receiver
         getActivity().registerReceiver(mReceiver, intentFilter);
+
+
+        if (mCurrentRoute != null) {
+            if (!mCurrentRoute.equals("N/A"))
+                updateBusLocation();
+        }
 
         Intent intent = this.getActivity().getIntent();
         if (intent != null) {
@@ -201,25 +217,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                             if (response != null) {
                                 if (!response.body().equals(mBusStops)) {
                                     mBusStops = response.body();
-
-                                    //create bus stop latlng list request route polyline
-//                                    if (mBusStops.size() > 1) {
-//                                        List<String> latLngList = new ArrayList<String>();
-//                                        mRoutes.clear();
-//                                        for (int i = 0; i < mBusStops.size(); i++) {
-//                                            latLngList.clear();
-//                                            if (i < mBusStops.size() - 1) {
-//                                                String ori = mBusStops.get(i).getLatitude() + "," + mBusStops.get(i).getLongtitude();
-//                                                String dest = mBusStops.get(i + 1).getLatitude() + "," + mBusStops.get(i + 1).getLongtitude();
-//                                                requestRoute(ori, dest);
-////                                                requestRoute(latLngList);
-//                                            } else if (i == mBusStops.size() - 1) {
-//                                                latLngList.add(mBusStops.get(i).getLatitude() + "," + mBusStops.get(i).getLongtitude());
-//                                                latLngList.add(mBusStops.get(0).getLatitude() + "," + mBusStops.get(0).getLongtitude());
-//                                            }
-//                                        }
-//                                    }
-                                    updateMap();
+                                    updateRouteStopsOnMap();
                                 }
                             }
                         }
@@ -229,24 +227,40 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                         }
                     });
                 }
-                TextView textView = (TextView) this.getActivity().findViewById(R.id.routeName);
-                textView.setTextSize(20);
-                textView.setText(mCurrentRoute);
+                Button clickButton = (Button) view.findViewById(R.id.get_route_button_on_map);
+                clickButton.setText(mCurrentRoute);
             } catch (Exception e) {
 
             }
         }
     }
 
+    private void updateBusLocation() {
+        if (mBus != null) {
+            if (mBusMarker != null) {
+                mBusMarker.remove();
+            }
+            mBusMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))
+                    .position(
+                            new LatLng(mBus.getLat(),
+                                    mBus.getLng()
+                            )).title("Bus " + mCurrentRoute + " Location"));
+            mUpdateBusTask = new GetBusInfoTask();
+            mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 2000));
+        } else {
+            mUpdateBusTask = new GetBusInfoTask();
+            mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 100));
+        }
+    }
 
-    public void updateMap() {
+    public void updateRouteStopsOnMap() {
         if (mMap != null) {
             List<Marker> markers = new ArrayList<Marker>();
             Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),
                     R.drawable.bus_stop_icon);
 
-            Bitmap bmp = Bitmap.createBitmap(50,50,Bitmap.Config.ARGB_8888);
-            bmp.eraseColor(Color.argb(0,0,0,0));
+            Bitmap bmp = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
+            bmp.eraseColor(Color.argb(0, 0, 0, 0));
 
             Canvas c = new Canvas(bmp);
             c.drawColor(0, PorterDuff.Mode.CLEAR);
@@ -254,65 +268,42 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             Paint p = new Paint();
 
             p.setColor(ContextCompat.getColor(context, R.color.colorAccent));
-            c.drawCircle(bmp.getHeight()/2, bmp.getWidth()/2 , bmp.getHeight()/2, p);
+            c.drawCircle(bmp.getHeight() / 2, bmp.getWidth() / 2, bmp.getHeight() / 2, p);
 
             p.setColor(ContextCompat.getColor(context, R.color.materialColorRed));
-            c.drawCircle(bmp.getHeight()/2, bmp.getWidth()/2 , bmp.getHeight()/2 -2, p);
+            c.drawCircle(bmp.getHeight() / 2, bmp.getWidth() / 2, bmp.getHeight() / 2 - 2, p);
 
             for (int i = 0; i < mBusStops.size(); i++) {
+                Log.e(TAG, "add marker to map");
                 BusStop busStop = mBusStops.get(i);
-
-                double radiusInMeters = 100.0;
-                //red outline
-                int strokeColor = 0xffff0000;
-                //opaque red fill
-                int shadeColor = 0x44ff0000;
-
-                LatLng position =new LatLng(busStop.getLatitude(),
+                LatLng position = new LatLng(busStop.getLatitude(),
                         busStop.getLongtitude()
                 );
-//
-//                CircleOptions circleOptions = new CircleOptions().center(position).radius(radiusInMeters).fillColor(shadeColor).strokeColor(strokeColor).strokeWidth(2);
-//                mMap.addCircle(circleOptions);
-//                MarkerOptions markerOptions = new MarkerOptions().position(position);
-//                mMap.addMarker(markerOptions);
-
 
                 Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(
-                                new LatLng(busStop.getLatitude(),
-                                        busStop.getLongtitude()
-                                )).title(busStop.getStopName())
+                        .position(position).title(busStop.getStopName())
                         .snippet(Integer.toString(busStop.getStopNum()) + " click for detail")
                         .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
                 markers.add(marker);
             }
-            if (updateBusMarkerFlag) {
-                Marker marker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(icon))
-                        .position(
-                                new LatLng(busLat,
-                                        busLng
-                                )).title("Bus I Location")
-                        .snippet("lat:" + busLat + ",lng:" + busLng));
-                markers.add(marker);
-            }
+
+
             setMapMarker(mMap, markers);
         }
-        for (int i = 0; i < mRoutes.size(); i++) {
-            PolylineOptions newOpt = new PolylineOptions();
-            newOpt.addAll(mRoutes.get(i))
-                    .width(12)
-                    .color(Color.parseColor("#05b1fb"))//Google maps blue color
-                    .geodesic(true);
-            mMap.addPolyline(newOpt);
-        }
+//        for (int i = 0; i < mRoutes.size(); i++) {
+//            PolylineOptions newOpt = new PolylineOptions();
+//            newOpt.addAll(mRoutes.get(i))
+//                    .width(12)
+//                    .color(Color.parseColor("#05b1fb"))//Google maps blue color
+//                    .geodesic(true);
+//            mMap.addPolyline(newOpt);
+//        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnInfoWindowClickListener(this);
-
         mMap.setPadding(0, 0, 30, 180);
 
         enableMyLocation();
@@ -335,26 +326,11 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
             LatLng latLng = new LatLng(latitude, longitude);
-//        googleMap.addMarker(new MarkerOptions().position(latLng));
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
-
-//
-//        if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-//                == PackageManager.PERMISSION_GRANTED) {
-//            mMap.setMyLocationEnabled(true);
-//        } else {
-//            // Show rationale and request permission.
-//                    Toast.makeText(this.getContext(), "Dont have the permission to access current location",
-//                Toast.LENGTH_SHORT).show();
-//        }
-
-
-
     }
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -412,7 +388,6 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         mBuilder.setSmallIcon(R.drawable.common_full_open_on_phone);
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(detail);
-
         mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
 
         //LED
@@ -451,7 +426,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                     mRoutes.addAll(list);
                 }
                 if (mBusStops.size() <= mRoutes.size() + 1) {
-                    updateMap();
+                    updateRouteStopsOnMap();
                 }
             }
 
@@ -512,6 +487,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             int padding = 0; // offset from edges of the map in pixels
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             // No animate
+            Log.e(TAG, "move camera");
             googleMap.moveCamera(cu);
 
             // Animate

@@ -2,6 +2,7 @@ package com.thrifa.ruofei.bus_locator.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.thrifa.ruofei.bus_locator.api.BusLocatorApi;
 import com.thrifa.ruofei.bus_locator.api.BusRouteApi;
@@ -10,6 +11,7 @@ import com.thrifa.ruofei.bus_locator.api.FirebaseNotificationApi;
 import com.thrifa.ruofei.bus_locator.api.GoogleMapApi;
 import com.thrifa.ruofei.bus_locator.api.SubscribeBusAlarmApi;
 import com.thrifa.ruofei.bus_locator.api.UnsubscribeBusstopApi;
+import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.pojo.BusStop;
 import com.thrifa.ruofei.bus_locator.pojo.BusTracker;
 import com.thrifa.ruofei.bus_locator.pojo.GoogleMapDirection;
@@ -150,6 +152,15 @@ public class Server {
         this.setApi((BusLocatorApi.class));
         BusLocatorApi service = (BusLocatorApi)this.getService();
         return service.subscribeBus(id,token);
+    }
+
+    public Call<BusInfo> getBusInfo(String busID){
+        this.buildRetrofit((Constants.FIRE_BASE_NOTIFICATION_URL));
+        this.setApi((BusLocatorApi.class));
+        BusLocatorApi service = (BusLocatorApi)this.getService();
+        Log.e(TAG,"busID:" + busID);
+        return service.getBusLocation(busID);
+
     }
 
     //clear shared preference

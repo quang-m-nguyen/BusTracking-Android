@@ -46,9 +46,6 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // TODO(developer): Handle FCM messages here.
-        // If the application is in the foreground handle both data and notification messages here.
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
         //Calling method to generate notification
 //        sendNotification(remoteMessage.getNotification().getBody());
         context = getApplicationContext();
@@ -63,7 +60,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                     updateAlarmTime(data);
                 } else if (content_type.equals("BusstopTimeUpdate")) {
                     updateBusstopTime(data);
-                } else if (content_type.equals("BusCoordinate")) {
+                } else if (content_type.equals("CoordinatesUpdate")) {
                     updateBusCoordinate(data);
                 }
             }
@@ -120,12 +117,10 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         //Check if the user set up an alarm
         String flag = sharedPref.getString(context.getString(R.string.alarm_flag_key), "false");
         if (flag.equals("true")) {
-            Log.e(TAG, "typecheck correct2 ");
             // Set current remaining time
             Double newRemainingTimeDouble = Double.parseDouble(data.get("remain_time"));
             Integer newRemainingTime = (int) (newRemainingTimeDouble * 60); // convert sec
             if (newRemainingTime != null) {
-                Log.e(TAG, "typecheck correct3 ");
                 // Set current remaining time
                 // TODO: change server side to send time in sec
 //                            editor.putInt(getString(R.string.current_remaining_time_key), newRemainingTime * 60);
@@ -206,6 +201,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
     }
 
     private void updateBusCoordinate(Map<String, String> data) {
+        Log.e(TAG, "broadcast lat");
         String busLat = data.get("lat");
         String busLng = data.get("lng");
 //        Log.e(TAG, "get broad cast lat" + busLat + ", lng:" + busLng);
