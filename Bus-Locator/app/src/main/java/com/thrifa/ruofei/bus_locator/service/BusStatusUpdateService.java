@@ -19,13 +19,8 @@ import android.util.Log;
 
 import com.thrifa.ruofei.bus_locator.R;
 import com.thrifa.ruofei.bus_locator.routes.RouteListActivity;
-import com.thrifa.ruofei.bus_locator.api.BusLocatorApi;
 import com.thrifa.ruofei.bus_locator.util.Constants;
 import com.thrifa.ruofei.bus_locator.util.Server;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by ruofei on 5/31/2016.

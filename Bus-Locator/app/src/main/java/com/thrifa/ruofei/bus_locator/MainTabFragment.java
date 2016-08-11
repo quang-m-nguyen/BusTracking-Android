@@ -244,7 +244,8 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                     .position(
                             new LatLng(mBus.getLat(),
                                     mBus.getLng()
-                            )).title("Bus " + mCurrentRoute + " Location"));
+                            )).title("Bus " + mCurrentRoute + " Location")
+                    .zIndex(0));
             mUpdateBusTask = new GetBusInfoTask();
             mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 2000));
         } else {

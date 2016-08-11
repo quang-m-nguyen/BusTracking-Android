@@ -48,8 +48,8 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
 
 //            Server server = Server.getInstance(context);
 //            server.buildRetrofit(Constants.BUS_LOCATOR_URL);
-//            server.setApi(BusLocatorApi.class);
-//            BusLocatorApi service = (BusLocatorApi) server.getService();
+//            server.setApi(ThrifaServerApi.class);
+//            ThrifaServerApi service = (ThrifaServerApi) server.getService();
 //            Call<Void> call = service.subscribeBus(routeName,token);
 //
 //            call.enqueue(new Callback<Void>() {

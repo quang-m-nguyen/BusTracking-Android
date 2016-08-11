@@ -4,13 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.thrifa.ruofei.bus_locator.api.BusLocatorApi;
-import com.thrifa.ruofei.bus_locator.api.BusRouteApi;
-import com.thrifa.ruofei.bus_locator.api.BusTrakerApi;
-import com.thrifa.ruofei.bus_locator.api.FirebaseNotificationApi;
+import com.thrifa.ruofei.bus_locator.api.ThrifaServerApi;
 import com.thrifa.ruofei.bus_locator.api.GoogleMapApi;
-import com.thrifa.ruofei.bus_locator.api.SubscribeBusAlarmApi;
-import com.thrifa.ruofei.bus_locator.api.UnsubscribeBusstopApi;
 import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.pojo.BusStop;
 import com.thrifa.ruofei.bus_locator.pojo.BusTracker;
@@ -29,18 +24,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by ruofei on 5/26/2016.
  */
 public class Server {
-    static final String TAG = "SERVER";
+    static final String TAG = this.getClass().getName();
     static volatile Server instance;
-
     Context context;
-    String serverUrl = "http://52.33.19.46/";
-
+    String serverUrl;
     Retrofit retrofit;
     SharedPreferences storage;
-
     OkHttpClient.Builder httpClient;
 
-//    Class mApi;
     Class<?> mApi;
 
     public enum Status {
@@ -48,7 +39,7 @@ public class Server {
         NO_CONNECTION,
     }
 
-    private Server(Context context){
+    private  Server(Context context){
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -62,7 +53,7 @@ public class Server {
         //default api and url
         // TODO: update error handling if no api and url setup
         buildRetrofit(serverUrl);
-        mApi = BusLocatorApi.class;
+        mApi = ThrifaServerApi.class;
     }
 
 
@@ -91,8 +82,8 @@ public class Server {
     public Call<List<BusStop>> getBusStopsCall(String routeName)
     {
         this.buildRetrofit(Constants.BUS_LOCATOR_URL);
-        this.setApi(BusLocatorApi.class);
-        BusLocatorApi service = (BusLocatorApi) this.getService();
+        this.setApi(ThrifaServerApi.class);
+        ThrifaServerApi service = (ThrifaServerApi) this.getService();
         return service.getBusStop(routeName);
     }
     public Call<GoogleMapDirection> getRouteCall(String oriLatLng, String destLatLng)
@@ -106,58 +97,58 @@ public class Server {
     public Call<Void> sendNotification(String token, int routeID, int busStopID)
     {
         this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(FirebaseNotificationApi.class);
-        FirebaseNotificationApi service = (FirebaseNotificationApi)this.getService();
+        this.setApi(ThrifaServerApi.class);
+        ThrifaServerApi service = (ThrifaServerApi)this.getService();
         return service.sendToken(token,routeID,busStopID);
     }
 
     public Call<Void> unsubscribeBusstop(String busStopID, String token)
     {
         this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(UnsubscribeBusstopApi.class);
-        UnsubscribeBusstopApi service = (UnsubscribeBusstopApi)this.getService();
+        this.setApi(ThrifaServerApi.class);
+        ThrifaServerApi service = (ThrifaServerApi)this.getService();
         return service.unsubscribeBusstop(busStopID,token);
     }
 
     public Call<List<BusTracker>> getBusTrakerCall(String busstopID, String token){
         this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(BusTrakerApi.class);
-        BusTrakerApi service = (BusTrakerApi)this.getService();
+        this.setApi(ThrifaServerApi.class);
+        ThrifaServerApi service = (ThrifaServerApi)this.getService();
         return service.getBusTracker(busstopID,token, "Android");
     }
 
     public Call<Void> subscribeBusAlarm(String routeID, String busstopID, String token){
         this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(SubscribeBusAlarmApi.class);
-        SubscribeBusAlarmApi service = (SubscribeBusAlarmApi)this.getService();
+        this.setApi(ThrifaServerApi.class);
+        ThrifaServerApi service = (ThrifaServerApi)this.getService();
         return service.subscribeBusAlarm(routeID,busstopID,token, "Android");
     }
 
     public Call<Void> unsubscribeBusAlarm(String routeID, String busstopID, String token){
         this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(SubscribeBusAlarmApi.class);
-        SubscribeBusAlarmApi service = (SubscribeBusAlarmApi)this.getService();
+        this.setApi(ThrifaServerApi.class);
+        ThrifaServerApi service = (ThrifaServerApi)this.getService();
         return service.unsubscribeBusAlarm(routeID,busstopID,token);
     }
 
     public Call<List<Route>> getBusRoute(){
         this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(BusRouteApi.class);
-        BusRouteApi service = (BusRouteApi) this.getService();
+        this.setApi(ThrifaServerApi.class);
+        ThrifaServerApi service = (ThrifaServerApi) this.getService();
         return service.getBusRoute();
     }
 
     public Call<Void> subscribeBus(String id, String token){
         this.buildRetrofit((Constants.FIRE_BASE_NOTIFICATION_URL));
-        this.setApi((BusLocatorApi.class));
-        BusLocatorApi service = (BusLocatorApi)this.getService();
+        this.setApi((ThrifaServerApi.class));
+        ThrifaServerApi service = (ThrifaServerApi)this.getService();
         return service.subscribeBus(id,token);
     }
 
     public Call<BusInfo> getBusInfo(String busID){
         this.buildRetrofit((Constants.FIRE_BASE_NOTIFICATION_URL));
-        this.setApi((BusLocatorApi.class));
-        BusLocatorApi service = (BusLocatorApi)this.getService();
+        this.setApi((ThrifaServerApi.class));
+        ThrifaServerApi service = (ThrifaServerApi)this.getService();
         Log.e(TAG,"busID:" + busID);
         return service.getBusLocation(busID);
 

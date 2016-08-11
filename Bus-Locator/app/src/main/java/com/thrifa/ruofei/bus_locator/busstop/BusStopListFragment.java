@@ -17,7 +17,7 @@ import android.widget.ListView;
 import com.thrifa.ruofei.bus_locator.MainActivity;
 import com.thrifa.ruofei.bus_locator.MainTabFragment;
 import com.thrifa.ruofei.bus_locator.R;
-import com.thrifa.ruofei.bus_locator.api.BusLocatorApi;
+import com.thrifa.ruofei.bus_locator.api.ThrifaServerApi;
 import com.thrifa.ruofei.bus_locator.pojo.BusStop;
 import com.thrifa.ruofei.bus_locator.util.Constants;
 import com.thrifa.ruofei.bus_locator.util.Server;
@@ -69,8 +69,8 @@ public class BusStopListFragment extends Fragment {
     public void getBusStop(String RouteName) {
         Server server =  Server.getInstance(this.getContext());
         server.buildRetrofit(Constants.BUS_LOCATOR_URL);
-        server.setApi(BusLocatorApi.class);
-        BusLocatorApi service = (BusLocatorApi)server.getService();
+        server.setApi(ThrifaServerApi.class);
+        ThrifaServerApi service = (ThrifaServerApi)server.getService();
 
         Call<List<BusStop>> call = service.getBusStop("E");
 
