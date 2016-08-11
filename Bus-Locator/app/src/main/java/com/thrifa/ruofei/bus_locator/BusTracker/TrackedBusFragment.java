@@ -18,6 +18,7 @@ import com.thrifa.ruofei.bus_locator.RecycleViewDividerItemDecoration;
 import com.thrifa.ruofei.bus_locator.pojo.BusTracker;
 import com.thrifa.ruofei.bus_locator.util.Constants;
 import com.thrifa.ruofei.bus_locator.util.Server;
+import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,7 @@ public class TrackedBusFragment extends Fragment {
         Log.d(TAG, "subscribe");
 //        String token = FirebaseInstanceId.getInstance().getToken();
         //send notification request
-        Server server = Server.getInstance(this.getContext());
+        ThrifaServer server =(ThrifaServer) ThrifaServer.getInstance(this.getContext());
         Call<List<BusTracker>> call = server.getBusTrakerCall(busstopID, token);
         call.enqueue(new Callback<List<BusTracker>>() {
             @Override
@@ -124,7 +125,7 @@ public class TrackedBusFragment extends Fragment {
 
     private void unsubscribeBusTrakerData() {
 
-        Server server = Server.getInstance(this.getContext());
+        ThrifaServer server = (ThrifaServer)Server.getInstance(this.getContext());
         Call<Void> call = server.unsubscribeBusstop(busstopID, token);
         Log.d(TAG, "send token to unsubscribe");
         call.enqueue(new Callback<Void>() {

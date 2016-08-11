@@ -17,6 +17,7 @@ import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
 import com.thrifa.ruofei.bus_locator.util.Constants;
 import com.thrifa.ruofei.bus_locator.util.Server;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -93,7 +94,7 @@ public class EditAlarmDialogFragment extends DialogFragment {
     }
 
     private void unsubscribeAlarm(String routeID, String stopID, String token) {
-        Server server = Server.getInstance(context);
+        ThrifaServer server =(ThrifaServer) Server.getInstance(context);
         Call<Void> call = server.unsubscribeBusAlarm(routeID, stopID, token);
         Log.d(TAG, "send token to unsubscribe");
         call.enqueue(new Callback<Void>() {

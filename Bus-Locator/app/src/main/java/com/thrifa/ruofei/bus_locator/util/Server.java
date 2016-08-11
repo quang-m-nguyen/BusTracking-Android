@@ -24,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by ruofei on 5/26/2016.
  */
 public class Server {
-    static final String TAG = this.getClass().getName();
+    final String TAG = this.getClass().getName();
     static volatile Server instance;
     Context context;
     String serverUrl;
@@ -39,7 +39,11 @@ public class Server {
         NO_CONNECTION,
     }
 
-    private  Server(Context context){
+    public Server(){
+
+    }
+
+    public Server(Context context){
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -50,11 +54,10 @@ public class Server {
         // add logging as last interceptor
         httpClient.addInterceptor(logging);
 
-        //default api and url
-        // TODO: update error handling if no api and url setup
+        serverUrl = Constants.GOOGLE_MAP_URL;
+
         buildRetrofit(serverUrl);
-        mApi = ThrifaServerApi.class;
-    }
+        mApi = GoogleMapApi.class;    }
 
 
     public static synchronized Server getInstance(final Context context) {
@@ -79,13 +82,14 @@ public class Server {
         mApi = api;
     }
 
-    public Call<List<BusStop>> getBusStopsCall(String routeName)
-    {
-        this.buildRetrofit(Constants.BUS_LOCATOR_URL);
-        this.setApi(ThrifaServerApi.class);
-        ThrifaServerApi service = (ThrifaServerApi) this.getService();
-        return service.getBusStop(routeName);
-    }
+
+//    public Call<List<BusStop>> getBusStopsCall(String routeName)
+//    {
+//        this.buildRetrofit(Constants.BUS_LOCATOR_URL);
+//        this.setApi(ThrifaServerApi.class);
+//        ThrifaServerApi service = (ThrifaServerApi) this.getService();
+//        return service.getBusStop(routeName);
+//    }
     public Call<GoogleMapDirection> getRouteCall(String oriLatLng, String destLatLng)
     {
         this.buildRetrofit(Constants.GOOGLE_MAP_URL);
@@ -93,66 +97,65 @@ public class Server {
         GoogleMapApi service = (GoogleMapApi) this.getService();
         return service.getRoutePath(oriLatLng, destLatLng, false, "driving", false, Constants.GOOGLE_MAP_API_KEY);
     }
-
-    public Call<Void> sendNotification(String token, int routeID, int busStopID)
-    {
-        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(ThrifaServerApi.class);
-        ThrifaServerApi service = (ThrifaServerApi)this.getService();
-        return service.sendToken(token,routeID,busStopID);
-    }
-
-    public Call<Void> unsubscribeBusstop(String busStopID, String token)
-    {
-        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(ThrifaServerApi.class);
-        ThrifaServerApi service = (ThrifaServerApi)this.getService();
-        return service.unsubscribeBusstop(busStopID,token);
-    }
-
-    public Call<List<BusTracker>> getBusTrakerCall(String busstopID, String token){
-        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(ThrifaServerApi.class);
-        ThrifaServerApi service = (ThrifaServerApi)this.getService();
-        return service.getBusTracker(busstopID,token, "Android");
-    }
-
-    public Call<Void> subscribeBusAlarm(String routeID, String busstopID, String token){
-        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(ThrifaServerApi.class);
-        ThrifaServerApi service = (ThrifaServerApi)this.getService();
-        return service.subscribeBusAlarm(routeID,busstopID,token, "Android");
-    }
-
-    public Call<Void> unsubscribeBusAlarm(String routeID, String busstopID, String token){
-        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(ThrifaServerApi.class);
-        ThrifaServerApi service = (ThrifaServerApi)this.getService();
-        return service.unsubscribeBusAlarm(routeID,busstopID,token);
-    }
-
-    public Call<List<Route>> getBusRoute(){
-        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
-        this.setApi(ThrifaServerApi.class);
-        ThrifaServerApi service = (ThrifaServerApi) this.getService();
-        return service.getBusRoute();
-    }
-
-    public Call<Void> subscribeBus(String id, String token){
-        this.buildRetrofit((Constants.FIRE_BASE_NOTIFICATION_URL));
-        this.setApi((ThrifaServerApi.class));
-        ThrifaServerApi service = (ThrifaServerApi)this.getService();
-        return service.subscribeBus(id,token);
-    }
-
-    public Call<BusInfo> getBusInfo(String busID){
-        this.buildRetrofit((Constants.FIRE_BASE_NOTIFICATION_URL));
-        this.setApi((ThrifaServerApi.class));
-        ThrifaServerApi service = (ThrifaServerApi)this.getService();
-        Log.e(TAG,"busID:" + busID);
-        return service.getBusLocation(busID);
-
-    }
+//
+//    public Call<Void> sendNotification(String token, int routeID, int busStopID)
+//    {
+//        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
+//        this.setApi(ThrifaServerApi.class);
+//        ThrifaServerApi service = (ThrifaServerApi)this.getService();
+//        return service.sendToken(token,routeID,busStopID);
+//    }
+//
+//    public Call<Void> unsubscribeBusstop(String busStopID, String token)
+//    {
+//        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
+//        this.setApi(ThrifaServerApi.class);
+//        ThrifaServerApi service = (ThrifaServerApi)this.getService();
+//        return service.unsubscribeBusstop(busStopID,token);
+//    }
+//
+//    public Call<List<BusTracker>> getBusTrakerCall(String busstopID, String token){
+//        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
+//        this.setApi(ThrifaServerApi.class);
+//        ThrifaServerApi service = (ThrifaServerApi)this.getService();
+//        return service.getBusTracker(busstopID,token, "Android");
+//    }
+//
+//    public Call<Void> subscribeBusAlarm(String routeID, String busstopID, String token){
+//        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
+//        this.setApi(ThrifaServerApi.class);
+//        ThrifaServerApi service = (ThrifaServerApi)this.getService();
+//        return service.subscribeBusAlarm(routeID,busstopID,token, "Android");
+//    }
+//
+//    public Call<Void> unsubscribeBusAlarm(String routeID, String busstopID, String token){
+//        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
+//        this.setApi(ThrifaServerApi.class);
+//        ThrifaServerApi service = (ThrifaServerApi)this.getService();
+//        return service.unsubscribeBusAlarm(routeID,busstopID,token);
+//    }
+//
+//    public Call<List<Route>> getBusRoute(){
+//        this.buildRetrofit(Constants.FIRE_BASE_NOTIFICATION_URL);
+//        this.setApi(ThrifaServerApi.class);
+//        ThrifaServerApi service = (ThrifaServerApi) this.getService();
+//        return service.getBusRoute();
+//    }
+//
+//    public Call<Void> subscribeBus(String id, String token){
+//        this.buildRetrofit((Constants.FIRE_BASE_NOTIFICATION_URL));
+//        this.setApi((ThrifaServerApi.class));
+//        ThrifaServerApi service = (ThrifaServerApi)this.getService();
+//        return service.subscribeBus(id,token);
+//    }
+//
+//    public Call<BusInfo> getBusInfo(String busID){
+//        this.buildRetrofit((Constants.FIRE_BASE_NOTIFICATION_URL));
+//        this.setApi((ThrifaServerApi.class));
+//        ThrifaServerApi service = (ThrifaServerApi)this.getService();
+//        Log.e(TAG,"busID:" + busID);
+//        return service.getBusLocation(busID);
+//    }
 
     //clear shared preference
     public void reset() {
@@ -168,5 +171,4 @@ public class Server {
         Object service = retrofit.create(mApi);
         return service;
     }
-
 }

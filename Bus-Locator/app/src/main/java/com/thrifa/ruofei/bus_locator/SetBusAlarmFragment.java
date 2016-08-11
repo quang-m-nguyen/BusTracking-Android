@@ -22,6 +22,7 @@ import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
 import com.thrifa.ruofei.bus_locator.service.BusStatusUpdateService;
 import com.thrifa.ruofei.bus_locator.util.Constants;
 import com.thrifa.ruofei.bus_locator.util.Server;
+import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -100,7 +101,7 @@ public class SetBusAlarmFragment extends DialogFragment {
                         // send request
                         //set alarm add alarm to alarm list
 
-                        Server server = Server.getInstance(context);
+                        ThrifaServer server = (ThrifaServer)Server.getInstance(context);
                         Call<Void> call = server.subscribeBusAlarm(routeID, busstopID, token);
                         Log.d(TAG, "send token to subscribe alarm");
                         call.enqueue(new Callback<Void>() {

@@ -27,6 +27,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 
 import java.util.Map;
 
@@ -291,7 +292,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
     }
 
     private void unsubscribeAlarm(String routeID, String stopID, String token){
-        Server server = Server.getInstance(context);
+        ThrifaServer server =(ThrifaServer) Server.getInstance(context);
         Call<Void> call = server.unsubscribeBusAlarm(routeID,stopID, token);
         Log.d(TAG, "send token to unsubscribe");
         call.enqueue(new Callback<Void>() {

@@ -58,6 +58,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 //import com.mypopsy.drawable.SearchArrowDrawable;
 //import com.mypopsy.drawable.ToggleDrawable;
 //import com.mypopsy.drawable.model.CrossModel;
@@ -108,14 +109,14 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             } catch (Exception e) {
 
             }
-            Server server = Server.getInstance(context);
+            ThrifaServer server = (ThrifaServer)Server.getInstance(context);
             Call<BusInfo> call = server.getBusInfo(routeID);
             call.enqueue(new Callback<BusInfo>() {
                 @Override
                 public void onResponse(Call<BusInfo> call, Response<BusInfo> response) {
                     if (response != null) {
                         mBus = response.body();
-                            updateBusLocation();
+                        updateBusLocation();
                     }
                     return;
                 }
@@ -184,7 +185,8 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         super.onPause();
         if (mReceiver != null)
             getActivity().unregisterReceiver(mReceiver);
-        mUpdateBusTask.cancel(true);
+        if (mUpdateBusTask != null)
+            mUpdateBusTask.cancel(true);
     }
 
     @Override
@@ -209,7 +211,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 String routeName = intent.getStringExtra(Constants.ROUTE_NAME_KEY);
                 mCurrentRoute = routeName;
                 if (callFrom.equals(RoutesAdapter.class.getName())) {
-                    Server server = Server.getInstance(this.getContext());
+                    ThrifaServer server =(ThrifaServer) Server.getInstance(this.getContext());
                     Call<List<BusStop>> call = server.getBusStopsCall(routeName);
                     call.enqueue(new Callback<List<BusStop>>() {
                         @Override

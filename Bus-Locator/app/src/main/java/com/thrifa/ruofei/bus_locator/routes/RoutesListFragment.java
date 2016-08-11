@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.thrifa.ruofei.bus_locator.R;
 import com.thrifa.ruofei.bus_locator.util.Server;
+import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class RoutesListFragment extends Fragment {
 
 
         //send notification request
-        Server server = Server.getInstance(this.getContext());
+        ThrifaServer server = ThrifaServer.getInstance(this.getContext());
         Call<List<Route>> call = server.getBusRoute();
         call.enqueue(new Callback<List<Route>>() {
             @Override
