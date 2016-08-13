@@ -1,5 +1,6 @@
 package com.thrifa.ruofei.bus_locator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,15 +9,17 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
 import com.thrifa.ruofei.bus_locator.customWidget.NonSwipeableViewPager;
+import com.thrifa.ruofei.bus_locator.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     final String TAG = this.getClass().getName();
 //    static public String mCurrentRoute = "Unknown";
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         viewPager = (NonSwipeableViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
@@ -49,6 +53,24 @@ public class MainActivity extends AppCompatActivity  {
         tabLayout.setupWithViewPager(viewPager);
 
         setupTabIcons();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+//        Intent intent = this.getIntent();
+//        if (intent != null) {
+//            try {
+//
+//                String callFrom = intent.getStringExtra(Constants.INTENT_CALL_FROM_KEY);
+//                if (callFrom.equals(SetBusAlarmFragment.class.getName())) {
+//                    viewPager.setCurrentItem(1);
+//                }
+//            }catch (Exception e){
+//
+//            }
+//        }
     }
 
     private void setupViewPager(ViewPager viewPager) {

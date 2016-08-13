@@ -91,9 +91,14 @@ public class ThrifaServer extends Server {
 
     public Call<BusInfo> getBusInfo(String busID) {
         ThrifaServerApi service = (ThrifaServerApi) this.getService();
-        Log.e(TAG, "busID:" + busID);
         return service.getBusLocation(busID);
     }
+
+    public Call<List<Route>> getCityRouteInfo(String zipCode){
+        ThrifaServerApi service = (ThrifaServerApi) this.getService();
+        return service.getCityRouteInfo(zipCode);
+    }
+
 
     //clear shared preference
     public void reset() {

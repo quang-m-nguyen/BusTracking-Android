@@ -1,10 +1,12 @@
 package com.thrifa.ruofei.bus_locator.BusTracker;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +24,7 @@ import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,6 +42,7 @@ public class TrackedBusFragment extends Fragment {
     public final String TAG = this.getClass().getName();
     String busstopID;
     String token;
+    Context context;
 
 
     private RecyclerView recyclerView;
@@ -59,6 +63,8 @@ public class TrackedBusFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_tracked_bus, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_tracked_bus);
         mTrackedBusAdapter = new TrackedBusAdapter(trackedBusList);
+
+        context = rootView.getContext();
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.addItemDecoration(new RecycleViewDividerItemDecoration(this.getContext()));
@@ -85,11 +91,42 @@ public class TrackedBusFragment extends Fragment {
         return rootView;
     }
 
+//
+//    private class GetBusInfoTask extends AsyncTask<Pair<String, Integer>, Void, Integer> {
+//        protected Integer doInBackground(Pair<String, Integer>... params) {
+//            String stopID = params[0].first;
+//            Integer interval = params[0].second;
+//            try {
+//                this.wait(interval);
+//            } catch (Exception e) {
+//
+//            }
+//            ThrifaServer server = (ThrifaServer) Server.getInstance(context);
+//            Call<BusInfo> call = server.getBusInfo(routeID);
+//            call.enqueue(new Callback<BusInfo>() {
+//                @Override
+//                public void onResponse(Call<BusInfo> call, Response<BusInfo> response) {
+//                    if (response != null) {
+//                        mBus = response.body();
+//                        updateBusLocation();
+//                    }
+//                    return;
+//                }
+//
+//                @Override
+//                public void onFailure(Call<BusInfo> call, Throwable t) {
+//                    Log.e(TAG, "update error:" + t.toString());
+//                }
+//            });
+//            return interval;
+//        }
+//    }
+
     private void subscribeBusTrackerData() {
         Log.d(TAG, "subscribe");
 //        String token = FirebaseInstanceId.getInstance().getToken();
         //send notification request
-        ThrifaServer server =(ThrifaServer) ThrifaServer.getInstance(this.getContext());
+        ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(this.getContext());
         Call<List<BusTracker>> call = server.getBusTrakerCall(busstopID, token);
         call.enqueue(new Callback<List<BusTracker>>() {
             @Override
@@ -99,7 +136,10 @@ public class TrackedBusFragment extends Fragment {
 
                 for (int i = 0; i < trackerList.size(); i++) {
                     final String routeID = trackerList.get(i).getRouteID();
-                    trackedBusList.add(new TrackedBus(routeID, "unknown", "unkonwn"));
+                    final String routeName = trackerList.get(i).getRouteName();
+                    final String stopID = trackerList.get(i).getStopID();
+//                    Log.e(TAG, "test output: " + stopID + "route:" + routeID);
+                    trackedBusList.add(new TrackedBus(routeID, routeName, "unknown", "unkonwn",stopID));
                 }
                 Handler mainThread = new Handler(Looper.getMainLooper());
                 // In your worker thread
@@ -115,6 +155,7 @@ public class TrackedBusFragment extends Fragment {
                     }
                 });
             }
+
             @Override
             public void onFailure(Call<List<BusTracker>> call, Throwable t) {
                 Log.e(TAG, "Fail:" + t.getMessage());
@@ -125,7 +166,7 @@ public class TrackedBusFragment extends Fragment {
 
     private void unsubscribeBusTrakerData() {
 
-        ThrifaServer server = (ThrifaServer)Server.getInstance(this.getContext());
+        ThrifaServer server = (ThrifaServer) Server.getInstance(this.getContext());
         Call<Void> call = server.unsubscribeBusstop(busstopID, token);
         Log.d(TAG, "send token to unsubscribe");
         call.enqueue(new Callback<Void>() {

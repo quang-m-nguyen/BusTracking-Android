@@ -58,4 +58,9 @@ public interface ThrifaServerApi {
 
     @GET("GetRoute")
     Call<List<Route>> getBusRoute();
+
+    @GET("GetInfo/{zipCode}")
+    Call<List<Route>> getCityRouteInfo(
+            @Path("zipCode") String zipCode
+    );
 }

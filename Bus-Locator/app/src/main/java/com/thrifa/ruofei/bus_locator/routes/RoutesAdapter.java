@@ -2,6 +2,8 @@ package com.thrifa.ruofei.bus_locator.routes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +31,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
     private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public TextView routeNum, routeName;
+        public TextView routeNum, routeName,routeOpDays,routeOpHours;
 
         public  MyViewHolder(View view){
             super(view);
@@ -37,6 +39,8 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
             context = view.getContext();
             routeNum = (TextView) view.findViewById(R.id.routeNum);
             routeName = (TextView) view.findViewById(R.id.routeName);
+            routeOpDays = (TextView) view.findViewById(R.id.routeOpDaysCardView);
+            routeOpHours = (TextView) view.findViewById(R.id.routeOpHoursCardView);
         }
 
         @Override
@@ -72,6 +76,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
             MainTabFragment.mCurrentRoute = routeName;
             intent.putExtra(Constants.ROUTE_NAME_KEY,routeName);
             intent.putExtra(Constants.INTENT_CALL_FROM_KEY, TAG);
+            intent.putExtra(Constants.ROUTE_COLOR, v.getDrawingCacheBackgroundColor());
             context.startActivity(intent);
         }
     }
@@ -92,15 +97,22 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
         Route route = routesList.get(position);
         holder.routeNum.setText(route.getRouteNum());
         holder.routeName.setText(route.getRouteName());
+        holder.routeOpDays.setText(route.getOpDays());
+        holder.routeOpHours.setText(route.getOpHours());
 
         CardView cardView = (CardView)holder.itemView;
 
-        if(position % 3 ==0)
-            cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.materialColorGreen));
-        else if(position % 3==1)
-            cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.materialColorCyan));
-        else if(position %3 ==2)
-            cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.materialColorRed));
+        if(route.getColor() == null) {
+            if (position % 3 == 0)
+                cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.materialColorGreen));
+            else if (position % 3 == 1)
+                cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.materialColorCyan));
+            else if (position % 3 == 2)
+                cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.materialColorRed));
+        }
+        else {
+            cardView.setCardBackgroundColor(Color.parseColor(route.getColor()));
+        }
     }
 
     @Override

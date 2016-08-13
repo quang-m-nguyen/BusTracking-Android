@@ -165,6 +165,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             }
         });
 
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -172,10 +173,28 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         View locationButton = ((View) view.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
 
-        // position on right bottom
+//        // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-//        rlp.setMargins(0, 0, 30, 105);
+//        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+//        rlp.addRule(RelativeLayout.ALIGN_LEFT, RelativeLayout.TRUE);
+        rlp.setMargins(0, 0, 30, 105);
+//                   rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//            rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//            rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+//            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+
+
+        View layout = inflater.inflate(R.layout.busstop_toast, (ViewGroup) view.findViewById(R.id.busstop_toast_layout_root));
+
+        Toast toast = new Toast(getContext());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
+//                    this.getActivity().getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.routeContainer, new RoutesListFragment())
+//                    .commit();
         return view;
     }
 
@@ -373,6 +392,9 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(this.getContext(), "Click busstop num:" + marker.getSnippet(),
                 Toast.LENGTH_SHORT).show();
+
+
+
         // pop up a window
         Intent busStopPopUp = new Intent(this.getContext(), BusStopPopupActivity.class);
         busStopPopUp.putExtra(Constants.INTENT_EXTRA_BUS_STOP_NAME, marker.getTitle());

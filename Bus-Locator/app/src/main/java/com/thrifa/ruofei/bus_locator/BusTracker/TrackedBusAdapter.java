@@ -44,22 +44,29 @@ public class TrackedBusAdapter extends RecyclerView.Adapter<TrackedBusAdapter.My
         @Override
         public void onClick(View v) {
             // TODO: user shared preference
-            String routeID = trackedBusRoute.getText().toString();
+
+            String routeName = trackedBusRoute.getText().toString();
+            String routeID = "99163" + routeName;
             String token  = FirebaseInstanceId.getInstance().getToken();
             SharedPreferences sharedPref = context.getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
 //            String defaultValue = context.getString(R.string.disired_bus_default);
             String currentBusstopID = sharedPref.getString(context.getString(R.string.currenct_selected_busstop_key), "Unselect Current Busstop, ERROR");
             Log.e(TAG, "RouteID:" + currentBusstopID);
-            setUpNotification(routeID,currentBusstopID,token);
+
+            //TODO: update this
+            setUpNotification(routeID,routeName, currentBusstopID,token);
         }
+
+
     }
 
-    public void setUpNotification(String routeID, String stopID, String token) {
+    public void setUpNotification(String routeID,String routeName, String stopID, String token) {
 
         Bundle bundle = new Bundle();
         bundle.putString(Constants.ROUTE_ID_KEY, routeID);
         bundle.putString(Constants.BUSSTOP_ID_KEY, stopID);
         bundle.putString(Constants.DEVICE_TOKEN_KEY, token);
+        bundle.putString(Constants.ROUTE_NAME_KEY, routeName);
         DialogFragment newFragment = new SetBusAlarmFragment();
         newFragment.setArguments(bundle);
 
@@ -81,7 +88,7 @@ public class TrackedBusAdapter extends RecyclerView.Adapter<TrackedBusAdapter.My
     public void onBindViewHolder(MyViewHolder holder, int position) {
         TrackedBus trackedBus = trackedBusList.get(position);
         holder.trackedBusRoute.setText(trackedBus.getRouteName());
-        holder.trackedBusTime.setText(trackedBus.getEstimatedTime());
+        holder.trackedBusTime.setText(trackedBus.getEstimatedTime() + " Mins");
 //        holder.trackedBusstopNum.setText(trackedBus.getBusstopNum());
         holder.trackedBusstopNum.setText("click to set alarm");
     }

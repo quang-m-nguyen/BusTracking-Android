@@ -3,41 +3,69 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/activity_vertical_margin"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
     app:cardElevation="@dimen/activity_vertical_margin"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--app:cardCornerRadius="@dimen/activity_vertical_margin"-->
     <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="16dp" />
-
-        <TextView
-            android:id="@+id/routeName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/imageView"
-            android:text="Title"
-            android:textSize="30sp" />
+        <!--<ImageView-->
+            <!--android:id="@+id/imageView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_marginRight="16dp" />-->
 
         <TextView
             android:id="@+id/routeNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/routeName"
-            android:layout_toRightOf="@+id/imageView"
-            android:text="Description" />
+            android:layout_alignParentTop="true"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="64dp"
+            android:textColor="@color/colorAccent"
+            android:text="Num"
+            android:textSize="32dp" />
+
+        <TextView
+            android:id="@+id/routeName"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/routeNum"
+            android:paddingBottom="8dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="24dp"
+            android:text="Route Name" />
+
+        <TextView
+            android:id="@+id/routeOpDaysCardView"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/routeNum"
+            android:layout_below="@id/routeName"
+            android:textColor="@color/colorAccent"
+            android:textSize="12dp"
+            />
+         <TextView
+            android:id="@+id/routeOpHoursCardView"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/routeNum"
+            android:layout_below="@id/routeOpDaysCardView"
+            android:textColor="@color/colorAccent"
+            android:textSize="12dp"
+            android:text="Route Description" />           android:text="Route Description" />
 
     </RelativeLayout>
 

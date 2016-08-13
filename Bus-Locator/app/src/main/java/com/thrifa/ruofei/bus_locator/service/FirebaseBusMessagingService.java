@@ -120,6 +120,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         if (flag.equals("true")) {
             // Set current remaining time
             Double newRemainingTimeDouble = Double.parseDouble(data.get("remain_time"));
+            newRemainingTimeDouble =Double.longBitsToDouble(Math.round(newRemainingTimeDouble));
             Integer newRemainingTime = (int) (newRemainingTimeDouble * 60); // convert sec
             if (newRemainingTime != null) {
                 // Set current remaining time
@@ -128,14 +129,14 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                 // TODO: notify alarm service the update
                 Log.e(TAG, "update alarm time:" + newRemainingTime);
 
-                String routeID = data.get("route_ID");
-                String stopID = data.get("busstop_ID");
+                String routeID = data.get("route_ID").substring(5);
+                String stopID = data.get("busstop_ID").substring(5);
 
                 try {
                     Handler mainThread = new Handler(Looper.getMainLooper());
                     // In your worker thread
                     int index = BusAlarmListFragment.busAlarmList.indexOf(new BusAlarmItem(routeID, stopID, "n/a", "n/a", -1, -1.0, -1.0, true));
-//                        Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + time + ", stopNum:" + busstopNum);
+                        Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + stopID );
                     if (index == -1)
                         return;
 
@@ -143,7 +144,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                     final BusAlarmItem alarmItem = BusAlarmListFragment.busAlarmList.get(index);
                     //check if alarm off
                     if(alarmItem.isAlarmFlag()) {
-                    alarmItem.setRemainingTime("Time For Bus Arrive:" + newRemainingTimeDouble.toString() + " Mins");
+                    alarmItem.setRemainingTime("Arrive in:" + newRemainingTimeDouble.toString() + " Mins");
                     alarmItem.setRemainTimeNum(newRemainingTimeDouble);
 //                        BusAlarmListFragment.busAlarmList.get(index).setAlarmSettingTime("Setting Time:" + );
 
@@ -152,7 +153,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
 
                         // unsubscribe
                         alarmItem.setAlarmFlag(false);
-                        alarmItem.setRemainingTime("Alarm Off");
+                        alarmItem.setRemainingTime("Notified Bus Arriving in" + alarmItem.getRemainTimeNum() + " Min");
                         mainThread.post(new Runnable() {
                             @Override
                             public void run() {
@@ -235,6 +236,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                     Log.e(TAG, "index:" + i + ", content:" + busList[i].getRouteID());
 
                     String routeID = busList[i].getRouteID();
+                    String routeName = busList[i].getRouteName();
                     String time = busList[i].getTime();
                     String busstopNum = busList[i].getStopNum();
                     String busstopID = busList[i].getStopID();
@@ -242,8 +244,10 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                     try {
                         Handler mainThread = new Handler(Looper.getMainLooper());
                         // In your worker thread
-                        int index = TrackedBusFragment.trackedBusList.indexOf(new TrackedBus(routeID, "n/a", "n/a"));
-                        Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + time + ", stopNum:" + busstopNum);
+                        if (TrackedBusFragment.trackedBusList == null || TrackedBusFragment.trackedBusList.size()<=0)
+                            return;
+                        int index = TrackedBusFragment.trackedBusList.indexOf(new TrackedBus(routeID, routeName, "n/a", "n/a",busstopID));
+                        Log.e(TAG, "tracker index:" + index + ", stop id:" +busstopID + ", tracker route:" + routeID + ", route name:"+ routeName +", traker time:" + time + ", stopNum:" + busstopNum);
                         if (index == -1)
                             return;
 

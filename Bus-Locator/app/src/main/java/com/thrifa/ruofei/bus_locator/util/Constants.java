@@ -21,6 +21,8 @@ public interface Constants {
     final static String ROUTE_ID_KEY = "routeIDKey";
     final static String TOKEN_ID_KEY = "tokenIDKey";
 
+    final static String ROUTE_COLOR = "routeColorKey";
+
 
     final static String CURRENT_REMAINNING_TIME_KEY = "currentRemainingTime";
 

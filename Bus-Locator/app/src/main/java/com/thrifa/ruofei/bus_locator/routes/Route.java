@@ -19,21 +19,41 @@ public class Route {
     @SerializedName("RouteNum")
     private String routeNum;
 
+    @Expose
+    @SerializedName("OpDays")
+    private String opDays;
+
+    @Expose
+    @SerializedName("OpHours")
+    private String opHours;
+
+    @Expose
+    @SerializedName("Color")
+    private String color;
 
 //    private String routeNum, routeName;
 
-    public Route(){
+    public Route() {
 
     }
 
-    public Route(String routeName){
-       this.routeName = routeName;
+    public Route(String routeName) {
+        this.routeName = routeName;
     }
 
-    public Route(String routeNum, String routeName)
-    {
+    public Route(String routeNum, String routeName, String routeID) {
         this.routeNum = routeNum;
         this.routeName = routeName;
+        this.routeID = routeID;
+    }
+
+    public Route(String routeNum, String routeName, String routeID, String opDays, String opHours, String color) {
+        this.routeNum = routeNum;
+        this.routeName = routeName;
+        this.routeID = routeID;
+        this.opDays = opDays;
+        this.opHours = opHours;
+        this.color = color;
     }
 
     public String getRouteNum() {
@@ -58,5 +78,29 @@ public class Route {
 
     public void setRouteID(String routeID) {
         this.routeID = routeID;
+    }
+
+    public String getOpDays() {
+        return opDays;
+    }
+
+    public void setOpDays(String opDays) {
+        this.opDays = opDays;
+    }
+
+    public String getOpHours() {
+        return opHours;
+    }
+
+    public void setOpHours(String opHours) {
+        this.opHours = opHours;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

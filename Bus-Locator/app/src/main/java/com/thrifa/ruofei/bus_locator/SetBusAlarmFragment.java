@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmItem;
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
+import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.service.BusStatusUpdateService;
 import com.thrifa.ruofei.bus_locator.util.Constants;
 import com.thrifa.ruofei.bus_locator.util.Server;
@@ -44,7 +45,7 @@ public class SetBusAlarmFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
 
         builder.setTitle(getString(R.string.alarm_setting_title));
         final View view = inflater.inflate(R.layout.fragment_set_bus_alarm_dialog, null);
@@ -83,7 +84,7 @@ public class SetBusAlarmFragment extends DialogFragment {
                         editor.commit();
 
                         int alarmID = (int)BusAlarmListFragment.idPool.pop();
-                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID, busstopID, "time", "Setting Time:" + seekBar.getProgress() + " Mins", alarmID,-1.0,(double)seekBar.getProgress(), true));
+                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID.substring(5), busstopID.substring(5), "time", "Set Time:" + seekBar.getProgress() + " Mins", alarmID,-1.0,(double)seekBar.getProgress(), true));
                         Handler mainThread = new Handler(Looper.getMainLooper());
                         // In your worker thread
                         mainThread.post(new Runnable() {
@@ -116,6 +117,13 @@ public class SetBusAlarmFragment extends DialogFragment {
                                 t.printStackTrace();
                             }
                         });
+
+                        Toast.makeText(context,"Check your alarm in alarm page", Toast.LENGTH_LONG);
+
+//                        Intent intent = new Intent(context, MainActivity.class);
+//                        intent.putExtra(Constants.INTENT_CALL_FROM_KEY,this.getClass().getName());
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        startActivity(intent);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

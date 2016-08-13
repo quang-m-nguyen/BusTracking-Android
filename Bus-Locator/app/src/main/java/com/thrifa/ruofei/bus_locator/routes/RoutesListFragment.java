@@ -70,7 +70,7 @@ public class RoutesListFragment extends Fragment {
 
         //send notification request
         ThrifaServer server = ThrifaServer.getInstance(this.getContext());
-        Call<List<Route>> call = server.getBusRoute();
+        Call<List<Route>> call = server.getCityRouteInfo("99163");
         call.enqueue(new Callback<List<Route>>() {
             @Override
             public void onResponse(Call<List<Route>> call, Response<List<Route>> response) {
@@ -79,7 +79,11 @@ public class RoutesListFragment extends Fragment {
 
                 for (int i = 0; i < trackerList.size(); i++) {
                     final String routeName = trackerList.get(i).getRouteName();
-                    routeList.add(new Route(Integer.toString(i),routeName));
+                    final String routeID = trackerList.get(i).getRouteID();
+                    final String opDays = trackerList.get(i).getOpDays();
+                    final String opHours = trackerList.get(i).getOpHours();
+                    final String color = trackerList.get(i).getColor();
+                    routeList.add(new Route(Integer.toString(i),routeName, routeID,opDays,opHours,color));
                 }
                 Handler mainThread = new Handler(Looper.getMainLooper());
                 // In your worker thread

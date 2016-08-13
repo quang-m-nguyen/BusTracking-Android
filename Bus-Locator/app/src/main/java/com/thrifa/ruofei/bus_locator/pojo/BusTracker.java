@@ -21,7 +21,7 @@ public class BusTracker {
     private String stopNum;
 
     @Expose
-    @SerializedName("StopID")
+    @SerializedName("BusstopID")
     private String stopID;
 
 
