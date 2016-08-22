@@ -83,12 +83,12 @@ public class Server {
     }
 
 
-//    public Call<List<BusStop>> getBusStopsCall(String routeName)
+//    public Call<List<BusStop>> getBusStopsCall(String routeNameView)
 //    {
 //        this.buildRetrofit(Constants.BUS_LOCATOR_URL);
 //        this.setApi(ThrifaServerApi.class);
 //        ThrifaServerApi service = (ThrifaServerApi) this.getService();
-//        return service.getBusStop(routeName);
+//        return service.getBusStop(routeNameView);
 //    }
     public Call<GoogleMapDirection> getRouteCall(String oriLatLng, String destLatLng)
     {

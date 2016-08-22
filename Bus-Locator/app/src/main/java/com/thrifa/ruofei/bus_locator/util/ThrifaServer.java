@@ -33,7 +33,7 @@ public class ThrifaServer extends Server {
         // add your other interceptors …
         // add logging as last interceptor
         httpClient.addInterceptor(logging);
-        serverUrl = Constants.FIRE_BASE_NOTIFICATION_URL;
+        serverUrl = Parameters.CURRENT_SERVER_PRODUCT_DOMAIN;
 
         //default api and url
         // TODO: update error handling if no api and url setup
@@ -89,7 +89,7 @@ public class ThrifaServer extends Server {
         return service.subscribeBus(id, token);
     }
 
-    public Call<BusInfo> getBusInfo(String busID) {
+    public Call<List<BusInfo>> getBusInfo(String busID) {
         ThrifaServerApi service = (ThrifaServerApi) this.getService();
         return service.getBusLocation(busID);
     }

@@ -2,6 +2,7 @@ package com.thrifa.ruofei.bus_locator.BusTracker;
 
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -49,6 +50,52 @@ public class TrackedBusFragment extends Fragment {
 
     public TrackedBusFragment() {
         // Required empty public constructor
+    }
+
+     private class GetBusTrackerInfo extends AsyncTask<Pair<String, Integer>, Void, Integer> {
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+//            updateBusLocation();
+        }
+
+        protected Integer doInBackground(Pair<String, Integer>... params) {
+            String routeID = params[0].first;
+            Integer interval = params[0].second;
+
+            Log.e(TAG, "asyc start:");
+            ThrifaServer server = (ThrifaServer) Server.getInstance(context);
+//            Call<List<BusInfo>> call = server.getBusInfo(routeID);
+//            call.enqueue(new Callback<List<BusInfo>>() {
+//                @Override
+//                public void onResponse(Call<List<BusInfo>> call, Response<List<BusInfo>> response) {
+//                    if (response != null) {
+//                        Log.e(TAG, "asyc response:" + response.toString());
+//                        final List<BusInfo> body = response.body();
+//                        if (body != null) {
+//                            Log.e(TAG, "ascyc bodysize:" + body.size());
+//                            if (body.size() > 0) {
+//                                mBusList.clear();
+//                                for (int i = 0; i < body.size(); i++) {
+//                                    final BusInfo busInfo = body.get(i);
+//                                    mBusList.add(busInfo);
+//                                }
+////                                Log.e(TAG, "update new lat:" + mBus.getLat() + ",lng:" + mBus.getLng());
+//                            }
+//                        }
+//                    }
+//                    return;
+//                }
+//
+//                @Override
+//                public void onFailure(Call<List<BusInfo>> call, Throwable t) {
+//                    Log.e(TAG, "ascyc update error:" + t.toString());
+//
+//                }
+//            });
+            return interval;
+        }
+
     }
 
 
@@ -192,7 +239,12 @@ public class TrackedBusFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        subscribeBusTrackerData();
+        try {
+            subscribeBusTrackerData();
+        }
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
     }
 
     @Override

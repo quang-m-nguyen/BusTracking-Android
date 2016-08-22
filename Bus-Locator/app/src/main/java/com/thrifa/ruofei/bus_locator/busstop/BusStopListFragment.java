@@ -20,6 +20,7 @@ import com.thrifa.ruofei.bus_locator.R;
 import com.thrifa.ruofei.bus_locator.api.ThrifaServerApi;
 import com.thrifa.ruofei.bus_locator.pojo.BusStop;
 import com.thrifa.ruofei.bus_locator.util.Constants;
+import com.thrifa.ruofei.bus_locator.util.Parameters;
 import com.thrifa.ruofei.bus_locator.util.Server;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class BusStopListFragment extends Fragment {
 
     public void getBusStop(String RouteName) {
         Server server =  Server.getInstance(this.getContext());
-        server.buildRetrofit(Constants.BUS_LOCATOR_URL);
+        server.buildRetrofit(Parameters.CURRENT_SERVER_PRODUCT_DOMAIN);
         server.setApi(ThrifaServerApi.class);
         ThrifaServerApi service = (ThrifaServerApi)server.getService();
 

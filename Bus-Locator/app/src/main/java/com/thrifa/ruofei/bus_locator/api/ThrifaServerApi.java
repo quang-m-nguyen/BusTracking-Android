@@ -22,8 +22,9 @@ public interface ThrifaServerApi {
     Call<Void> subscribeBus(@Path("id") String busID,
                             @Path("token") String token);
 
-    @GET("GetBusInfo/{id}")
-    Call<BusInfo> getBusLocation(@Path("id") String busID);
+//    @GET("GetBusInfo/{id}")
+    @GET("GetBusPosition/{id}")
+    Call<List<BusInfo>> getBusLocation(@Path("id") String busID);
 
     @GET("Simulation/UnsubscribeBusstop/{busstopID}/{token}")
     Call<Void> unsubscribeBusstop(

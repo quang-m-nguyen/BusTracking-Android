@@ -31,7 +31,6 @@ public class Route {
     @SerializedName("Color")
     private String color;
 
-//    private String routeNum, routeName;
 
     public Route() {
 

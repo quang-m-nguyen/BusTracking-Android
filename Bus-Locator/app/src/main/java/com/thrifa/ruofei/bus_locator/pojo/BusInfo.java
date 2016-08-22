@@ -21,7 +21,7 @@ public class BusInfo {
     private double lng;
 
     @Expose
-    @SerializedName("routeName")
+    @SerializedName("routeNameView")
     private String routeName;
 
     public String getBusID() {

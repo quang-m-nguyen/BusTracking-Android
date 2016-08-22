@@ -2,7 +2,6 @@ package com.thrifa.ruofei.bus_locator.routes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -30,22 +29,25 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
     private List<Route> routesList;
     private Context context;
 
+
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public TextView routeNum, routeName,routeOpDays,routeOpHours;
+        public TextView routeNumView, routeNameView, routeOpDaysView, routeOpHoursView;
+        public TextView routeNameInView;
 
         public  MyViewHolder(View view){
             super(view);
             view.setOnClickListener(this);
             context = view.getContext();
-            routeNum = (TextView) view.findViewById(R.id.routeNum);
-            routeName = (TextView) view.findViewById(R.id.routeName);
-            routeOpDays = (TextView) view.findViewById(R.id.routeOpDaysCardView);
-            routeOpHours = (TextView) view.findViewById(R.id.routeOpHoursCardView);
+            routeNumView = (TextView) view.findViewById(R.id.routeNum);
+            routeNameView = (TextView) view.findViewById(R.id.routeNameCardView);
+            routeOpDaysView = (TextView) view.findViewById(R.id.routeOpDaysCardView);
+            routeOpHoursView = (TextView) view.findViewById(R.id.routeOpHoursCardView);
+            routeNameInView = (TextView) view.findViewById(R.id.routeNameInCardView);
         }
 
         @Override
         public void onClick(View v) {
-            TextView nameTextView = (TextView)v.findViewById(R.id.routeName);
+            TextView nameTextView = (TextView)v.findViewById(R.id.routeNameInCardView);
             String routeName = nameTextView.getText().toString();
 
             String token = FirebaseInstanceId.getInstance().getToken();
@@ -54,7 +56,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
 //            server.buildRetrofit(Constants.BUS_LOCATOR_URL);
 //            server.setApi(ThrifaServerApi.class);
 //            ThrifaServerApi service = (ThrifaServerApi) server.getService();
-//            Call<Void> call = service.subscribeBus(routeName,token);
+//            Call<Void> call = service.subscribeBus(routeNameView,token);
 //
 //            call.enqueue(new Callback<Void>() {
 //                @Override
@@ -95,10 +97,11 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Route route = routesList.get(position);
-        holder.routeNum.setText(route.getRouteNum());
-        holder.routeName.setText(route.getRouteName());
-        holder.routeOpDays.setText(route.getOpDays());
-        holder.routeOpHours.setText(route.getOpHours());
+        holder.routeNumView.setText(String.format("%02d", Integer.parseInt(route.getRouteNum())));
+        holder.routeNameView.setText(route.getRouteName() + " ROUTE");
+        holder.routeOpDaysView.setText(route.getOpDays());
+        holder.routeOpHoursView.setText(route.getOpHours());
+        holder.routeNameInView.setText(route.getRouteName());
 
         CardView cardView = (CardView)holder.itemView;
 

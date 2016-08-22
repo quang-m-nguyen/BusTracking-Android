@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -119,8 +120,9 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         String flag = sharedPref.getString(context.getString(R.string.alarm_flag_key), "false");
         if (flag.equals("true")) {
             // Set current remaining time
+            DecimalFormat df = new DecimalFormat("#.#");
             Double newRemainingTimeDouble = Double.parseDouble(data.get("remain_time"));
-            newRemainingTimeDouble =Double.longBitsToDouble(Math.round(newRemainingTimeDouble));
+            newRemainingTimeDouble = Double.valueOf(df.format(newRemainingTimeDouble));
             Integer newRemainingTime = (int) (newRemainingTimeDouble * 60); // convert sec
             if (newRemainingTime != null) {
                 // Set current remaining time
@@ -153,7 +155,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
 
                         // unsubscribe
                         alarmItem.setAlarmFlag(false);
-                        alarmItem.setRemainingTime("Notified Bus Arriving in" + alarmItem.getRemainTimeNum() + " Min");
+//                        alarmItem.setRemainingTime("Arriving in" + alarmItem.getRemainTimeNum() + " Min");
                         mainThread.post(new Runnable() {
                             @Override
                             public void run() {

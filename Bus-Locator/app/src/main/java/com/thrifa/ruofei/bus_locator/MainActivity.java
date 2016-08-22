@@ -1,6 +1,7 @@
 package com.thrifa.ruofei.bus_locator;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.util.Log;
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
 import com.thrifa.ruofei.bus_locator.customWidget.NonSwipeableViewPager;
 import com.thrifa.ruofei.bus_locator.util.Constants;
+import com.thrifa.ruofei.bus_locator.util.Parameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +42,22 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_information_outline_white_48dp
     };
 
+    private void initialize(){
+        if(BuildConfig.DEBUG){
+            Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_TEST_PRODUCT_DOMAIN;
+        }
+        else {
+            Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_SERVER_PRODUCT_DOMAIN;
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initialize();
 
 
         viewPager = (NonSwipeableViewPager) findViewById(R.id.viewpager);

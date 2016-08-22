@@ -20,6 +20,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -68,6 +69,8 @@ import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -85,8 +88,8 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     final String TAG = this.getClass().getName();
     private Context context;
     GoogleMap mMap;
-    private Marker mBusMarker;
     GetBusInfoTask mUpdateBusTask;
+    Timer t;
 
     static public List<BusStop> mBusStops = new ArrayList<BusStop>();
     private List<List<LatLng>> mRoutes = new ArrayList<>();
@@ -94,6 +97,10 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     private static View view;
     private BroadcastReceiver mReceiver;
     private BusInfo mBus;
+    private Marker mBusMarker;
+
+    private volatile List<BusInfo> mBusList = new ArrayList<>();
+    private List<Marker> mBusMarkerList = new ArrayList<>();
 
 
     public MainTabFragment() {
@@ -101,29 +108,44 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     }
 
     private class GetBusInfoTask extends AsyncTask<Pair<String, Integer>, Void, Integer> {
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            updateBusLocation();
+        }
+
         protected Integer doInBackground(Pair<String, Integer>... params) {
             String routeID = params[0].first;
             Integer interval = params[0].second;
-            try {
-                this.wait(interval);
-            } catch (Exception e) {
 
-            }
-            ThrifaServer server = (ThrifaServer)Server.getInstance(context);
-            Call<BusInfo> call = server.getBusInfo(routeID);
-            call.enqueue(new Callback<BusInfo>() {
+            Log.e(TAG, "asyc start:");
+            ThrifaServer server = (ThrifaServer) Server.getInstance(context);
+            Call<List<BusInfo>> call = server.getBusInfo(routeID);
+            call.enqueue(new Callback<List<BusInfo>>() {
                 @Override
-                public void onResponse(Call<BusInfo> call, Response<BusInfo> response) {
+                public void onResponse(Call<List<BusInfo>> call, Response<List<BusInfo>> response) {
                     if (response != null) {
-                        mBus = response.body();
-                        updateBusLocation();
+                        Log.e(TAG, "asyc response:" + response.toString());
+                        final List<BusInfo> body = response.body();
+                        if (body != null) {
+                            Log.e(TAG, "ascyc bodysize:" + body.size());
+                            if (body.size() > 0) {
+                                mBusList.clear();
+                                for (int i = 0; i < body.size(); i++) {
+                                    final BusInfo busInfo = body.get(i);
+                                    mBusList.add(busInfo);
+                                }
+//                                Log.e(TAG, "update new lat:" + mBus.getLat() + ",lng:" + mBus.getLng());
+                            }
+                        }
                     }
                     return;
                 }
 
                 @Override
-                public void onFailure(Call<BusInfo> call, Throwable t) {
-                    Log.e(TAG, "update error:" + t.toString());
+                public void onFailure(Call<List<BusInfo>> call, Throwable t) {
+                    Log.e(TAG, "ascyc update error:" + t.toString());
+
                 }
             });
             return interval;
@@ -219,8 +241,17 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
 
         if (mCurrentRoute != null) {
-            if (!mCurrentRoute.equals("N/A"))
+            if (!mCurrentRoute.equals("N/A")) {
+                Log.e(TAG, "call updateBus");
                 updateBusLocation();
+
+//                t.schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        updateBusLocation();
+//                    }
+//                },2000);
+            }
         }
 
         Intent intent = this.getActivity().getIntent();
@@ -228,9 +259,9 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             try {
                 String callFrom = intent.getStringExtra(Constants.INTENT_CALL_FROM_KEY);
                 String routeName = intent.getStringExtra(Constants.ROUTE_NAME_KEY);
-                mCurrentRoute = routeName;
+//                mCurrentRoute = routeNameView;
                 if (callFrom.equals(RoutesAdapter.class.getName())) {
-                    ThrifaServer server =(ThrifaServer) Server.getInstance(this.getContext());
+                    ThrifaServer server = (ThrifaServer) Server.getInstance(this.getContext());
                     Call<List<BusStop>> call = server.getBusStopsCall(routeName);
                     call.enqueue(new Callback<List<BusStop>>() {
                         @Override
@@ -257,21 +288,49 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     }
 
     private void updateBusLocation() {
-        if (mBus != null) {
-            if (mBusMarker != null) {
-                mBusMarker.remove();
+        Log.e(TAG, "update bus 0 size:" + mBusList.size());
+        if (mBusList.size() > 0) {
+            Log.e(TAG, "update bus 1 size:" + mBusMarkerList.size());
+            if (mBusMarkerList.size() > 0) {
+                Log.e(TAG, "update bus 2");
+                for (int i = 0; i < mBusMarkerList.size(); i++) {
+                    mBusMarkerList.get(i).remove();
+                }
+                mBusMarkerList.clear();
             }
-            mBusMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))
-                    .position(
-                            new LatLng(mBus.getLat(),
-                                    mBus.getLng()
-                            )).title("Bus " + mCurrentRoute + " Location")
-                    .zIndex(0));
-            mUpdateBusTask = new GetBusInfoTask();
-            mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 2000));
+
+            for (int i = 0; i < mBusList.size(); i++) {
+                final BusInfo busInfo = mBusList.get(i);
+
+                final Marker marker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))
+                        .position(
+                                new LatLng(busInfo.getLat(),
+                                        busInfo.getLng()
+                                )).title("Bus " + mCurrentRoute + " Location")
+                        .zIndex(100));
+                mBusMarkerList.add(marker);
+            }
+
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mUpdateBusTask = new GetBusInfoTask();
+                    mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 2000));                   //Do something after 100ms
+                }
+            }, 8000);
+
         } else {
-            mUpdateBusTask = new GetBusInfoTask();
-            mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 100));
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e(TAG, "update bus 3");
+                    mUpdateBusTask = new GetBusInfoTask();
+                    mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 2000));
+                }
+            }, 2000);
         }
     }
 
@@ -304,7 +363,8 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
                 Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(position).title(busStop.getStopName())
-                        .snippet(Integer.toString(busStop.getStopNum()) + " click for detail")
+                        .snippet("click for detail")
+//                        .snippet(Integer.toString(busStop.getStopNum()) + " click for detail")
                         .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
                 markers.add(marker);
             }
@@ -390,9 +450,8 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this.getContext(), "Click busstop num:" + marker.getSnippet(),
-                Toast.LENGTH_SHORT).show();
-
+//        Toast.makeText(this.getContext(), "Clicked " + marker.getSnippet(),
+//                Toast.LENGTH_SHORT).show();
 
 
         // pop up a window

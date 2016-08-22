@@ -98,6 +98,9 @@
             android:theme="@style/AppTheme.CustomTheme"
             ></activity>
 
+        <!--<provider-->
+            <!--android:authorities="com.thirfa.roufie"-->
+            <!--android:name=""-->
     </application>
 
 </manifest>
