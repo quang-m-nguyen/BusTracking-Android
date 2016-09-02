@@ -3,10 +3,12 @@ package com.thrifa.ruofei.bus_locator.util;
 import android.content.Context;
 import android.util.Log;
 
+import com.thrifa.ruofei.bus_locator.BusTracker.TrackedBus;
 import com.thrifa.ruofei.bus_locator.api.ThrifaServerApi;
 import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.pojo.BusStop;
 import com.thrifa.ruofei.bus_locator.pojo.BusTracker;
+import com.thrifa.ruofei.bus_locator.pojo.RoutePath;
 import com.thrifa.ruofei.bus_locator.routes.Route;
 
 import java.util.List;
@@ -15,13 +17,22 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by ruofeixu on 8/12/16.
  */
-public class ThrifaServer extends Server {
+public class ThrifaServer {
 
-//    static ThrifaServer instance;
+    //    static ThrifaServer instance;
+    final String TAG = this.getClass().getName();
+    static volatile ThrifaServer instance;
+    Context context;
+    String serverUrl;
+    Retrofit retrofit;
+    OkHttpClient.Builder httpClient;
+
+    Class<?> mThrifaApi;
 
     private ThrifaServer(Context context) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
@@ -38,8 +49,18 @@ public class ThrifaServer extends Server {
         //default api and url
         // TODO: update error handling if no api and url setup
         buildRetrofit(serverUrl);
-        mApi = ThrifaServerApi.class;
+        mThrifaApi = ThrifaServerApi.class;
     }
+
+    public synchronized void buildRetrofit(String url) {
+        serverUrl = url;
+        retrofit = new Retrofit.Builder()
+                .baseUrl(serverUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
+    }
+
 
     public static synchronized ThrifaServer getInstance(final Context context) {
         if (instance == null) {
@@ -94,16 +115,20 @@ public class ThrifaServer extends Server {
         return service.getBusLocation(busID);
     }
 
-    public Call<List<Route>> getCityRouteInfo(String zipCode){
+    public Call<List<Route>> getCityRouteInfo(String zipCode) {
         ThrifaServerApi service = (ThrifaServerApi) this.getService();
         return service.getCityRouteInfo(zipCode);
     }
 
+    public Call<List<BusTracker>> getBusstopInfo(String stopID) {
+        ThrifaServerApi service = (ThrifaServerApi) this.getService();
+        return service.getBusstopInfo(stopID);
 
-    //clear shared preference
-    public void reset() {
-        storage.edit().clear().apply();
-        instance = null;
+    }
+
+    public Call<List<RoutePath>> getRoutePath(String RouteID) {
+        ThrifaServerApi service = (ThrifaServerApi) this.getService();
+        return service.getRoutePath(RouteID);
     }
 
     public Retrofit getRetrofit() {
@@ -111,7 +136,7 @@ public class ThrifaServer extends Server {
     }
 
     public Object getService() {
-        Object service = retrofit.create(mApi);
+        Object service = retrofit.create(mThrifaApi);
         return service;
     }
 }

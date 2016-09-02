@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.Marker;
 import com.thrifa.ruofei.bus_locator.MainActivity;
 import com.thrifa.ruofei.bus_locator.MainTabFragment;
 import com.thrifa.ruofei.bus_locator.R;
@@ -33,6 +34,8 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView routeNumView, routeNameView, routeOpDaysView, routeOpHoursView;
         public TextView routeNameInView;
+
+        public String routeIDStr;
 
         public  MyViewHolder(View view){
             super(view);
@@ -76,7 +79,9 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
             Intent intent =  new Intent(context, MainActivity.class);
             // TODO: user shared preference
             MainTabFragment.mCurrentRoute = routeName;
+            MainTabFragment.mCurrentRouteID = routeIDStr;
             intent.putExtra(Constants.ROUTE_NAME_KEY,routeName);
+            intent.putExtra(Constants.ROUTE_ID_KEY,routeIDStr);
             intent.putExtra(Constants.INTENT_CALL_FROM_KEY, TAG);
             intent.putExtra(Constants.ROUTE_COLOR, v.getDrawingCacheBackgroundColor());
             context.startActivity(intent);
@@ -98,10 +103,13 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Route route = routesList.get(position);
         holder.routeNumView.setText(String.format("%02d", Integer.parseInt(route.getRouteNum())));
-        holder.routeNameView.setText(route.getRouteName() + " ROUTE");
+        holder.routeNameView.setText(route.getRouteName());
         holder.routeOpDaysView.setText(route.getOpDays());
         holder.routeOpHoursView.setText(route.getOpHours());
         holder.routeNameInView.setText(route.getRouteName());
+
+        holder.routeIDStr = route.getRouteID();
+        Log.e(TAG,"routeID:" + route.getRouteID());
 
         CardView cardView = (CardView)holder.itemView;
 

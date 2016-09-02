@@ -19,8 +19,7 @@ import android.widget.Toast;
 
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmItem;
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
-import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
-import com.thrifa.ruofei.bus_locator.service.BusStatusUpdateService;
+import com.thrifa.ruofei.bus_locator.service.ThrifaBackgroundService;
 import com.thrifa.ruofei.bus_locator.util.Constants;
 import com.thrifa.ruofei.bus_locator.util.Server;
 import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
@@ -73,7 +72,7 @@ public class SetBusAlarmFragment extends DialogFragment {
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(getString(R.string.alarm_flag_key), "true");
 
-                        Intent alarmService = new Intent(context, BusStatusUpdateService.class);
+                        Intent alarmService = new Intent(context, ThrifaBackgroundService.class);
                         getActivity().startService(alarmService);
 
                         String textString = textView.getText().toString();
@@ -102,7 +101,7 @@ public class SetBusAlarmFragment extends DialogFragment {
                         // send request
                         //set alarm add alarm to alarm list
 
-                        ThrifaServer server = (ThrifaServer)Server.getInstance(context);
+                        ThrifaServer server = (ThrifaServer)ThrifaServer.getInstance(context);
                         Call<Void> call = server.subscribeBusAlarm(routeID, busstopID, token);
                         Log.d(TAG, "send token to subscribe alarm");
                         call.enqueue(new Callback<Void>() {

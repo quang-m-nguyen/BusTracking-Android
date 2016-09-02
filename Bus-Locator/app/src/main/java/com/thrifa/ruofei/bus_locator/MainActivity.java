@@ -43,12 +43,16 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void initialize(){
+        // check build type
         if(BuildConfig.DEBUG){
             Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_TEST_PRODUCT_DOMAIN;
         }
         else {
             Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_SERVER_PRODUCT_DOMAIN;
         }
+
+        // start checking alarm
+
 
     }
 

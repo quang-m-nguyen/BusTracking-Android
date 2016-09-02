@@ -21,9 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/white"
             android:id="@+id/get_route_button_on_map"
-            android:text="Find A Route"
+            android:text="Click Here To Find A Route"
             android:padding="16dp"/>
 
         <!--app:theme="@style/CustomFloatingSearchViewTheme"-->

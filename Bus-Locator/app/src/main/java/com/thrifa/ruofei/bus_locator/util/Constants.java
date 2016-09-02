@@ -1,5 +1,7 @@
 package com.thrifa.ruofei.bus_locator.util;
 
+import android.net.Uri;
+
 /**
  * Created by ruofei on 5/27/2016.
  */
@@ -51,4 +53,8 @@ public interface Constants {
         final static String BUSSTOP = "busstop";
     }
 
+//
+//    public interface TrackedBus{
+//       final static Uri trackedBusUri =   Uri.Builder()
+//    }
 }

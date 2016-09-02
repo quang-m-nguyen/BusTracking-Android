@@ -127,7 +127,7 @@ public class BusAlarmAdapter extends RecyclerView.Adapter<BusAlarmAdapter.AlarmV
                     }
 
                     // sub
-                    ThrifaServer server = (ThrifaServer) Server.getInstance(context);
+                    ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(context);
                     Call<Void> call = server.subscribeBusAlarm(routeID, stopID, token);
                     Log.d(TAG, "send token to subscribe alarm");
                     call.enqueue(new Callback<Void>() {
@@ -152,7 +152,7 @@ public class BusAlarmAdapter extends RecyclerView.Adapter<BusAlarmAdapter.AlarmV
                     }
 
                     // unsub
-                    ThrifaServer server = (ThrifaServer) Server.getInstance(context);
+                    ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(context);
                     Call<Void> call = server.unsubscribeBusAlarm(routeID, stopID, token);
                     Log.d(TAG, "send token to unsubscribe");
                     call.enqueue(new Callback<Void>() {

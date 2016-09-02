@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.thrifa.ruofei.bus_locator.R;
 import com.thrifa.ruofei.bus_locator.RecycleViewDividerItemDecoration;
+import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.pojo.BusTracker;
 import com.thrifa.ruofei.bus_locator.util.Constants;
 import com.thrifa.ruofei.bus_locator.util.Server;
@@ -41,9 +42,11 @@ public class TrackedBusFragment extends Fragment {
     public static TrackedBusAdapter mTrackedBusAdapter;
     public static List<TrackedBus> trackedBusList = new ArrayList<>();
     public final String TAG = this.getClass().getName();
-    String busstopID;
+    public static String busstopID;
     String token;
     Context context;
+
+    private GetBusTrackerInfo mUpdateTastk;
 
 
     private RecyclerView recyclerView;
@@ -52,47 +55,71 @@ public class TrackedBusFragment extends Fragment {
         // Required empty public constructor
     }
 
-     private class GetBusTrackerInfo extends AsyncTask<Pair<String, Integer>, Void, Integer> {
+    private class GetBusTrackerInfo extends AsyncTask<Pair<String, Integer>, Void, Integer> {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
 //            updateBusLocation();
+            updateBusTime();
         }
 
         protected Integer doInBackground(Pair<String, Integer>... params) {
-            String routeID = params[0].first;
+            String stopID = params[0].first;
             Integer interval = params[0].second;
 
-            Log.e(TAG, "asyc start:");
-            ThrifaServer server = (ThrifaServer) Server.getInstance(context);
-//            Call<List<BusInfo>> call = server.getBusInfo(routeID);
-//            call.enqueue(new Callback<List<BusInfo>>() {
-//                @Override
-//                public void onResponse(Call<List<BusInfo>> call, Response<List<BusInfo>> response) {
-//                    if (response != null) {
-//                        Log.e(TAG, "asyc response:" + response.toString());
-//                        final List<BusInfo> body = response.body();
-//                        if (body != null) {
-//                            Log.e(TAG, "ascyc bodysize:" + body.size());
-//                            if (body.size() > 0) {
+            Log.e(TAG, "asyc1 start:");
+            ThrifaServer server = ThrifaServer.getInstance(context);
+            Call<List<BusTracker>> call = server.getBusstopInfo(busstopID);
+            call.enqueue(new Callback<List<BusTracker>>() {
+                @Override
+                public void onResponse(Call<List<BusTracker>> call, Response<List<BusTracker>> response) {
+                    if (response != null) {
+                        Log.e(TAG, "asyc1 response:" + response.toString());
+                        final List<BusTracker> body = response.body();
+                        if (body != null) {
+                            Log.e(TAG, "ascyc bodysize:" + body.size());
+                            if (body.size() > 0) {
 //                                mBusList.clear();
-//                                for (int i = 0; i < body.size(); i++) {
-//                                    final BusInfo busInfo = body.get(i);
-//                                    mBusList.add(busInfo);
-//                                }
-////                                Log.e(TAG, "update new lat:" + mBus.getLat() + ",lng:" + mBus.getLng());
-//                            }
-//                        }
-//                    }
-//                    return;
-//                }
-//
-//                @Override
-//                public void onFailure(Call<List<BusInfo>> call, Throwable t) {
-//                    Log.e(TAG, "ascyc update error:" + t.toString());
-//
-//                }
-//            });
+                                for (int i = 0; i < body.size(); i++) {
+                                    final BusTracker busTracker = body.get(i);
+                                    String routeID = busTracker.getRouteID();
+                                    String routeName = busTracker.getRouteName();
+                                    String time = busTracker.getTime();
+                                    String busstopNum = busTracker.getStopNum();
+                                    String busstopID = busTracker.getStopID();
+
+                                    int index = trackedBusList.indexOf(new TrackedBus(routeID, routeName, "n/a", "n/a", busstopID));
+                                    Log.e(TAG, "tracker index:" + index + ", stop id:" + busstopID + ", tracker route:" + routeID + ", route name:" + routeName + ", traker time:" + time + ", stopNum:" + busstopNum);
+                                    if (index == -1) {
+                                        trackedBusList.add(new TrackedBus(routeID, routeName, time, busstopNum, busstopID));
+                                    } else {
+                                        trackedBusList.get(index).setEstimatedTime(time);
+                                        trackedBusList.get(index).setBusstopNum(busstopNum);
+                                    }
+
+                                }
+                                Handler mainThread = new Handler(Looper.getMainLooper());
+                                // In your worker thread
+                                mainThread.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        TrackedBusFragment.mTrackedBusAdapter.notifyDataSetChanged();
+                                    }
+                                });
+//                                Log.e(TAG, "update new lat:" + mBus.getLat() + ",lng:" + mBus.getLng());
+                            }
+                        }
+                    }
+                    return;
+                }
+
+                @Override
+                public void onFailure(Call<List<BusTracker>> call, Throwable t) {
+                    Log.e(TAG, "asyc update error:" + t.toString());
+
+                }
+            });
             return interval;
         }
 
@@ -186,7 +213,7 @@ public class TrackedBusFragment extends Fragment {
                     final String routeName = trackerList.get(i).getRouteName();
                     final String stopID = trackerList.get(i).getStopID();
 //                    Log.e(TAG, "test output: " + stopID + "route:" + routeID);
-                    trackedBusList.add(new TrackedBus(routeID, routeName, "unknown", "unkonwn",stopID));
+                    trackedBusList.add(new TrackedBus(routeID, routeName, "unknown", "unkonwn", stopID));
                 }
                 Handler mainThread = new Handler(Looper.getMainLooper());
                 // In your worker thread
@@ -213,7 +240,7 @@ public class TrackedBusFragment extends Fragment {
 
     private void unsubscribeBusTrakerData() {
 
-        ThrifaServer server = (ThrifaServer) Server.getInstance(this.getContext());
+        ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(this.getContext());
         Call<Void> call = server.unsubscribeBusstop(busstopID, token);
         Log.d(TAG, "send token to unsubscribe");
         call.enqueue(new Callback<Void>() {
@@ -234,15 +261,22 @@ public class TrackedBusFragment extends Fragment {
     public void onStop() {
         super.onStop();
 
+        mUpdateTastk = null;
+        busstopID = "N/A";
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.e(TAG,"resume callled");
         try {
-            subscribeBusTrackerData();
-        }
-        catch (Exception e){
+//            subscribeBusTrackerData();
+            if(busstopID != "N/A") {
+                if (mUpdateTastk == null)
+                    mUpdateTastk = new GetBusTrackerInfo();
+                mUpdateTastk.execute(new Pair<String, Integer>(busstopID, 2000));
+            }
+        } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
     }
@@ -256,7 +290,26 @@ public class TrackedBusFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        if (mUpdateTastk != null)
+            mUpdateTastk.cancel(true);
+
         trackedBusList.clear();
-        unsubscribeBusTrakerData();
+//        unsubscribeBusTrakerData();
+    }
+
+    private void updateBusTime() {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+//                if (mUpdateTastk == null)
+                mUpdateTastk = new GetBusTrackerInfo();
+                try {
+                    mUpdateTastk.execute(new Pair<String, Integer>(busstopID, 2000));
+                } catch (Exception e) {
+                    updateBusTime();
+                }
+            }
+        }, 5000);
     }
 }

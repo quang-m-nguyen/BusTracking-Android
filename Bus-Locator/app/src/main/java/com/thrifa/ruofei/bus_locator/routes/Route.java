@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Route {
     @Expose
-    @SerializedName("RouteID")
+    @SerializedName("RouteId")
     private String routeID;
 
     @Expose

@@ -68,7 +68,7 @@
         <activity android:name="com.thrifa.ruofei.bus_locator.busstop.BusStopListActivity" />
 
          <service
-         android:name="com.thrifa.ruofei.bus_locator.service.BusStatusUpdateService"
+         android:name=".service.ThrifaBackgroundService"
          android:label="Bus StatusUpdateService" >
          <intent-filter>
          <action android:name="android.intent.action.BROADCAST_NEW_BUS_REMAINING_TIME"/>
@@ -98,6 +98,9 @@
             android:theme="@style/AppTheme.CustomTheme"
             ></activity>
 
+        <service
+            android:name=".service.AlarmService"
+            android:exported="false"/>
         <!--<provider-->
             <!--android:authorities="com.thirfa.roufie"-->
             <!--android:name=""-->

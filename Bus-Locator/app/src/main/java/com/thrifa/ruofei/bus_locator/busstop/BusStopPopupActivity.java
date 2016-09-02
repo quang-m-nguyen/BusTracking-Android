@@ -53,6 +53,7 @@ public class BusStopPopupActivity extends AppCompatActivity {
             bundle.putString(Constants.BUSSTOP_ID_KEY, "99163"+busstopName);
             bundle.putString(Constants.DEVICE_TOKEN_KEY, token);
             TrackedBusFragment newFragment = new TrackedBusFragment();
+            newFragment.busstopID = "99163" + busstopName;
             newFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.arrivingBusContainer, newFragment)

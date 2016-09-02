@@ -25,25 +25,20 @@ import com.thrifa.ruofei.bus_locator.util.Server;
 /**
  * Created by ruofei on 5/31/2016.
  */
-public class BusStatusUpdateService extends Service {
+public class ThrifaBackgroundService extends Service {
     private String TAG = this.getClass().getName();
     private MyThread mythread;
-
     public boolean isRunning = false;
-
     private int lastUpdateTime, alarmTime;
     private volatile int currentCountingTime;
     private CountDownTimer mTimer;
-
     private BroadcastReceiver mReceiver;
     private volatile boolean timeUpdateFlag;
     private Context context;
-
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
     }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -76,9 +71,7 @@ public class BusStatusUpdateService extends Service {
         };
         //registering our receiver
         getApplicationContext().registerReceiver(mReceiver, mStatusIntentFilter);
-
     }
-
 
     @Override
     public synchronized void onDestroy() {

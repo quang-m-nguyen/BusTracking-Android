@@ -1,8 +1,10 @@
 package com.thrifa.ruofei.bus_locator.api;
 
+import com.thrifa.ruofei.bus_locator.BusTracker.TrackedBus;
 import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.pojo.BusStop;
 import com.thrifa.ruofei.bus_locator.pojo.BusTracker;
+import com.thrifa.ruofei.bus_locator.pojo.RoutePath;
 import com.thrifa.ruofei.bus_locator.routes.Route;
 
 import java.util.List;
@@ -15,14 +17,14 @@ import retrofit2.http.Path;
  * Created by ruofei on 5/24/2016.
  */
 public interface ThrifaServerApi {
-    @GET("GetBusStops/{name}")
-    Call<List<BusStop>> getBusStop(@Path("name") String routeName);
+    @GET("GetbusstopInfo/{name}")
+    Call<List<BusStop>> getBusStop(@Path("name") String routeID);
 
     @GET("SubscribeBusCoordinate/{id}/{token}")
     Call<Void> subscribeBus(@Path("id") String busID,
                             @Path("token") String token);
 
-//    @GET("GetBusInfo/{id}")
+    //    @GET("GetBusInfo/{id}")
     @GET("GetBusPosition/{id}")
     Call<List<BusInfo>> getBusLocation(@Path("id") String busID);
 
@@ -63,5 +65,15 @@ public interface ThrifaServerApi {
     @GET("GetInfo/{zipCode}")
     Call<List<Route>> getCityRouteInfo(
             @Path("zipCode") String zipCode
+    );
+
+    @GET("GetBusstopTimeInfo/{stop}")
+    Call<List<BusTracker>> getBusstopInfo(
+            @Path("stop") String stopID
+    );
+
+    @GET("GetRoutePath/{routeID}")
+    Call<List<RoutePath>> getRoutePath(
+            @Path("routeID") String routeID
     );
 }

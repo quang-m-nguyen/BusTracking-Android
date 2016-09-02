@@ -4,12 +4,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by ruofei on 5/24/2016.
+ * Created by ruofeixu on 8/31/16.
  */
-public class BusStop {
-
+public class RoutePath {
     @Expose
-    @SerializedName("BusstopNum")
+    @SerializedName("stopnum")
     private int stopNum;
 
     @Expose
@@ -17,14 +16,24 @@ public class BusStop {
     private double latitude;
 
     @Expose
-    @SerializedName("lng")
+    @SerializedName("long")
     private double longtitude;
 
     @Expose
-    @SerializedName("BusstopName")
+    @SerializedName("stopname")
     private String stopName;
 
-    public int getStopNum() { return stopNum;};
+    @Expose
+    @SerializedName("pathcounter")
+    private String pathNum;
+
+    public int getStopNum() {
+        return stopNum;
+    }
+
+    public void setStopNum(int stopNum) {
+        this.stopNum = stopNum;
+    }
 
     public double getLatitude() {
         return latitude;
@@ -34,20 +43,24 @@ public class BusStop {
         return longtitude;
     }
 
-    public String getStopName() {
-        return stopName;
-    }
-
-    public void setStopNum(int stopNum) {
-        this.stopNum = stopNum;
+    public void setLongtitude(double longtitude) {
+        this.longtitude = longtitude;
     }
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongtitude(double longtitude) {
-        this.longtitude = longtitude;
+    public String getStopName() {
+        return stopName;
+    }
+
+    public String getPathNum() {
+        return pathNum;
+    }
+
+    public void setPathNum(String pathNum) {
+        this.pathNum = pathNum;
     }
 
     public void setStopName(String stopName) {

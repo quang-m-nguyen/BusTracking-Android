@@ -89,7 +89,7 @@ public class TrackedBusAdapter extends RecyclerView.Adapter<TrackedBusAdapter.My
         holder.trackedBusRoute.setText(trackedBus.getRouteName() + " Route");
         holder.trackedBusTime.setText( trackedBus.getEstimatedTime() + " Mins");
 //        holder.trackedBusstopNum.setText(trackedBus.getBusstopNum());
-        holder.trackedBusstopNum.setText("click to set alarm");
+        holder.trackedBusstopNum.setText("alarm isn't fully functional for this version. we will fix it in later version");
         holder.routeIDView.setText(trackedBus.getRouteID());
         holder.routeID = trackedBus.getRouteID();
         holder.routeName = trackedBus.getRouteName();

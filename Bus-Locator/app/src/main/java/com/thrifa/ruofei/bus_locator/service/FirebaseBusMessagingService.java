@@ -298,7 +298,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
     }
 
     private void unsubscribeAlarm(String routeID, String stopID, String token){
-        ThrifaServer server =(ThrifaServer) Server.getInstance(context);
+        ThrifaServer server =(ThrifaServer) ThrifaServer.getInstance(context);
         Call<Void> call = server.unsubscribeBusAlarm(routeID,stopID, token);
         Log.d(TAG, "send token to unsubscribe");
         call.enqueue(new Callback<Void>() {

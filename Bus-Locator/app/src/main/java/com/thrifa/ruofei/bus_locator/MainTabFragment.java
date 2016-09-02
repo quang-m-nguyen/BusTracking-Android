@@ -39,11 +39,13 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.thrifa.ruofei.bus_locator.busstop.BusStopPopupActivity;
 import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.pojo.BusStop;
 import com.thrifa.ruofei.bus_locator.pojo.GoogleMapDirection;
 import com.thrifa.ruofei.bus_locator.pojo.RouteInfo;
+import com.thrifa.ruofei.bus_locator.pojo.RoutePath;
 import com.thrifa.ruofei.bus_locator.routes.RouteListActivity;
 import com.thrifa.ruofei.bus_locator.routes.RoutesAdapter;
 import com.thrifa.ruofei.bus_locator.util.Constants;
@@ -84,14 +86,19 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     static public String mCurrentRoute = "N/A";
+    static public String mCurrentRouteID = "N/A";
+    static public boolean mUpdatePath = true;
 
     final String TAG = this.getClass().getName();
     private Context context;
     GoogleMap mMap;
-    GetBusInfoTask mUpdateBusTask;
+    private volatile GetBusInfoTask mUpdateBusTask;
     Timer t;
 
     static public List<BusStop> mBusStops = new ArrayList<BusStop>();
+    private List<RoutePath> mPaths = new ArrayList<>();
+
+
     private List<List<LatLng>> mRoutes = new ArrayList<>();
 
     private static View view;
@@ -119,7 +126,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             Integer interval = params[0].second;
 
             Log.e(TAG, "asyc start:");
-            ThrifaServer server = (ThrifaServer) Server.getInstance(context);
+            ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(context);
             Call<List<BusInfo>> call = server.getBusInfo(routeID);
             call.enqueue(new Callback<List<BusInfo>>() {
                 @Override
@@ -133,6 +140,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                                 mBusList.clear();
                                 for (int i = 0; i < body.size(); i++) {
                                     final BusInfo busInfo = body.get(i);
+                                    Log.e(TAG, "update new lat:" + busInfo.getLat() + ",lng:" + busInfo.getLng());
                                     mBusList.add(busInfo);
                                 }
 //                                Log.e(TAG, "update new lat:" + mBus.getLat() + ",lng:" + mBus.getLng());
@@ -245,6 +253,10 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 Log.e(TAG, "call updateBus");
                 updateBusLocation();
 
+//                if(mUpdateBusTask == null)
+//                    mUpdateBusTask = new GetBusInfoTask();
+//                mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 2000));
+
 //                t.schedule(new TimerTask() {
 //                    @Override
 //                    public void run() {
@@ -259,10 +271,12 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             try {
                 String callFrom = intent.getStringExtra(Constants.INTENT_CALL_FROM_KEY);
                 String routeName = intent.getStringExtra(Constants.ROUTE_NAME_KEY);
+                String routeID = intent.getStringExtra(Constants.ROUTE_ID_KEY);
 //                mCurrentRoute = routeNameView;
                 if (callFrom.equals(RoutesAdapter.class.getName())) {
-                    ThrifaServer server = (ThrifaServer) Server.getInstance(this.getContext());
-                    Call<List<BusStop>> call = server.getBusStopsCall(routeName);
+
+                    ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(this.getContext());
+                    Call<List<BusStop>> call = server.getBusStopsCall(routeID);
                     call.enqueue(new Callback<List<BusStop>>() {
                         @Override
                         public void onResponse(Call<List<BusStop>> call, Response<List<BusStop>> response) {
@@ -278,6 +292,25 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                         public void onFailure(Call<List<BusStop>> call, Throwable t) {
                         }
                     });
+
+                    Call<List<RoutePath>> pathCall = server.getRoutePath(routeID);
+                    pathCall.enqueue(new Callback<List<RoutePath>>() {
+                        @Override
+                        public void onResponse(Call<List<RoutePath>> call, Response<List<RoutePath>> response) {
+                            if (response != null) {
+                                if (!response.body().equals(mBusStops)) {
+                                    mPaths = response.body();
+                                    updatePath();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<RoutePath>> call, Throwable t) {
+                        }
+                    });
+
+
                 }
                 Button clickButton = (Button) view.findViewById(R.id.get_route_button_on_map);
                 clickButton.setText(mCurrentRoute);
@@ -303,10 +336,11 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 final BusInfo busInfo = mBusList.get(i);
 
                 final Marker marker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))
+                        .snippet("stopNum:")
                         .position(
                                 new LatLng(busInfo.getLat(),
                                         busInfo.getLng()
-                                )).title("Bus " + mCurrentRoute + " Location")
+                                ))
                         .zIndex(100));
                 mBusMarkerList.add(marker);
             }
@@ -316,10 +350,15 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+//                    if (mUpdateBusTask == null)
                     mUpdateBusTask = new GetBusInfoTask();
-                    mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 2000));                   //Do something after 100ms
+                    try {
+                        mUpdateBusTask.execute(new Pair<String, Integer>(mCurrentRouteID, 2000));
+                    } catch (Exception e) {
+                        updateBusLocation();
+                    }
                 }
-            }, 8000);
+            }, 5000);
 
         } else {
             final Handler handler = new Handler();
@@ -327,8 +366,13 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 @Override
                 public void run() {
                     Log.e(TAG, "update bus 3");
+//                    if (mUpdateBusTask == null)
                     mUpdateBusTask = new GetBusInfoTask();
-                    mUpdateBusTask.execute(new Pair<String, Integer>("99163" + mCurrentRoute, 2000));
+                    try {
+                        mUpdateBusTask.execute(new Pair<String, Integer>(mCurrentRouteID, 2000));
+                    } catch (Exception e) {
+                        updateBusLocation();
+                    }
                 }
             }, 2000);
         }
@@ -354,12 +398,30 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             p.setColor(ContextCompat.getColor(context, R.color.materialColorRed));
             c.drawCircle(bmp.getHeight() / 2, bmp.getWidth() / 2, bmp.getHeight() / 2 - 2, p);
 
+
+//            mRoutes.clear();
             for (int i = 0; i < mBusStops.size(); i++) {
                 Log.e(TAG, "add marker to map");
+
+
                 BusStop busStop = mBusStops.get(i);
                 LatLng position = new LatLng(busStop.getLatitude(),
                         busStop.getLongtitude()
                 );
+
+//                if (mBusStops.size() > 1) {
+//                    if (i == mBusStops.size() - 1) {
+//                        String ori = "{" + busStop.getLatitude() + "},{" + busStop.getLongtitude() + "}";
+//                        String dest = "{" + mBusStops.get(0).getLatitude() + "},{" + mBusStops.get(0).getLongtitude() + "}";
+//                        requestRoute(ori,dest);
+//                    }
+//                    else {
+//                        String ori = "{" + mBusStops.get(i).getLatitude() + "},{" + mBusStops.get(i).getLongtitude() + "}";
+//                        String dest = "{" + mBusStops.get(i+1).getLatitude() + "},{" + mBusStops.get(i+1).getLongtitude() + "}";
+//                        requestRoute(ori,dest);
+//                    }
+//                }
+
 
                 Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(position).title(busStop.getStopName())
@@ -371,15 +433,23 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
 
             setMapMarker(mMap, markers);
+
         }
-//        for (int i = 0; i < mRoutes.size(); i++) {
-//            PolylineOptions newOpt = new PolylineOptions();
+    }
+
+
+    private void updatePath() {
+        Log.e(TAG, "draw path");
+        for (int i = 0; i < mPaths.size(); i++) {
+            PolylineOptions newOpt = new PolylineOptions();
 //            newOpt.addAll(mRoutes.get(i))
-//                    .width(12)
-//                    .color(Color.parseColor("#05b1fb"))//Google maps blue color
-//                    .geodesic(true);
-//            mMap.addPolyline(newOpt);
-//        }
+            final RoutePath routePath = mPaths.get(i);
+            newOpt.add(new LatLng(routePath.getLatitude(),routePath.getLongtitude()))
+                    .width(12)
+                    .color(Color.parseColor("#05b1fb"))//Google maps blue color
+                    .geodesic(true);
+            mMap.addPolyline(newOpt);
+        }
     }
 
     @Override
@@ -504,13 +574,15 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 if (response != null) {
                     List<List<LatLng>> list = new ArrayList<>();
                     List<RouteInfo> routeInfos = response.body().getRoute();
+                    Log.e(TAG, "drawpath:" + routeInfos.toString());
                     for (int i = 0; i < routeInfos.size(); i++) {
                         list.add(decodePoly(routeInfos.get(i).getPolyline().getPoints()));
                     }
                     mRoutes.addAll(list);
                 }
                 if (mBusStops.size() <= mRoutes.size() + 1) {
-                    updateRouteStopsOnMap();
+//                    updateRouteStopsOnMap();
+                    updatePath();
                 }
             }
 
