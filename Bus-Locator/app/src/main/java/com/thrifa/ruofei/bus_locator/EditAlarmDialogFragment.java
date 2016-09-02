@@ -58,20 +58,25 @@ public class EditAlarmDialogFragment extends DialogFragment {
         builder.setMessage(getString(R.string.alarm_remove_message))
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) { // Ok, send request
-                        Log.e(TAG, "id is " + alarmID);
+                        Log.d(TAG, "id is " + alarmID);
 
                         // TODO: using index for now, update to real id later
                         Integer alarmIDInt = Integer.parseInt(alarmID);
-                        Log.e(TAG, "id is ind " + id);
+                        Log.d(TAG, "id is ind " + id);
                         if (alarmIDInt != null) {
                             for (int i = 0; i < BusAlarmListFragment.busAlarmList.size(); i++) {
                                 final BusAlarmItem alarmItem = BusAlarmListFragment.busAlarmList.get(i);
-                                Log.e(TAG,"loop remove target alarm" + alarmItem.getAlarmID());
-                                if (alarmItem.getAlarmID()== alarmIDInt) {
-                                    Log.e(TAG,"remove target alarm");
+                                Log.d(TAG, "loop remove target alarm" + alarmItem.getAlarmID());
+                                if (alarmItem.getAlarmID() == alarmIDInt) {
+                                    Log.d(TAG, "remove target alarm");
                                     BusAlarmListFragment.busAlarmList.remove(i);
                                     BusAlarmListFragment.idPool.push(i);
                                 }
+                            }
+                            if (BusAlarmListFragment.busAlarmList.size() <= 0) {
+                                BusAlarmListFragment.emptyAlarmTextView.setVisibility(View.VISIBLE);
+                            } else {
+                                BusAlarmListFragment.emptyAlarmTextView.setVisibility(View.INVISIBLE);
                             }
                             Handler mainThread = new Handler(Looper.getMainLooper());
                             mainThread.post(new Runnable() {
@@ -94,7 +99,7 @@ public class EditAlarmDialogFragment extends DialogFragment {
     }
 
     private void unsubscribeAlarm(String routeID, String stopID, String token) {
-        ThrifaServer server =(ThrifaServer) ThrifaServer.getInstance(context);
+        ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(context);
         Call<Void> call = server.unsubscribeBusAlarm(routeID, stopID, token);
         Log.d(TAG, "send token to unsubscribe");
         call.enqueue(new Callback<Void>() {

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Thrifa</string>
     <string name="app_title">Coug Transit</string>
-    <string name="app_version">v 0.0.0.1</string>
+    <string name="app_version">v 1.05</string>
 
 
     <!--Route string value-->

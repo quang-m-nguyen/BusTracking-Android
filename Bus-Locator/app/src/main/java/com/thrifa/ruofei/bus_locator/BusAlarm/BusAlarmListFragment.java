@@ -28,6 +28,7 @@ public class BusAlarmListFragment extends Fragment {
     public final String TAG = this.getClass().getName();
     String busstopID;
     String token;
+    public static TextView emptyAlarmTextView;
 
     private View rootView;
 
@@ -61,6 +62,7 @@ public class BusAlarmListFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_bus_alarm_list, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_alarm_list);
+        emptyAlarmTextView = (TextView) rootView.findViewById(R.id.alarm_list_empty);
 
         updateUI();
 
@@ -106,13 +108,13 @@ public class BusAlarmListFragment extends Fragment {
 
     public void updateUI(){
 
-        TextView textView = (TextView) rootView.findViewById(R.id.alarm_list_empty);
+        TextView emptyAlarmTextView = (TextView) rootView.findViewById(R.id.alarm_list_empty);
 
         if(busAlarmList.size() <=0){
-            textView.setVisibility(View.VISIBLE);
+            emptyAlarmTextView.setVisibility(View.VISIBLE);
         }
         else {
-            textView.setVisibility(View.INVISIBLE);
+            emptyAlarmTextView.setVisibility(View.INVISIBLE);
         }
 
     }

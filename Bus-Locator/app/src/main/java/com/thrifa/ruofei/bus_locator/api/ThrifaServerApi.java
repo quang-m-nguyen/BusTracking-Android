@@ -76,4 +76,12 @@ public interface ThrifaServerApi {
     Call<List<RoutePath>> getRoutePath(
             @Path("routeID") String routeID
     );
+
+    //    /GetRemainingTimeForARoute/:route/:stop
+    @GET("GetRemainingTimeForARoute/{routeID}/{stopID}")
+    Call<BusTracker> getTimeInfoForARoute(
+            @Path("routeID") String routeID,
+            @Path("stopID") String stopID
+    );
+
 }

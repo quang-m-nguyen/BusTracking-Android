@@ -125,25 +125,24 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             String routeID = params[0].first;
             Integer interval = params[0].second;
 
-            Log.e(TAG, "asyc start:");
+            Log.d(TAG, "asyc start:");
             ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(context);
             Call<List<BusInfo>> call = server.getBusInfo(routeID);
             call.enqueue(new Callback<List<BusInfo>>() {
                 @Override
                 public void onResponse(Call<List<BusInfo>> call, Response<List<BusInfo>> response) {
                     if (response != null) {
-                        Log.e(TAG, "asyc response:" + response.toString());
+                        Log.d(TAG, "asyc response:" + response.toString());
                         final List<BusInfo> body = response.body();
                         if (body != null) {
-                            Log.e(TAG, "ascyc bodysize:" + body.size());
+                            Log.d(TAG, "ascyc bodysize:" + body.size());
                             if (body.size() > 0) {
                                 mBusList.clear();
                                 for (int i = 0; i < body.size(); i++) {
                                     final BusInfo busInfo = body.get(i);
-                                    Log.e(TAG, "update new lat:" + busInfo.getLat() + ",lng:" + busInfo.getLng());
+                                    Log.d(TAG, "update new lat:" + busInfo.getLat() + ",lng:" + busInfo.getLng());
                                     mBusList.add(busInfo);
                                 }
-//                                Log.e(TAG, "update new lat:" + mBus.getLat() + ",lng:" + mBus.getLng());
                             }
                         }
                     }
@@ -250,7 +249,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
         if (mCurrentRoute != null) {
             if (!mCurrentRoute.equals("N/A")) {
-                Log.e(TAG, "call updateBus");
+                Log.d(TAG, "call updateBus");
                 updateBusLocation();
 
 //                if(mUpdateBusTask == null)
@@ -321,11 +320,11 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     }
 
     private void updateBusLocation() {
-        Log.e(TAG, "update bus 0 size:" + mBusList.size());
+        Log.d(TAG, "update bus 0 size:" + mBusList.size());
         if (mBusList.size() > 0) {
-            Log.e(TAG, "update bus 1 size:" + mBusMarkerList.size());
+            Log.d(TAG, "update bus 1 size:" + mBusMarkerList.size());
             if (mBusMarkerList.size() > 0) {
-                Log.e(TAG, "update bus 2");
+                Log.d(TAG, "update bus 2");
                 for (int i = 0; i < mBusMarkerList.size(); i++) {
                     mBusMarkerList.get(i).remove();
                 }
@@ -365,7 +364,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e(TAG, "update bus 3");
+                    Log.d(TAG, "update bus 3");
 //                    if (mUpdateBusTask == null)
                     mUpdateBusTask = new GetBusInfoTask();
                     try {
@@ -401,7 +400,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
 //            mRoutes.clear();
             for (int i = 0; i < mBusStops.size(); i++) {
-                Log.e(TAG, "add marker to map");
+                Log.d(TAG, "add marker to map");
 
 
                 BusStop busStop = mBusStops.get(i);
@@ -439,17 +438,20 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
 
     private void updatePath() {
-        Log.e(TAG, "draw path");
+        Log.d(TAG, "draw path size:" + mPaths.size());
+        List<LatLng> lines = new ArrayList<>();
         for (int i = 0; i < mPaths.size(); i++) {
-            PolylineOptions newOpt = new PolylineOptions();
-//            newOpt.addAll(mRoutes.get(i))
             final RoutePath routePath = mPaths.get(i);
-            newOpt.add(new LatLng(routePath.getLatitude(),routePath.getLongtitude()))
-                    .width(12)
-                    .color(Color.parseColor("#05b1fb"))//Google maps blue color
-                    .geodesic(true);
-            mMap.addPolyline(newOpt);
+            lines.add(new LatLng(routePath.getLatitude(),routePath.getLongtitude()));
+
         }
+        PolylineOptions newOpt = new PolylineOptions();
+//            newOpt.addAll(mRoutes.get(i))
+        newOpt.addAll(lines)
+                .width(12)
+                .color(Color.parseColor("#05b1fb"))//Google maps blue color
+                .geodesic(true);
+        mMap.addPolyline(newOpt);
     }
 
     @Override
@@ -574,7 +576,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 if (response != null) {
                     List<List<LatLng>> list = new ArrayList<>();
                     List<RouteInfo> routeInfos = response.body().getRoute();
-                    Log.e(TAG, "drawpath:" + routeInfos.toString());
+                    Log.d(TAG, "drawpath:" + routeInfos.toString());
                     for (int i = 0; i < routeInfos.size(); i++) {
                         list.add(decodePoly(routeInfos.get(i).getPolyline().getPoints()));
                     }
@@ -643,7 +645,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             int padding = 0; // offset from edges of the map in pixels
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             // No animate
-            Log.e(TAG, "move camera");
+            Log.d(TAG, "move camera");
             googleMap.moveCamera(cu);
 
             // Animate

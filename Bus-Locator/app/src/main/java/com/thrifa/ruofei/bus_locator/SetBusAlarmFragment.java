@@ -50,7 +50,7 @@ public class SetBusAlarmFragment extends DialogFragment {
         final View view = inflater.inflate(R.layout.fragment_set_bus_alarm_dialog, null);
         builder.setView(view);
 
-        context = view.getContext();
+        context = inflater.getContext();
 
         initializeVariables(view);
 
@@ -83,7 +83,7 @@ public class SetBusAlarmFragment extends DialogFragment {
                         editor.commit();
 
                         int alarmID = (int)BusAlarmListFragment.idPool.pop();
-                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID.substring(5), busstopID.substring(5), "time", "Set Time:" + seekBar.getProgress() + " Mins", alarmID,-1.0,(double)seekBar.getProgress(), true));
+                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID,busstopID,routeID.substring(5), busstopID.substring(5), "time", "Set Time:" + seekBar.getProgress() + " Mins", alarmID,-1.0,(double)seekBar.getProgress(), true));
                         Handler mainThread = new Handler(Looper.getMainLooper());
                         // In your worker thread
                         mainThread.post(new Runnable() {
@@ -101,21 +101,21 @@ public class SetBusAlarmFragment extends DialogFragment {
                         // send request
                         //set alarm add alarm to alarm list
 
-                        ThrifaServer server = (ThrifaServer)ThrifaServer.getInstance(context);
-                        Call<Void> call = server.subscribeBusAlarm(routeID, busstopID, token);
-                        Log.d(TAG, "send token to subscribe alarm");
-                        call.enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-                                Log.e(TAG, "Fail to setup alarm:" + t.getMessage());
-                                t.printStackTrace();
-                            }
-                        });
+//                        ThrifaServer server = (ThrifaServer)ThrifaServer.getInstance(context);
+//                        Call<Void> call = server.subscribeBusAlarm(routeID, busstopID, token);
+//                        Log.d(TAG, "send token to subscribe alarm");
+//                        call.enqueue(new Callback<Void>() {
+//                            @Override
+//                            public void onResponse(Call<Void> call, Response<Void> response) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<Void> call, Throwable t) {
+//                                Log.e(TAG, "Fail to setup alarm:" + t.getMessage());
+//                                t.printStackTrace();
+//                            }
+//                        });
 
                         Toast.makeText(context,"Check your alarm in alarm page", Toast.LENGTH_LONG);
 

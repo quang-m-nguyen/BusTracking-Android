@@ -5,9 +5,10 @@ package com.thrifa.ruofei.bus_locator.BusAlarm;
  */
 public class BusAlarmItem {
 
+    private String routeID, stopID;
+    private Integer alarmID;
     private String routeName, busstopName;
     private String remainingTime, alarmSettingTime;
-    private Integer alarmID;
 
     private Double remainTimeNum, settingTimeNum;
     private boolean alarmFlag;
@@ -16,7 +17,9 @@ public class BusAlarmItem {
 
     }
 
-    public BusAlarmItem(String routeName,
+    public BusAlarmItem(String routeID,
+                        String stopID,
+                        String routeName,
                         String busstopName,
                         String remainingTime,
                         String alarmSettingTime,
@@ -24,11 +27,13 @@ public class BusAlarmItem {
                         Double remainTimeNum,
                         Double settingTimeNum,
                         boolean alarmFlag){
+        this.routeID = routeID;
+        this.stopID = stopID;
+        this.alarmID = alarmID;
         this.routeName = routeName;
         this.busstopName = busstopName;
         this.remainingTime = remainingTime;
         this.alarmSettingTime = alarmSettingTime;
-        this.alarmID = alarmID;
 
         this.remainTimeNum = remainTimeNum;
         this.settingTimeNum = settingTimeNum;
@@ -68,13 +73,6 @@ public class BusAlarmItem {
         this.alarmSettingTime = alarmSettingTime;
     }
 
-    public Integer getAlarmID() {
-        return alarmID;
-    }
-
-    public void setAlarmID(Integer alarmID) {
-        this.alarmID = alarmID;
-    }
 
     public Double getRemainTimeNum() {
         return remainTimeNum;
@@ -100,6 +98,30 @@ public class BusAlarmItem {
         this.alarmFlag = alarmFlag;
     }
 
+    public String getRouteID() {
+        return routeID;
+    }
+
+    public void setRouteID(String routeID) {
+        this.routeID = routeID;
+    }
+
+    public String getStopID() {
+        return stopID;
+    }
+
+    public void setStopID(String stopID) {
+        this.stopID = stopID;
+    }
+
+    public Integer getAlarmID() {
+        return alarmID;
+    }
+
+    public void setAlarmID(Integer alarmID) {
+        this.alarmID = alarmID;
+    }
+
     @Override
     public boolean equals(Object o) {
         if(o == null)
@@ -110,8 +132,8 @@ public class BusAlarmItem {
 //        if(this.alarmID.equals(other.alarmID))
 //            return true;
 //        return false;
-         if(this.routeName == null || other.routeName == null || this.busstopName == null || other.busstopName == null) return false;
-        if(this.routeName.equals(other.routeName) && this.busstopName.equals(other.busstopName))
+         if(this.routeID == null || other.routeID == null || this.stopID == null || other.stopID == null) return false;
+        if(this.routeID.equals(other.routeID) && this.stopID.equals(other.stopID))
             return true;
         return false;
 

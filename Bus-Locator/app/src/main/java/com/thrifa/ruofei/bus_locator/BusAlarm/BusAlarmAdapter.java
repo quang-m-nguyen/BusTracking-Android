@@ -3,6 +3,7 @@ package com.thrifa.ruofei.bus_locator.BusAlarm;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,10 +36,10 @@ public class BusAlarmAdapter extends RecyclerView.Adapter<BusAlarmAdapter.AlarmV
     public final String TAG = this.getClass().getName();
     private List<BusAlarmItem> busAlarmList;
     private Context context;
-    private String routeID, stopID, token;
+    private String routeID, stopID, token, routeName,stopName, alarmID;
 
     public class AlarmViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView routeNameView, busstopNameView, remainingTimeView, alarmSettingTimeView, alarmIDView;
+        public TextView routeNameView, busstopNameView, remainingTimeView, alarmSettingTimeView, routeIDView,stopIDView,alarmIDView, alarmStatusView;
 
         public Switch alarmSwitchView;
 
@@ -50,18 +51,21 @@ public class BusAlarmAdapter extends RecyclerView.Adapter<BusAlarmAdapter.AlarmV
             busstopNameView = (TextView) view.findViewById(R.id.alarmBusstop);
             remainingTimeView = (TextView) view.findViewById(R.id.alarmRemainingTime);
             alarmSettingTimeView = (TextView) view.findViewById(R.id.alarmSettingTime);
+            routeIDView = (TextView) view.findViewById(R.id.routeIDinAlarmItem);
+            stopIDView = (TextView) view.findViewById(R.id.stopIDInAlarmItem);
             alarmIDView = (TextView) view.findViewById(R.id.alarmID);
-
             alarmSwitchView = (Switch) view.findViewById(R.id.alarm_switch);
+            alarmStatusView = (TextView)view.findViewById(R.id.alarm_status);
         }
 
 
         @Override
         public void onClick(View v) {
             // TODO: user shared preference
-            String routeID = routeNameView.getText().toString();
-            String stopID = busstopNameView.getText().toString();
-            String ID = alarmIDView.getText().toString();
+            String routeID = routeIDView.getText().toString();
+            String stopID = stopIDView.getText().toString();
+            String alarmID = alarmIDView.getText().toString();
+
 //            String token  = FirebaseInstanceId.getInstance().getToken();
 //            SharedPreferences sharedPref = context.getSharedPreferences(Constants.DISIRED_BUS_PREFFERNCE, Context.MODE_PRIVATE);
 ////            String defaultValue = context.getString(R.string.disired_bus_default);
@@ -72,7 +76,7 @@ public class BusAlarmAdapter extends RecyclerView.Adapter<BusAlarmAdapter.AlarmV
             Bundle bundle = new Bundle();
             bundle.putString(Constants.AlarmList.BUS_ROUTE, routeID);
             bundle.putString(Constants.AlarmList.BUSSTOP, stopID);
-            bundle.putString(Constants.AlarmList.ID, ID);
+            bundle.putString(Constants.AlarmList.ID,  alarmID);
 
             DialogFragment newFragment = new EditAlarmDialogFragment();
             newFragment.setArguments(bundle);
@@ -96,80 +100,66 @@ public class BusAlarmAdapter extends RecyclerView.Adapter<BusAlarmAdapter.AlarmV
     public void onBindViewHolder(AlarmViewHolder holder, int position) {
         final BusAlarmItem alarmItem = busAlarmList.get(position);
         holder.routeNameView.setText(alarmItem.getRouteName());
-        holder.busstopNameView.setText(alarmItem.getBusstopName());
+        if(alarmItem.getBusstopName().length() > 20)
+        holder.busstopNameView.setText(alarmItem.getBusstopName().substring(20) + "...");
+        else
+            holder.busstopNameView.setText(alarmItem.getBusstopName());
+
         holder.remainingTimeView.setText(alarmItem.getRemainingTime());
         holder.alarmSettingTimeView.setText(alarmItem.getAlarmSettingTime());
+
         holder.alarmIDView.setText(alarmItem.getAlarmID().toString());
 
         final Switch switchItem = holder.alarmSwitchView;
 
-        routeID = alarmItem.getRouteName();
-        stopID = alarmItem.getBusstopName();
+        routeID = alarmItem.getRouteID();
+        stopID = alarmItem.getStopID();
+        routeName = alarmItem.getRouteName();
+        stopName = alarmItem.getBusstopName();
         token = FirebaseInstanceId.getInstance().getToken();
 
         if (alarmItem.isAlarmFlag()) {
+            holder.alarmStatusView.setText("Alarm On");
             switchItem.setChecked(true);
         } else {
+            holder.alarmStatusView.setText("Alarm Off");
             switchItem.setChecked(false);
         }
 
         switchItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                final List<BusAlarmItem> busAlarmList = BusAlarmListFragment.busAlarmList;
-                int index = busAlarmList.indexOf(new BusAlarmItem(routeID, stopID, "n/a", "n/a", -1, -1.0, -1.0, true));
-
+                Log.d(TAG,"switch changed rid:" +routeID +",sid:" +stopID);
+                int index = busAlarmList.indexOf(new BusAlarmItem(routeID, stopID,routeName,stopName, "n/a", "n/a", -1, -1.0, -1.0, true));
+                Log.d(TAG,"switch changed i:"+index);
+                Handler h = new Handler(context.getMainLooper());
                 if (b) {
+                    Log.d(TAG,"switch on changed");
                     // alarm on
                     if (index != -1) {
-                        final BusAlarmItem busAlarmItem = busAlarmList.get(index);
-                        busAlarmItem.setAlarmFlag(true);
+                        BusAlarmListFragment.busAlarmList.get(index).setAlarmFlag(true);
                     }
-
-                    // sub
-                    ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(context);
-                    Call<Void> call = server.subscribeBusAlarm(routeID, stopID, token);
-                    Log.d(TAG, "send token to subscribe alarm");
-                    call.enqueue(new Callback<Void>() {
+                    // Although you need to pass an appropriate context
+                    h.post(new Runnable() {
                         @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            Log.e(TAG, "Fail to setup alarm:" + t.getMessage());
-                            t.printStackTrace();
+                        public void run() {
+                            Toast.makeText(context, "Alarm On", Toast.LENGTH_LONG);
                         }
                     });
-
-                    Toast.makeText(context, "Alarm On", Toast.LENGTH_LONG);
                 } else {
+                    Log.d(TAG,"switch off changed");
                     // alarm off
                     if (index != -1) {
-                        final BusAlarmItem busAlarmItem = busAlarmList.get(index);
-                        busAlarmItem.setAlarmFlag(false);
+                        busAlarmList.get(index).setAlarmFlag(false);
                     }
 
-                    // unsub
-                    ThrifaServer server = (ThrifaServer) ThrifaServer.getInstance(context);
-                    Call<Void> call = server.unsubscribeBusAlarm(routeID, stopID, token);
-                    Log.d(TAG, "send token to unsubscribe");
-                    call.enqueue(new Callback<Void>() {
+                    // Although you need to pass an appropriate context
+                    h.post(new Runnable() {
                         @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            Log.e(TAG, "Fail:" + t.getMessage());
-                            t.printStackTrace();
+                        public void run() {
+                            Toast.makeText(context, "Alarm Off", Toast.LENGTH_LONG);
                         }
                     });
-
-
-                    Toast.makeText(context, "Alarm Off", Toast.LENGTH_LONG);
                 }
             }
         });

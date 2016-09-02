@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
 import com.thrifa.ruofei.bus_locator.customWidget.NonSwipeableViewPager;
+import com.thrifa.ruofei.bus_locator.service.AlarmService;
 import com.thrifa.ruofei.bus_locator.util.Constants;
 import com.thrifa.ruofei.bus_locator.util.Parameters;
 
@@ -42,18 +43,17 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_information_outline_white_48dp
     };
 
-    private void initialize(){
+    private void initialize() {
         // check build type
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_TEST_PRODUCT_DOMAIN;
-        }
-        else {
+        } else {
             Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_SERVER_PRODUCT_DOMAIN;
         }
 
         // start checking alarm
-
-
+        Intent intent = new Intent(this, AlarmService.class);
+        startService(intent);
     }
 
     @Override

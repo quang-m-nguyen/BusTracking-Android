@@ -126,9 +126,14 @@ public class ThrifaServer {
 
     }
 
-    public Call<List<RoutePath>> getRoutePath(String RouteID) {
+    public Call<List<RoutePath>> getRoutePath(String routeID) {
         ThrifaServerApi service = (ThrifaServerApi) this.getService();
-        return service.getRoutePath(RouteID);
+        return service.getRoutePath(routeID);
+    }
+
+    public Call<BusTracker> getTimeInfoForARoute(String routeID, String stopID){
+        ThrifaServerApi service = (ThrifaServerApi) this.getService();
+        return service.getTimeInfoForARoute(routeID,stopID);
     }
 
     public Retrofit getRetrofit() {

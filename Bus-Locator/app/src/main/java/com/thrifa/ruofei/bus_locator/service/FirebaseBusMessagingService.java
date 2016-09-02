@@ -137,7 +137,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                 try {
                     Handler mainThread = new Handler(Looper.getMainLooper());
                     // In your worker thread
-                    int index = BusAlarmListFragment.busAlarmList.indexOf(new BusAlarmItem(routeID, stopID, "n/a", "n/a", -1, -1.0, -1.0, true));
+                    int index = BusAlarmListFragment.busAlarmList.indexOf(new BusAlarmItem(routeID, stopID,"","", "n/a", "n/a", -1, -1.0, -1.0, true));
                         Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + stopID );
                     if (index == -1)
                         return;
@@ -151,7 +151,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
 //                        BusAlarmListFragment.busAlarmList.get(index).setAlarmSettingTime("Setting Time:" + );
 
                     if (alarmItem.getSettingTimeNum() >= alarmItem.getRemainTimeNum() && alarmItem.getRemainTimeNum() >= 0) {
-                        sendNotification("Bus is about to arriving in " + Math.round(alarmItem.getRemainTimeNum()) + "minutes");
+                        sendNotification("Bus is about to arriving in " + Math.round(alarmItem.getRemainTimeNum()) + "minutes", "Bus About Arrive");
 
                         // unsubscribe
                         alarmItem.setAlarmFlag(false);
@@ -276,7 +276,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody,String title) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
@@ -285,7 +285,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Firebase Push Notification")
+                .setContentTitle(title)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
