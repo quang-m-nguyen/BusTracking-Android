@@ -19,6 +19,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -85,14 +86,16 @@ import retrofit2.Response;
 public class MainTabFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    static public String mCurrentRoute = "N/A";
+    static public String mCurrentRoute = "CLICK HERE TO FIND A ROUTE";
     static public String mCurrentRouteID = "N/A";
+    static public String mCurrentRouteColor = "N/A";
     static public boolean mUpdatePath = true;
 
     final String TAG = this.getClass().getName();
     private Context context;
     GoogleMap mMap;
     private volatile GetBusInfoTask mUpdateBusTask;
+    static boolean busUpdateFlag = true;
     Timer t;
 
     static public List<BusStop> mBusStops = new ArrayList<BusStop>();
@@ -118,7 +121,15 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            updateBusLocation();
+            if (busUpdateFlag == true) {
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateBusLocation();
+                    }
+                }, 2000);
+            }
         }
 
         protected Integer doInBackground(Pair<String, Integer>... params) {
@@ -184,15 +195,25 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         /* map is already there, just return view as it is */
         }
 
+//        SharedPreferences sharedPref = context.getSharedPreferences(Constants.CURRENT_STATUS_PREFFENCE, Context.MODE_PRIVATE);
+//        int defaultValue = getResources().getString(R.string.saved_high_score_default);
+//        long highScore = sharedPref.getInt(getString(R.string.saved_high_score), defaultValue);
+
         Button clickButton = (Button) view.findViewById(R.id.get_route_button_on_map);
         clickButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(context, RouteListActivity.class);
                 startActivity(intent);
             }
         });
+//        Button clickButton = (Button) view.findViewById(R.id.get_route_button_on_map);
+//        if (Build.VERSION.SDK_INT >= 21) {
+//            if (!mCurrentRouteColor.equals("N/A"))
+//                clickButton.setBackgroundTintList(ContextCompat.getColorStateList(context, Color.parseColor(mCurrentRouteColor)));
+//        }
 
 
         SupportMapFragment mapFragment =
@@ -233,13 +254,17 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         super.onPause();
         if (mReceiver != null)
             getActivity().unregisterReceiver(mReceiver);
-        if (mUpdateBusTask != null)
+        if (mUpdateBusTask != null) {
             mUpdateBusTask.cancel(true);
+            busUpdateFlag = false;
+            Log.d(TAG, "task cancelled");
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        busUpdateFlag = true;
         IntentFilter intentFilter = new IntentFilter(
                 Constants.MAIN_ACTION);
 
@@ -248,9 +273,12 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
 
         if (mCurrentRoute != null) {
-            if (!mCurrentRoute.equals("N/A")) {
+            if (!mCurrentRoute.equals("CLICK HERE TO FIND A ROUTE")) {
                 Log.d(TAG, "call updateBus");
                 updateBusLocation();
+
+
+//                clickButton.setBackgroundColor(Color.parseColor(mCurrentRouteColor));
 
 //                if(mUpdateBusTask == null)
 //                    mUpdateBusTask = new GetBusInfoTask();
@@ -262,6 +290,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 //                        updateBusLocation();
 //                    }
 //                },2000);
+            } else {
             }
         }
 
@@ -271,6 +300,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 String callFrom = intent.getStringExtra(Constants.INTENT_CALL_FROM_KEY);
                 String routeName = intent.getStringExtra(Constants.ROUTE_NAME_KEY);
                 String routeID = intent.getStringExtra(Constants.ROUTE_ID_KEY);
+//                int routeColor = intent.getIntExtra(Constants.ROUTE_COLOR,ContextCompat.getColor(context, R.color.materialColorRed)));
 //                mCurrentRoute = routeNameView;
                 if (callFrom.equals(RoutesAdapter.class.getName())) {
 
@@ -345,11 +375,11 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             }
 
 
+            Log.d(TAG, "update bus 4" + mCurrentRouteID);
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-//                    if (mUpdateBusTask == null)
                     mUpdateBusTask = new GetBusInfoTask();
                     try {
                         mUpdateBusTask.execute(new Pair<String, Integer>(mCurrentRouteID, 2000));
@@ -364,16 +394,21 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "update bus 3");
-//                    if (mUpdateBusTask == null)
+                    Log.d(TAG, "update bus 3" + mCurrentRouteID);
                     mUpdateBusTask = new GetBusInfoTask();
                     try {
                         mUpdateBusTask.execute(new Pair<String, Integer>(mCurrentRouteID, 2000));
                     } catch (Exception e) {
-                        updateBusLocation();
+                        final Handler handler1 = new Handler();
+                        handler1.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateBusLocation();
+                            }
+                        }, 1000);
                     }
                 }
-            }, 2000);
+            }, 0);
         }
     }
 
@@ -391,18 +426,24 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
             Paint p = new Paint();
 
-            p.setColor(ContextCompat.getColor(context, R.color.colorAccent));
+            p.setColor(ContextCompat.getColor(context, R.color.white));
             c.drawCircle(bmp.getHeight() / 2, bmp.getWidth() / 2, bmp.getHeight() / 2, p);
 
-            p.setColor(ContextCompat.getColor(context, R.color.materialColorRed));
-            c.drawCircle(bmp.getHeight() / 2, bmp.getWidth() / 2, bmp.getHeight() / 2 - 2, p);
+//            p.setColor(ContextCompat.getColor(context, R.color.materialColorRed));
+
+            if (!mCurrentRouteColor.equals("N/A")) {
+                Log.e(TAG, "color unset");
+                p.setColor(Color.parseColor(mCurrentRouteColor));
+            } else {
+                int routeColor = R.color.materialColorRed;
+                p.setColor(ContextCompat.getColor(context, routeColor));
+            }
+            c.drawCircle(bmp.getHeight() / 2, bmp.getWidth() / 2, bmp.getHeight() / 2 - 5, p);
 
 
 //            mRoutes.clear();
             for (int i = 0; i < mBusStops.size(); i++) {
                 Log.d(TAG, "add marker to map");
-
-
                 BusStop busStop = mBusStops.get(i);
                 LatLng position = new LatLng(busStop.getLatitude(),
                         busStop.getLongtitude()
@@ -420,13 +461,19 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 //                        requestRoute(ori,dest);
 //                    }
 //                }
-
-
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(position).title(busStop.getStopName())
-                        .snippet("click for detail")
+                Marker marker;
+                if (BuildConfig.DEBUG) {
+                    marker = mMap.addMarker(new MarkerOptions()
+                            .position(position).title(busStop.getStopName())
+                            .snippet(Integer.toString(busStop.getStopNum()) + " click for detail")
+                            .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+                } else {
+                    marker = mMap.addMarker(new MarkerOptions()
+                            .position(position).title(busStop.getStopName())
+                            .snippet("click for detail")
 //                        .snippet(Integer.toString(busStop.getStopNum()) + " click for detail")
-                        .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+                            .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+                }
                 markers.add(marker);
             }
 
@@ -442,7 +489,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         List<LatLng> lines = new ArrayList<>();
         for (int i = 0; i < mPaths.size(); i++) {
             final RoutePath routePath = mPaths.get(i);
-            lines.add(new LatLng(routePath.getLatitude(),routePath.getLongtitude()));
+            lines.add(new LatLng(routePath.getLatitude(), routePath.getLongtitude()));
 
         }
         PolylineOptions newOpt = new PolylineOptions();

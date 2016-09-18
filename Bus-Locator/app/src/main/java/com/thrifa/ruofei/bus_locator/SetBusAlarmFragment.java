@@ -72,8 +72,8 @@ public class SetBusAlarmFragment extends DialogFragment {
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(getString(R.string.alarm_flag_key), "true");
 
-                        Intent alarmService = new Intent(context, ThrifaBackgroundService.class);
-                        getActivity().startService(alarmService);
+//                        Intent alarmService = new Intent(context, ThrifaBackgroundService.class);
+//                        getActivity().startService(alarmService);
 
                         String textString = textView.getText().toString();
                         Double alarmSettingTime = Double.parseDouble(textString);
@@ -82,8 +82,8 @@ public class SetBusAlarmFragment extends DialogFragment {
                         }
                         editor.commit();
 
-                        int alarmID = (int)BusAlarmListFragment.idPool.pop();
-                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID,busstopID,routeID.substring(5), busstopID.substring(5), "time", "Set Time:" + seekBar.getProgress() + " Mins", alarmID,-1.0,(double)seekBar.getProgress(), true));
+                        int alarmID = (int) BusAlarmListFragment.idPool.pop();
+                        BusAlarmListFragment.busAlarmList.add(new BusAlarmItem(routeID, busstopID, routeID.substring(5), busstopID.substring(5), "time", "Set Time:" + seekBar.getProgress() + " Mins", alarmID, -1.0, (double) seekBar.getProgress(), true));
                         Handler mainThread = new Handler(Looper.getMainLooper());
                         // In your worker thread
                         mainThread.post(new Runnable() {
@@ -98,31 +98,8 @@ public class SetBusAlarmFragment extends DialogFragment {
                             }
                         });
 
-                        // send request
-                        //set alarm add alarm to alarm list
+                        Toast.makeText(getActivity(), "Alarm is set, please check in alarm tab", Toast.LENGTH_SHORT).show();
 
-//                        ThrifaServer server = (ThrifaServer)ThrifaServer.getInstance(context);
-//                        Call<Void> call = server.subscribeBusAlarm(routeID, busstopID, token);
-//                        Log.d(TAG, "send token to subscribe alarm");
-//                        call.enqueue(new Callback<Void>() {
-//                            @Override
-//                            public void onResponse(Call<Void> call, Response<Void> response) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<Void> call, Throwable t) {
-//                                Log.e(TAG, "Fail to setup alarm:" + t.getMessage());
-//                                t.printStackTrace();
-//                            }
-//                        });
-
-                        Toast.makeText(context,"Check your alarm in alarm page", Toast.LENGTH_LONG);
-
-//                        Intent intent = new Intent(context, MainActivity.class);
-//                        intent.putExtra(Constants.INTENT_CALL_FROM_KEY,this.getClass().getName());
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                        startActivity(intent);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -134,7 +111,7 @@ public class SetBusAlarmFragment extends DialogFragment {
         seekBar.setMax(60);
 
 //        textView.setText("Covered: " + seekBar.getProgress() + "/" + seekBar.getMax());
-        textView.setText("" + seekBar.getProgress() );
+        textView.setText("" + seekBar.getProgress());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progress = 0;
@@ -154,7 +131,7 @@ public class SetBusAlarmFragment extends DialogFragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
 //                textView.setText("Covered: " + progress + "/" + seekBar.getMax());
                 textView.setText("" + seekBar.getProgress());
-                Toast.makeText(getActivity(), "Stopped tracking seekbar", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Stopped tracking seekbar", Toast.LENGTH_SHORT).show();
             }
         });
 

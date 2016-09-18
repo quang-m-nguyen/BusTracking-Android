@@ -84,4 +84,11 @@ public interface ThrifaServerApi {
             @Path("stopID") String stopID
     );
 
+
+    @GET("Simulation/SubscribeBusstop/{busstopID}/{token}")
+    Call<List<BusTracker>> getBusstopTimeInfo2(
+            @Path("busstopID") String busstopID,
+            @Path("token") String token
+    );
+
 }

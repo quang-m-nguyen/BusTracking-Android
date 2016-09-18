@@ -38,11 +38,11 @@ public class BusAlarmListFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private void Initialize(){
+    private void Initialize() {
         listSize = 10;
         idPool = new Stack();
         for (int i = 0; i < listSize; i++) {
-           idPool.push(i);
+            idPool.push(i);
         }
     }
 
@@ -52,10 +52,8 @@ public class BusAlarmListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                            Bundle savedInstanceState) {
-
-       Initialize();
-
+                             Bundle savedInstanceState) {
+        Initialize();
         // Inflate the layout for this fragment
         // Don't have dynamic bus stop update from server
         // TODO: dynamic update after server updated
@@ -95,7 +93,7 @@ public class BusAlarmListFragment extends Fragment {
         return rootView;
     }
 
-    private Cursor getAlarmList(){
+    private Cursor getAlarmList() {
 
         return null;
     }
@@ -106,14 +104,13 @@ public class BusAlarmListFragment extends Fragment {
         updateUI();
     }
 
-    public void updateUI(){
+    public void updateUI() {
 
         TextView emptyAlarmTextView = (TextView) rootView.findViewById(R.id.alarm_list_empty);
 
-        if(busAlarmList.size() <=0){
+        if (busAlarmList.size() <= 0) {
             emptyAlarmTextView.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             emptyAlarmTextView.setVisibility(View.INVISIBLE);
         }
 

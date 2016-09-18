@@ -12,7 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
+import com.thrifa.ruofei.bus_locator.BusTracker.TrackedBusFragment;
 import com.thrifa.ruofei.bus_locator.customWidget.NonSwipeableViewPager;
 import com.thrifa.ruofei.bus_locator.service.AlarmService;
 import com.thrifa.ruofei.bus_locator.util.Constants;
@@ -44,16 +46,16 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void initialize() {
-        // check build type
-        if (BuildConfig.DEBUG) {
-            Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_TEST_PRODUCT_DOMAIN;
-        } else {
-            Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_SERVER_PRODUCT_DOMAIN;
-        }
+//         check build type
+//        if (BuildConfig.DEBUG) {
+        Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_TEST_PRODUCT_DOMAIN;
+//        } else {
+//            Parameters.CURRENT_SERVER_PRODUCT_DOMAIN = Constants.THRIFA_SERVER_PRODUCT_DOMAIN;
+//        }
 
-        // start checking alarm
         Intent intent = new Intent(this, AlarmService.class);
         startService(intent);
+
     }
 
     @Override
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         initialize();
 
+//        FirebaseCrash.report(new Exception("My first Android non-fatal error"));
 
         viewPager = (NonSwipeableViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -71,6 +74,16 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         setupTabIcons();
+
+
+//        if (savedInstanceState == null) {
+//            Bundle bundle = new Bundle();
+//            TrackedBusFragment newFragment = new TrackedBusFragment();
+//            newFragment.setArguments(bundle);
+//            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.busstop_info_in_main, newFragment)
+//                    .commit();
+//        }
     }
 
     @Override

@@ -125,7 +125,6 @@ public class ThrifaBackgroundService extends Service {
         // check if user set an alarm
         String flag = sharedPref.getString(getString(R.string.alarm_flag_key), "true");
         if (!flag.equals("true")) {
-            Log.e(TAG, "stop alarm service");
             currentCountingTime = -1;
             this.stopSelf();
         }
@@ -138,18 +137,14 @@ public class ThrifaBackgroundService extends Service {
 //        }
         Integer alarmSettingTime = sharedPref.getInt(getString(R.string.alarm_setting_time_key), -1);
 
-        Log.e(TAG, "alarmSettingTime:" + alarmSettingTime + ",currentCountingTime:" + currentCountingTime);
 
         if (alarmSettingTime == -1) {
             // exception
-            Log.e(TAG, "Error: alarm Time is not setting");
             throw new Exception();
         } else {
 
-            Log.e(TAG, "alarmCheckingEnd1");
             if (currentCountingTime <= alarmSettingTime && currentCountingTime != -1) {
                 //send notification
-                Log.e(TAG, "alarmCheckingEnd2");
                 showNotification("bus is approaching", "remaning time:" + currentCountingTime, 100);
 
                 // unsubscribe alarm
@@ -169,7 +164,6 @@ public class ThrifaBackgroundService extends Service {
 //                    }
 //                });
             } else {
-                Log.e(TAG, "alarmCheckingEnd3");
                 if (mTimer != null)
                     mTimer.cancel();
 
@@ -179,14 +173,12 @@ public class ThrifaBackgroundService extends Service {
                         mTimer = new CountDownTimer(currentCountingTime, 1000) {
                             public void onTick(long millisUntilFinished) {
 //                mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
-                                Log.e(TAG, "alarmCheckingEnd:" + currentCountingTime);
                                 if (currentCountingTime > 0)
                                     currentCountingTime -= 1;
                             }
 
                             public void onFinish() {
 //                mTextField.setText("done!");
-                                Log.e(TAG, "alarmCheckingEndFinish:" + currentCountingTime);
 
                             }
                         }.start();
@@ -196,10 +188,8 @@ public class ThrifaBackgroundService extends Service {
                 });
 
 
-                Log.e(TAG, "alarmCheckingEnd4");
             }
         }
-        Log.e(TAG, "alarmCheckingEnd");
     }
 
     class MyThread extends Thread {

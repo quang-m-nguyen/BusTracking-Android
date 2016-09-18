@@ -14,11 +14,9 @@
 
         <TextView
             android:id="@+id/about_tab_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:paddingLeft="135dp"
-            android:paddingRight="135dp"
             android:paddingTop="36dp"
             android:text="@string/app_name"
             android:textSize="32dp"
@@ -27,7 +25,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="256dp"
             android:layout_height="@dimen/logo_size"
             android:layout_gravity="center_horizontal"
             android:paddingBottom="36dp"
@@ -36,7 +34,7 @@
             android:paddingTop="36dp"
             android:src="@drawable/thrifa_icon" />
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:paddingLeft="140dp"
@@ -46,7 +44,7 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:paddingLeft="90dp"
@@ -57,12 +55,10 @@
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:paddingTop="96dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
             android:text="@string/about_tab_info"
             android:textAlignment="center"
             android:textSize="16dp"

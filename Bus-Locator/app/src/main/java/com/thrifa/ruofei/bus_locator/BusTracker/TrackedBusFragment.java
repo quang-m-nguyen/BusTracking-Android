@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.thrifa.ruofei.bus_locator.R;
 import com.thrifa.ruofei.bus_locator.RecycleViewDividerItemDecoration;
+import com.thrifa.ruofei.bus_locator.busstop.BusStopPopupActivity;
 import com.thrifa.ruofei.bus_locator.pojo.BusInfo;
 import com.thrifa.ruofei.bus_locator.pojo.BusTracker;
 import com.thrifa.ruofei.bus_locator.util.Constants;
@@ -42,7 +43,7 @@ public class TrackedBusFragment extends Fragment {
     public static TrackedBusAdapter mTrackedBusAdapter;
     public static List<TrackedBus> trackedBusList = new ArrayList<>();
     public final String TAG = this.getClass().getName();
-    public static String busstopID;
+    public static String busstopID= "N/A";
     String token;
     Context context;
 
@@ -67,17 +68,17 @@ public class TrackedBusFragment extends Fragment {
             String stopID = params[0].first;
             Integer interval = params[0].second;
 
-            Log.e(TAG, "asyc1 start:");
             ThrifaServer server = ThrifaServer.getInstance(context);
+            if (busstopID == "N/A"){
+                return -1;
+            }
             Call<List<BusTracker>> call = server.getBusstopInfo(busstopID);
             call.enqueue(new Callback<List<BusTracker>>() {
                 @Override
                 public void onResponse(Call<List<BusTracker>> call, Response<List<BusTracker>> response) {
                     if (response != null) {
-                        Log.e(TAG, "asyc1 response:" + response.toString());
                         final List<BusTracker> body = response.body();
                         if (body != null) {
-                            Log.e(TAG, "ascyc bodysize:" + body.size());
                             if (body.size() > 0) {
 //                                mBusList.clear();
                                 for (int i = 0; i < body.size(); i++) {
@@ -89,7 +90,6 @@ public class TrackedBusFragment extends Fragment {
                                     String busstopID = busTracker.getStopID();
 
                                     int index = trackedBusList.indexOf(new TrackedBus(routeID, routeName, "n/a", "n/a", busstopID));
-                                    Log.e(TAG, "tracker index:" + index + ", stop id:" + busstopID + ", tracker route:" + routeID + ", route name:" + routeName + ", traker time:" + time + ", stopNum:" + busstopNum);
                                     if (index == -1) {
                                         trackedBusList.add(new TrackedBus(routeID, routeName, time, busstopNum, busstopID));
                                     } else {
@@ -107,7 +107,6 @@ public class TrackedBusFragment extends Fragment {
                                         TrackedBusFragment.mTrackedBusAdapter.notifyDataSetChanged();
                                     }
                                 });
-//                                Log.e(TAG, "update new lat:" + mBus.getLat() + ",lng:" + mBus.getLng());
                             }
                         }
                     }
@@ -117,7 +116,6 @@ public class TrackedBusFragment extends Fragment {
                 @Override
                 public void onFailure(Call<List<BusTracker>> call, Throwable t) {
                     Log.e(TAG, "asyc update error:" + t.toString());
-
                 }
             });
             return interval;
@@ -268,7 +266,6 @@ public class TrackedBusFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG,"resume callled");
         try {
 //            subscribeBusTrackerData();
             if(busstopID != "N/A") {

@@ -60,8 +60,6 @@ public class BusStopPopupActivity extends AppCompatActivity {
                     .commit();
         }
 
-
-
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
@@ -81,51 +79,7 @@ public class BusStopPopupActivity extends AppCompatActivity {
 //        else
 //            iw.setImageResource(R.drawable.ic_bell_grey600_24dp);
 
-
-
-
-
     }
-
-//
-//    public void onClickNotification(View view) {
-//
-//        ImageView iw = (ImageView) findViewById(R.id.notificationImageView);
-//        Log.d(TAG, "Notification clicked, flag:" + notificationFlag);
-//        if (notificationFlag == false) {
-//            iw.setImageResource(R.drawable.ic_bell_outline_grey600_24dp);
-//
-//            String token  = FirebaseInstanceId.getInstance().getToken();
-//            //send notification request
-//            Server server = Server.getInstance(this.getApplicationContext());
-//            // TODO: change route id and bus stop id to be dynamic
-//            Call<Void> call = server.sendNotification(token, 1, 41);
-//            Log.d(TAG, "send token");
-//            call.enqueue(new Callback<Void>() {
-//                @Override
-//                public void onResponse(Call<Void> call, Response<Void> response) {
-//
-//                }
-//
-//                @Override
-//                public void onFailure(Call<Void> call, Throwable t) {
-//                    Log.d(TAG, "Fail:" + t.getMessage());
-//                    t.printStackTrace();
-//                }
-//            });
-//        } else {
-//            final Vibrator vibrator;
-//            vibrator = (Vibrator) getSystemService(MainActivity.VIBRATOR_SERVICE);
-//            vibrator.cancel();
-//            iw.setImageResource(R.drawable.ic_bell_grey600_24dp);
-//        }
-//        notificationFlag = !notificationFlag;
-//        iw.invalidate();
-//    }
-//
-//    public void onClickDetail(View view) {
-//
-//    }
 
     @Override
     protected void onPostResume() {

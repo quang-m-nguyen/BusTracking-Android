@@ -54,7 +54,6 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
         final Map<String, String> data = remoteMessage.getData();
         if (data != null) {
             String dataStr = data.toString();
-            Log.e(TAG, "get data from firebase " + dataStr);
             String content_type = data.get("content_type");
 
             if (content_type != null) {
@@ -67,49 +66,6 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                 }
             }
         }
-
-
-//        String timeStr = remoteMessage.getData().get("time");
-//        if(timeStr != null) {
-//            Double time = Double.parseDouble(timeStr);
-//            String routeID = remoteMessage.getData().get("routeID");
-//            String busstopNum = remoteMessage.getData().get("stopNum");
-//            if (routeID == null)
-//                return;
-//            Log.e(TAG,"get data from firebase " +dataStr);
-//            try {
-//                Handler mainThread = new Handler(Looper.getMainLooper());
-//                // In your worker thread
-//                int index = TrackedBusFragment.trackedBusList.indexOf(new TrackedBus(routeID,"n/a","n/a"));
-//                Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + time + ", stopNum:"+busstopNum);
-//                if (index == -1)
-//                    return;
-//
-//                TrackedBusFragment.trackedBusList.get(index).setEstimatedTime(timeStr);
-//                TrackedBusFragment.trackedBusList.get(index).setBusstopNum(busstopNum);
-//                mainThread.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (TrackedBusFragment.trackedBusList.size() != 0) {
-//                            TrackedBusFragment.mTrackedBusAdapter.notifyDataSetChanged();
-//                        } else {
-//                            Log.e(TAG, "size is o");
-//                        }
-//
-//                    }
-//                });
-//
-//
-//                if (time <= 0) {
-////                    final Vibrator vibrator;
-////            vibrator = (Vibrator) getSystemService(MainActivity.VIBRATOR_SERVICE);
-////            vibrator.vibrate(60000);
-////                sendNotification(dataStr);
-//                }
-//            }catch (Exception e){
-//                Log.e(TAG,e.toString());
-//            }
-//        }
     }
 
     private void updateAlarmTime(Map<String, String> data) {
@@ -129,7 +85,6 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                 // TODO: change server side to send time in sec
 //                            editor.putInt(getString(R.string.current_remaining_time_key), newRemainingTime * 60);
                 // TODO: notify alarm service the update
-                Log.e(TAG, "update alarm time:" + newRemainingTime);
 
                 String routeID = data.get("route_ID").substring(5);
                 String stopID = data.get("busstop_ID").substring(5);
@@ -138,7 +93,6 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                     Handler mainThread = new Handler(Looper.getMainLooper());
                     // In your worker thread
                     int index = BusAlarmListFragment.busAlarmList.indexOf(new BusAlarmItem(routeID, stopID,"","", "n/a", "n/a", -1, -1.0, -1.0, true));
-                        Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + stopID );
                     if (index == -1)
                         return;
 
@@ -205,16 +159,13 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
     }
 
     private void updateBusCoordinate(Map<String, String> data) {
-        Log.e(TAG, "broadcast lat");
         String busLat = data.get("lat");
         String busLng = data.get("lng");
-//        Log.e(TAG, "get broad cast lat" + busLat + ", lng:" + busLng);
         if (busLat != null && busLng != null) {
 //            MainActivity.busLng = Double.parseDouble(busLng);
 //            MainActivity.busLat = Double.parseDouble(busLat);
 
             if (busLat != null && busLng != null) {
-                Log.e(TAG, "broadcast lat" + busLat + ", lng:" + busLng);
                 Intent i = new Intent(Constants.MAIN_ACTION).putExtra("BUS_LAT", busLat).putExtra("BUS_LNG", busLng);
                 this.sendBroadcast(i);
             }
@@ -233,10 +184,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
             BusTracker[] busList = gson.fromJson(busArray, BusTracker[].class);
 
             if (busList != null) {
-                Log.e(TAG, "Bus List:" + busList.toString());
                 for (int i = 0; i < busList.length; i++) {
-                    Log.e(TAG, "index:" + i + ", content:" + busList[i].getRouteID());
-
                     String routeID = busList[i].getRouteID();
                     String routeName = busList[i].getRouteName();
                     String time = busList[i].getTime();
@@ -249,7 +197,6 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                         if (TrackedBusFragment.trackedBusList == null || TrackedBusFragment.trackedBusList.size()<=0)
                             return;
                         int index = TrackedBusFragment.trackedBusList.indexOf(new TrackedBus(routeID, routeName, "n/a", "n/a",busstopID));
-                        Log.e(TAG, "tracker index:" + index + ", stop id:" +busstopID + ", tracker route:" + routeID + ", route name:"+ routeName +", traker time:" + time + ", stopNum:" + busstopNum);
                         if (index == -1)
                             return;
 
@@ -261,7 +208,7 @@ public class FirebaseBusMessagingService extends FirebaseMessagingService {
                                 if (TrackedBusFragment.trackedBusList.size() != 0) {
                                     TrackedBusFragment.mTrackedBusAdapter.notifyDataSetChanged();
                                 } else {
-                                    Log.e(TAG, "size is o");
+                                    Log.d(TAG, "bus list size is o");
                                 }
 
                             }

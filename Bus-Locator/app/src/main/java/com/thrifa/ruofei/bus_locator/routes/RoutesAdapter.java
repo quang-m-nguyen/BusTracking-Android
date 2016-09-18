@@ -2,6 +2,7 @@ package com.thrifa.ruofei.bus_locator.routes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -36,6 +37,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
         public TextView routeNameInView;
 
         public String routeIDStr;
+        public String routeColorStr;
 
         public  MyViewHolder(View view){
             super(view);
@@ -80,6 +82,14 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
             // TODO: user shared preference
             MainTabFragment.mCurrentRoute = routeName;
             MainTabFragment.mCurrentRouteID = routeIDStr;
+            MainTabFragment.mCurrentRouteColor = routeColorStr;
+
+            SharedPreferences sharedPref = context.getSharedPreferences(Constants.CURRENT_STATUS_PREFFENCE,Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(Constants.CURRENT_ROUTE_KEY,routeName);
+            editor.putString(Constants.CURRENT_ROUTE_ID_KEY,routeIDStr);
+            editor.commit();
+
             intent.putExtra(Constants.ROUTE_NAME_KEY,routeName);
             intent.putExtra(Constants.ROUTE_ID_KEY,routeIDStr);
             intent.putExtra(Constants.INTENT_CALL_FROM_KEY, TAG);
@@ -109,7 +119,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.MyViewHold
         holder.routeNameInView.setText(route.getRouteName());
 
         holder.routeIDStr = route.getRouteID();
-        Log.e(TAG,"routeID:" + route.getRouteID());
+        holder.routeColorStr = route.getColor();
 
         CardView cardView = (CardView)holder.itemView;
 

@@ -8,8 +8,8 @@ android {
         applicationId "com.thrifa.ruofei.bus_locator"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 6
-        versionName "1.05"
+        versionCode 11
+        versionName "1.10"
 
 //        multiDexEnabled true
     }
@@ -44,7 +44,7 @@ dependencies {
 
     // GoogleMap
 //    compile 'com.google.android.gms:play-services:9.2.0'
-    compile 'com.google.android.gms:play-services-maps:9.2.0'
+    compile 'com.google.android.gms:play-services-maps:9.4.0'
 
     // Retrofit
     compile 'com.google.code.gson:gson:2.6.1'
@@ -58,8 +58,10 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.1.0'
 
     // Firebase
-    compile 'com.google.firebase:firebase-core:9.2.0'
-    compile 'com.google.firebase:firebase-messaging:9.2.0'
+    compile 'com.google.firebase:firebase-core:9.4.0'
+    compile 'com.google.firebase:firebase-messaging:9.4.0'
+    compile 'com.google.firebase:firebase-crash:9.4.0'
+
 
     // SearchView
 //    compile 'com.github.renaudcerrato:FloatingSearchView:1.0.1'

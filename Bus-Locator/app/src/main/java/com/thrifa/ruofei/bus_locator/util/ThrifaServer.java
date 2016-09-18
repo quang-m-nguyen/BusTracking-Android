@@ -122,8 +122,9 @@ public class ThrifaServer {
 
     public Call<List<BusTracker>> getBusstopInfo(String stopID) {
         ThrifaServerApi service = (ThrifaServerApi) this.getService();
-        return service.getBusstopInfo(stopID);
+//        return service.getBusstopInfo(stopID);
 
+        return service.getBusstopTimeInfo2(stopID,"N/A");
     }
 
     public Call<List<RoutePath>> getRoutePath(String routeID) {

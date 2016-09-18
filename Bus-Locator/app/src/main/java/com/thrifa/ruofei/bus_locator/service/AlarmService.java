@@ -7,6 +7,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
+import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,11 +17,13 @@ import android.util.Log;
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmItem;
 import com.thrifa.ruofei.bus_locator.BusAlarm.BusAlarmListFragment;
 import com.thrifa.ruofei.bus_locator.MainActivity;
+import com.thrifa.ruofei.bus_locator.Notification.Notification;
 import com.thrifa.ruofei.bus_locator.R;
 import com.thrifa.ruofei.bus_locator.pojo.BusTracker;
 import com.thrifa.ruofei.bus_locator.util.ThrifaServer;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -77,44 +80,48 @@ public class AlarmService extends IntentService {
 
                             String newRemainingTime = body.getTime();
 
-                            Log.e(TAG, "update alarm time:" + newRemainingTime);
                             try {
                                 Handler mainThread = new Handler(Looper.getMainLooper());
                                 // In your worker thread
-                                int index = BusAlarmListFragment.busAlarmList.indexOf(new BusAlarmItem(routeID, stopID, "", "", "n/a", "n/a", -1, -1.0, -1.0, true));
-                                Log.e(TAG, "tracker index:" + index + ", tracker route:" + routeID + ", traker time:" + stopID);
-                                if (index == -1)
-                                    return;
-                                final BusAlarmItem alarmItem = BusAlarmListFragment.busAlarmList.get(index);
-                                //check if alarm off
-                                if (alarmItem.isAlarmFlag()) {
-                                    alarmItem.setRemainingTime("Arrive in:" + newRemainingTime + " Mins");
-                                    alarmItem.setRemainTimeNum(Double.parseDouble(newRemainingTime));
+                                final BusAlarmItem tmpBusAlarmItem = new BusAlarmItem(routeID, stopID, "", "", "n/a", "n/a", -1, -1.0, -1.0, true);
+//                                int index = BusAlarmListFragment.busAlarmList.indexOf(tmpBusAlarmItem);
+                                final ArrayList<Integer> indexes = indexOfAll(tmpBusAlarmItem, (ArrayList) BusAlarmListFragment.busAlarmList);
+//                                if (index == -1)
+//                                    return;
+                                if(indexes.size() <0)
+                                    return;;
+                                for(int index =0; index < indexes.size(); index++) {
+                                    final BusAlarmItem alarmItem = BusAlarmListFragment.busAlarmList.get(index);
+                                    //check if alarm off
+                                    if (alarmItem.isAlarmFlag()) {
+                                        alarmItem.setRemainingTime("Arrive in:" + newRemainingTime + " Mins");
+                                        alarmItem.setRemainTimeNum(Double.parseDouble(newRemainingTime));
 
-                                    if (alarmItem.getSettingTimeNum() >= alarmItem.getRemainTimeNum() && alarmItem.getRemainTimeNum() >= 0) {
-                                        sendNotification("Bus is about to arriving in " + Math.round(alarmItem.getRemainTimeNum()) + "minutes", "Bus About Arrive");
-                                        alarmItem.setRemainingTime("alarm notified");
-                                        alarmItem.setAlarmFlag(false);
+                                        if (alarmItem.getSettingTimeNum() >= alarmItem.getRemainTimeNum() && alarmItem.getRemainTimeNum() >= 0) {
+                                            sendNotification("Bus is about to arriving in " + Math.round(alarmItem.getRemainTimeNum()) + " minutes", "Bus About Arrive");
+                                            alarmItem.setRemainingTime("alarm notified");
+                                            alarmItem.setAlarmFlag(false);
+                                            mainThread.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    BusAlarmListFragment.mBusAlarmAdapter.notifyDataSetChanged();
+                                                }
+                                            });
+
+                                        }
+
+                                        // In your worker thread
                                         mainThread.post(new Runnable() {
                                             @Override
                                             public void run() {
-                                                BusAlarmListFragment.mBusAlarmAdapter.notifyDataSetChanged();
+                                                if (BusAlarmListFragment.busAlarmList.size() != 0) {
+                                                    BusAlarmListFragment.mBusAlarmAdapter.notifyDataSetChanged();
+                                                } else {
+                                                    Log.d(TAG, "size is o");
+                                                }
                                             }
                                         });
-
                                     }
-
-                                    // In your worker thread
-                                    mainThread.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (BusAlarmListFragment.busAlarmList.size() != 0) {
-                                                BusAlarmListFragment.mBusAlarmAdapter.notifyDataSetChanged();
-                                            } else {
-                                                Log.d(TAG, "size is o");
-                                            }
-                                        }
-                                    });
                                 }
 
                             } catch (Exception e) {
@@ -137,6 +144,14 @@ public class AlarmService extends IntentService {
         }
     }
 
+    private static ArrayList<Integer> indexOfAll(Object obj, ArrayList list){
+        ArrayList<Integer> indexList = new ArrayList<Integer>();
+        for (int i = 0; i < list.size(); i++)
+            if(obj.equals(list.get(i)))
+                indexList.add(i);
+        return indexList;
+    }
+
     private void sendNotification(String messageBody, String title) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -144,6 +159,7 @@ public class AlarmService extends IntentService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Log.e(TAG,"default sound:" + defaultSoundUri.toString());
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
@@ -151,6 +167,7 @@ public class AlarmService extends IntentService {
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
+//        notificationBuilder.setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|Notification.DEFAULT_VIBRATE);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
