@@ -74,12 +74,6 @@ public class ThrifaServer {
         return service.getBusStop(routeName);
     }
 
-
-    public Call<Void> sendNotification(String token, int routeID, int busStopID) {
-        ThrifaServerApi service = (ThrifaServerApi) this.getService();
-        return service.sendToken(token, routeID, busStopID);
-    }
-
     public Call<Void> unsubscribeBusstop(String busStopID, String token) {
         ThrifaServerApi service = (ThrifaServerApi) this.getService();
         return service.unsubscribeBusstop(busStopID, token);
@@ -90,25 +84,13 @@ public class ThrifaServer {
         return service.getBusTracker(busstopID, token, "Android");
     }
 
-    public Call<Void> subscribeBusAlarm(String routeID, String busstopID, String token) {
-        ThrifaServerApi service = (ThrifaServerApi) this.getService();
-        return service.subscribeBusAlarm(routeID, busstopID, token, "Android");
-    }
 
     public Call<Void> unsubscribeBusAlarm(String routeID, String busstopID, String token) {
         ThrifaServerApi service = (ThrifaServerApi) this.getService();
         return service.unsubscribeBusAlarm(routeID, busstopID, token);
     }
 
-    public Call<List<Route>> getBusRoute() {
-        ThrifaServerApi service = (ThrifaServerApi) this.getService();
-        return service.getBusRoute();
-    }
 
-    public Call<Void> subscribeBus(String id, String token) {
-        ThrifaServerApi service = (ThrifaServerApi) this.getService();
-        return service.subscribeBus(id, token);
-    }
 
     public Call<List<BusInfo>> getBusInfo(String busID) {
         ThrifaServerApi service = (ThrifaServerApi) this.getService();
@@ -122,8 +104,6 @@ public class ThrifaServer {
 
     public Call<List<BusTracker>> getBusstopInfo(String stopID) {
         ThrifaServerApi service = (ThrifaServerApi) this.getService();
-//        return service.getBusstopInfo(stopID);
-
         return service.getBusstopTimeInfo2(stopID,"N/A");
     }
 
@@ -137,9 +117,6 @@ public class ThrifaServer {
         return service.getTimeInfoForARoute(routeID,stopID);
     }
 
-    public Retrofit getRetrofit() {
-        return retrofit;
-    }
 
     public Object getService() {
         Object service = retrofit.create(mThrifaApi);

@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.location.Criteria;
 import android.location.Location;
@@ -22,6 +23,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -32,10 +34,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Display;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -74,6 +78,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Exchanger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -111,6 +116,9 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
 
     private volatile List<BusInfo> mBusList = new ArrayList<>();
     private List<Marker> mBusMarkerList = new ArrayList<>();
+
+    public int screenWidth;
+    public int screenHeight;
 
 
     public MainTabFragment() {
@@ -177,6 +185,13 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         context = getContext();
         Log.d(TAG, "onCreate set option menu to true");
         setHasOptionsMenu(true);
+
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+        screenHeight  = size.y;
     }
 
     @Nullable
@@ -220,19 +235,24 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        View locationButton = ((View) view.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+
+        try {
+            View locationButton = ((View) view.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
 
 //        // position on right bottom
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-//        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
-//        rlp.addRule(RelativeLayout.ALIGN_LEFT, RelativeLayout.TRUE);
-        rlp.setMargins(0, 0, 30, 105);
-//                   rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-//            rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-//            rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
-//            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+            rlp.addRule(RelativeLayout.ALIGN_LEFT, RelativeLayout.TRUE);
+//            rlp.setMargins(0, 0, 30, 105);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+        } catch (Exception e) {
+
+        }
 
 
         View layout = inflater.inflate(R.layout.busstop_toast, (ViewGroup) view.findViewById(R.id.busstop_toast_layout_root));
@@ -415,10 +435,8 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
     public void updateRouteStopsOnMap() {
         if (mMap != null) {
             List<Marker> markers = new ArrayList<Marker>();
-            Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),
-                    R.drawable.bus_stop_icon);
 
-            Bitmap bmp = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
+            Bitmap bmp = Bitmap.createBitmap(screenWidth / 18, screenWidth / 18, Bitmap.Config.ARGB_8888);
             bmp.eraseColor(Color.argb(0, 0, 0, 0));
 
             Canvas c = new Canvas(bmp);
@@ -438,7 +456,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
                 int routeColor = R.color.materialColorRed;
                 p.setColor(ContextCompat.getColor(context, routeColor));
             }
-            c.drawCircle(bmp.getHeight() / 2, bmp.getWidth() / 2, bmp.getHeight() / 2 - 5, p);
+            c.drawCircle(bmp.getHeight() / 2, bmp.getWidth() / 2, (float) ((bmp.getHeight() / 2) * 0.80), p);
 
 
 //            mRoutes.clear();
@@ -495,7 +513,7 @@ public class MainTabFragment extends Fragment implements OnMapReadyCallback, Goo
         PolylineOptions newOpt = new PolylineOptions();
 //            newOpt.addAll(mRoutes.get(i))
         newOpt.addAll(lines)
-                .width(12)
+                .width(screenWidth/70)
                 .color(Color.parseColor("#05b1fb"))//Google maps blue color
                 .geodesic(true);
         mMap.addPolyline(newOpt);

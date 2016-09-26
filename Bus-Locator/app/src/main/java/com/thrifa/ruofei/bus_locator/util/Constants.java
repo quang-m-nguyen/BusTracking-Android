@@ -14,8 +14,9 @@ public interface Constants {
     final static String CURRENT_ROUTE_KEY = "com.thrifa.ruofei.bus_locator.CURRENT_ROUTE_KEY";
     final static String CURRENT_ROUTE_ID_KEY = "com.thrifa.ruofei.bus_locator.CURRENT_ROUTE_ID_KEY";
 
-    final static String THRIFA_SERVER_PRODUCT_DOMAIN = "http://sudokit.com:3000/";
-    final static String THRIFA_TEST_PRODUCT_DOMAIN = "http://52.32.160.105:3000/";
+//    final static String THRIFA_PRODUCT_DOMAIN = "http://sudokit.com:3000/";
+    final static String THRIFA_PRODUCT_DOMAIN = "http://52.32.160.105:3000/";
+    final static String THRIFA_TEST_PRODUCT_DOMAIN = "http://52.42.217.190:3000/";
 
 //    final static String BUS_LOCATOR_URL = "http://sudokit.com:3000/";
     final static String GOOGLE_MAP_URL = "https://maps.googleapis.com/maps/api/directions/";
